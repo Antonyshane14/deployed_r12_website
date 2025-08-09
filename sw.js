@@ -1,7 +1,6 @@
 // Service Worker for Rapture Twelve Website
 // Provides caching and offline functionality
-
-const CACHE_NAME = 'rapture-twelve-v1.0.0';
+const CACHE_NAME = 'rapture-twelve-v1.0.2';
 const urlsToCache = [
     '/',
     '/index.html',
