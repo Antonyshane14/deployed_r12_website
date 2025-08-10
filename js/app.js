@@ -418,145 +418,165 @@ function scrollToContact() {
     smoothScrollTo('#contact');
 }
 
-// Initialize Scroll Effects - MASSIVELY OPTIMIZED FOR SPEED
+// Initialize Scroll Effects - ULTRA-FAST INSTANT REVEALS FOR MOBILE
 function initializeScrollEffects() {
-    // Reveal animations for sections - MUCH FASTER AND EARLIER
+    // Check if mobile device for performance optimization
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
+    // INSTANT reveals for mobile, fast animations for desktop
+    const animationDuration = isMobile ? 0.1 : 0.2;
+    const staggerTime = isMobile ? 0.02 : 0.05;
+    
+    // Reveal animations for sections - INSTANT ON MOBILE
     const revealElements = document.querySelectorAll('[data-reveal]');
     
     revealElements.forEach(element => {
-        gsap.set(element, { opacity: 0, y: 30 }); // Reduced y from 50
+        if (isMobile) {
+            // MOBILE: Set initial state but make it almost instant
+            gsap.set(element, { opacity: 0, y: 10 });
+        } else {
+            // DESKTOP: Subtle animation
+            gsap.set(element, { opacity: 0, y: 20 });
+        }
         
         ScrollTrigger.create({
             trigger: element,
-            start: "top 95%", // Changed from 80% to 95% - appears much earlier
+            start: "top 98%", // Even earlier trigger - almost instant
             end: "bottom 20%",
             onEnter: () => {
                 gsap.to(element, {
-                    duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                    duration: animationDuration,
                     opacity: 1,
                     y: 0,
-                    ease: "power2.out"
+                    ease: isMobile ? "none" : "power1.out" // No easing on mobile for speed
                 });
             }
         });
     });
 
-    // Service cards stagger animation - FASTER
-    gsap.set(".service-card", { opacity: 0, y: 30 }); // Reduced y from 50
+    // Service cards - INSTANT ON MOBILE
+    gsap.set(".service-card", { opacity: isMobile ? 0 : 0, y: isMobile ? 5 : 20 });
     
     ScrollTrigger.create({
         trigger: ".services-grid",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".service-card", {
-                duration: 0.3, // Reduced from 0.6 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                stagger: 0.08, // Reduced from 0.15 - faster stagger
-                ease: "power2.out"
+                stagger: staggerTime,
+                ease: isMobile ? "none" : "power1.out"
             });
         }
     });
 
-    // Case study cards animation - FASTER
-    gsap.set(".case-study-card", { opacity: 0, y: 30 }); // Reduced y from 50
+    // Case study cards - INSTANT ON MOBILE
+    gsap.set(".case-study-card", { opacity: 0, y: isMobile ? 5 : 20 });
     
     ScrollTrigger.create({
         trigger: ".case-studies-grid",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".case-study-card", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                stagger: 0.1, // Reduced from 0.2 - faster stagger
-                ease: "power2.out"
+                stagger: staggerTime,
+                ease: isMobile ? "none" : "power1.out"
             });
         }
     });
 
-    // Leader cards animation - FASTER
-    gsap.set(".leader-card", { opacity: 0, y: 30 }); // Reduced y from 50
+    // Leader cards - INSTANT ON MOBILE
+    gsap.set(".leader-card", { opacity: 0, y: isMobile ? 5 : 20 });
     
     ScrollTrigger.create({
         trigger: ".leadership-grid",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".leader-card", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                stagger: 0.15, // Reduced from 0.3 - faster stagger
-                ease: "power2.out"
+                stagger: staggerTime * 2,
+                ease: isMobile ? "none" : "power1.out"
             });
         }
     });
 
-    // Partners grid animation - FASTER
-    gsap.set(".partners-grid", { opacity: 0, y: 20 }); // Reduced y from 30
-    gsap.set(".certifications", { opacity: 0, y: 20 }); // Reduced y from 30
+    // Partners grid - INSTANT ON MOBILE
+    gsap.set(".partners-grid", { opacity: 0, y: isMobile ? 5 : 15 });
+    gsap.set(".certifications", { opacity: 0, y: isMobile ? 5 : 15 });
     
     ScrollTrigger.create({
         trigger: ".trusted-by",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".partners-grid", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                ease: "power2.out"
+                ease: isMobile ? "none" : "power1.out"
             });
             
             gsap.to(".certifications", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                ease: "power2.out",
-                delay: 0.15 // Reduced from 0.3
+                ease: isMobile ? "none" : "power1.out",
+                delay: isMobile ? 0.05 : 0.1
             });
         }
     });
 
-    // Innovation showcase animation - FASTER
-    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.98 }); // Reduced scale from 0.95
+    // Innovation showcase - INSTANT ON MOBILE
+    gsap.set(".innovation-showcase", { opacity: 0, scale: isMobile ? 0.99 : 0.98 });
     
     ScrollTrigger.create({
         trigger: ".innovation-showcase",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".innovation-showcase", {
-                duration: 0.5, // Reduced from 1 - MUCH FASTER
+                duration: animationDuration * 1.5,
                 opacity: 1,
                 scale: 1,
-                ease: "power2.out"
+                ease: isMobile ? "none" : "power1.out"
             });
         }
     });
 
-    // Contact section animation - FASTER
-    gsap.set(".contact-info", { opacity: 0, x: -30 }); // Reduced x from -50
-    gsap.set(".contact-form-container", { opacity: 0, x: 30 }); // Reduced x from 50
+    // Contact section - INSTANT ON MOBILE
+    gsap.set(".contact-info", { opacity: 0, x: isMobile ? -10 : -20 });
+    gsap.set(".contact-form-container", { opacity: 0, x: isMobile ? 10 : 20 });
     
     ScrollTrigger.create({
         trigger: ".contact-grid",
-        start: "top 95%", // Changed from 80% to 95%
+        start: "top 98%",
         onEnter: () => {
             gsap.to(".contact-info", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 x: 0,
-                ease: "power2.out"
+                ease: isMobile ? "none" : "power1.out"
             });
             
             gsap.to(".contact-form-container", {
-                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
+                duration: animationDuration,
                 opacity: 1,
                 x: 0,
-                ease: "power2.out",
-                delay: 0.1 // Reduced from 0.2
+                ease: isMobile ? "none" : "power1.out",
+                delay: isMobile ? 0.02 : 0.05
             });
         }
     });
+    
+    // MOBILE PERFORMANCE: Reduce ScrollTrigger refresh rate
+    if (isMobile) {
+        ScrollTrigger.config({
+            autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize"
+        });
+    }
 }
 
 // EmailJS Configuration
