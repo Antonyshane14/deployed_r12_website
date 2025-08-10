@@ -1,196 +1,39 @@
-// Initialize Scroll Effects - ZERO ANIMATIONS ON MOBILE FOR PERFORMANCE
-function initializeScrollEffects() {
-    // Check if mobile device for performance optimization
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+// Rapture Twelve - Premium Website JavaScript
+// Defense-grade cybersecurity and AI company - MOBILE PERFORMANCE OPTIMIZED
+
+// Initialize GSAP only on desktop
+let grapInitialized = false;
+
+// Mobile detection - more comprehensive
+function isMobileDevice() {
+    const userAgent = navigator.userAgent;
+    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+    const isSmallScreen = window.innerWidth <= 768;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
-    console.log('Mobile detected:', isMobile);
-    
-    if (isMobile) {
-        // MOBILE: NO ANIMATIONS - INSTANT REVEALS ONLY
-        console.log('Mobile mode: Disabling all scroll animations for performance');
-        
-        // Just make all elements visible instantly without any animation
-        const allElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card, .partners-grid, .certifications, .innovation-showcase, .contact-info, .contact-form-container');
-        
-        allElements.forEach(element => {
-            // Set elements visible immediately
-            gsap.set(element, { opacity: 1, x: 0, y: 0, scale: 1 });
-        });
-        
-        // Simple intersection observer for instant reveals as backup
-        const instantObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'none';
-                    instantObserver.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '50px'
-        });
-        
-        allElements.forEach(element => {
-            instantObserver.observe(element);
-        });
-        
-        return; // Exit early for mobile - no ScrollTrigger animations
+    return mobileRegex.test(userAgent) || isSmallScreen || isTouchDevice;
+}
+
+const IS_MOBILE = isMobileDevice();
+
+// Initialize GSAP only for desktop
+function initializeGSAP() {
+    if (!IS_MOBILE && typeof gsap !== 'undefined' && !grapInitialized) {
+        try {
+            gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, TextPlugin);
+            grapInitialized = true;
+            console.log('GSAP initialized for desktop');
+        } catch (e) {
+            console.warn('GSAP initialization failed:', e);
+        }
     }
-    
-    // DESKTOP ONLY: Keep fast animations
-    const animationDuration = 0.2;
-    const staggerTime = 0.05;
-    
-    // Reveal animations for sections - DESKTOP ONLY
-    const revealElements = document.querySelectorAll('[data-reveal]');
-    
-    revealElements.forEach(element => {
-        gsap.set(element, { opacity: 0, y: 20 });
-        
-        ScrollTrigger.create({
-            trigger: element,
-            start: "top 98%",
-            end: "bottom 20%",
-            onEnter: () => {
-                gsap.to(element, {
-                    duration: animationDuration,
-                    opacity: 1,
-                    y: 0,
-                    ease: "power1.out"
-                });
-            }
-        });
-    });
-
-    // Service cards - DESKTOP ONLY
-    gsap.set(".service-card", { opacity: 0, y: 20 });
-    
-    ScrollTrigger.create({
-        trigger: ".services-grid",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".service-card", {
-                duration: animationDuration,
-                opacity: 1,
-                y: 0,
-                stagger: staggerTime,
-                ease: "power1.out"
-            });
-        }
-    });
-
-    // Case study cards - DESKTOP ONLY
-    gsap.set(".case-study-card", { opacity: 0, y: 20 });
-    
-    ScrollTrigger.create({
-        trigger: ".case-studies-grid",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".case-study-card", {
-                duration: animationDuration,
-                opacity: 1,
-                y: 0,
-                stagger: staggerTime,
-                ease: "power1.out"
-            });
-        }
-    });
-
-    // Leader cards - DESKTOP ONLY
-    gsap.set(".leader-card", { opacity: 0, y: 20 });
-    
-    ScrollTrigger.create({
-        trigger: ".leadership-grid",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".leader-card", {
-                duration: animationDuration,
-                opacity: 1,
-                y: 0,
-                stagger: staggerTime * 2,
-                ease: "power1.out"
-            });
-        }
-    });
-
-    // Partners grid - DESKTOP ONLY
-    gsap.set(".partners-grid", { opacity: 0, y: 15 });
-    gsap.set(".certifications", { opacity: 0, y: 15 });
-    
-    ScrollTrigger.create({
-        trigger: ".trusted-by",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".partners-grid", {
-                duration: animationDuration,
-                opacity: 1,
-                y: 0,
-                ease: "power1.out"
-            });
-            
-            gsap.to(".certifications", {
-                duration: animationDuration,
-                opacity: 1,
-                y: 0,
-                ease: "power1.out",
-                delay: 0.1
-            });
-        }
-    });
-
-    // Innovation showcase - DESKTOP ONLY
-    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.98 });
-    
-    ScrollTrigger.create({
-        trigger: ".innovation-showcase",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".innovation-showcase", {
-                duration: animationDuration * 1.5,
-                opacity: 1,
-                scale: 1,
-                ease: "power1.out"
-            });
-        }
-    });
-
-    // Contact section - DESKTOP ONLY
-    gsap.set(".contact-info", { opacity: 0, x: -20 });
-    gsap.set(".contact-form-container", { opacity: 0, x: 20 });
-    
-    ScrollTrigger.create({
-        trigger: ".contact-grid",
-        start: "top 98%",
-        onEnter: () => {
-            gsap.to(".contact-info", {
-                duration: animationDuration,
-                opacity: 1,
-                x: 0,
-                ease: "power1.out"
-            });
-            
-            gsap.to(".contact-form-container", {
-                duration: animationDuration,
-                opacity: 1,
-                x: 0,
-                ease: "power1.out",
-                delay: 0.05
-            });
-        }
-    });
-}// Rapture Twelve - Premium Website JavaScript
-// Defense-grade cybersecurity and AI company - OPTIMIZED FAST SCROLL
-
-// Initialize GSAP
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, TextPlugin);
+}
 
 // Global variables
 let isScrolling = false;
-let tl = gsap.timeline();
 let navInitialized = false;
 
-// Throttle utility function
+// Throttle utility function - lighter for mobile
 function throttle(func, limit) {
     let inThrottle;
     return function() {
@@ -199,12 +42,12 @@ function throttle(func, limit) {
         if (!inThrottle) {
             func.apply(context, args);
             inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            setTimeout(() => inThrottle = false, IS_MOBILE ? limit * 2 : limit);
         }
     }
 }
 
-// Debounce utility function
+// Debounce utility function - lighter for mobile
 function debounce(func, wait, immediate) {
     let timeout;
     return function() {
@@ -215,144 +58,204 @@ function debounce(func, wait, immediate) {
         };
         const callNow = immediate && !timeout;
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(later, IS_MOBILE ? wait * 2 : wait);
         if (callNow) func.apply(context, args);
     };
 }
 
-// Document Ready
+// Document Ready - Mobile optimized initialization
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - Initializing...');
+    console.log('DOM Content Loaded - Mobile:', IS_MOBILE);
     
-    // Test basic click functionality
-    document.addEventListener('click', function(e) {
-        console.log('Click detected on:', e.target, 'className:', e.target.className, 'id:', e.target.id);
-    });
+    // Initialize GSAP only for desktop
+    if (!IS_MOBILE) {
+        initializeGSAP();
+    }
     
-    // Add a simple test to make sure JavaScript is working
-    setTimeout(() => {
-        console.log('JavaScript is working - 2 seconds after load');
-        
-        // Test navigation links specifically
-        const testNavLinks = document.querySelectorAll('.nav-link');
-        console.log('Found nav links:', testNavLinks.length);
-        testNavLinks.forEach((link, index) => {
-            console.log(`Nav link ${index}:`, link.href, link.textContent);
-        });
-    }, 2000);
-    
+    // Initialize core functionality
     try {
         initializeVideo();
-        console.log('Video initialized');
-    } catch (e) {
-        console.error('Video initialization failed:', e);
-    }
-    
-    try {
-        initializeAnimations();
-        console.log('Animations initialized');
-    } catch (e) {
-        console.error('Animations initialization failed:', e);
-    }
-    
-    try {
         initializeNavigation();
-        console.log('Navigation initialized');
-    } catch (e) {
-        console.error('Navigation initialization failed:', e);
-    }
-    
-    try {
-        initializeScrollEffects();
         initializeContactForm();
         initializeFloatingContact();
-        initializeServiceCards();
-        initializeParallax();
+        
+        if (IS_MOBILE) {
+            initializeMobileOptimized();
+        } else {
+            initializeDesktopAnimations();
+            initializeScrollEffects();
+            initializeServiceCards();
+            initializeParallax();
+        }
+        
         lazyLoadImages();
-        console.log('All other features initialized');
+        console.log('All features initialized for:', IS_MOBILE ? 'Mobile' : 'Desktop');
     } catch (e) {
-        console.error('Other features initialization failed:', e);
+        console.error('Initialization failed:', e);
     }
     
-    // Initialize scroll functionality as backup
+    // Initialize scroll functionality
     setTimeout(() => {
         initializeScrollFunctionality();
-    }, 500);
+    }, IS_MOBILE ? 100 : 500);
 });
 
-// Initialize Video
-function initializeVideo() {
-    const heroVideo = document.getElementById('hero-video');
-    if (heroVideo) {
-        // Force video to play
-        heroVideo.muted = true;
-        heroVideo.loop = true;
-        heroVideo.autoplay = true;
-        
-        // Try to play the video
-        const playPromise = heroVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Hero video started playing');
-            }).catch(error => {
-                console.error('Video autoplay failed:', error);
-                // If autoplay fails, try to play on user interaction
-                document.addEventListener('click', function() {
-                    heroVideo.play().catch(e => console.error('Manual video play failed:', e));
-                }, { once: true });
-            });
+// Mobile-only initialization - NO ANIMATIONS
+function initializeMobileOptimized() {
+    console.log('Initializing mobile-optimized mode - NO ANIMATIONS');
+    
+    // Make all elements immediately visible
+    const allElements = document.querySelectorAll(`
+        [data-reveal], 
+        .service-card, 
+        .case-study-card, 
+        .leader-card, 
+        .partners-grid, 
+        .certifications, 
+        .innovation-showcase, 
+        .contact-info, 
+        .contact-form-container,
+        .section-subtitle,
+        #hero-company-name,
+        #hero-tagline,
+        #hero-subtitle,
+        #hero-cta
+    `);
+    
+    allElements.forEach(element => {
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+        element.style.visibility = 'visible';
+    });
+    
+    // Disable any CSS animations on mobile
+    const style = document.createElement('style');
+    style.textContent = `
+        @media (max-width: 768px) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                transition-delay: 0ms !important;
+            }
+            
+            .section-subtitle,
+            [data-reveal],
+            .service-card,
+            .case-study-card,
+            .leader-card {
+                opacity: 1 !important;
+                transform: none !important;
+                visibility: visible !important;
+            }
         }
+    `;
+    document.head.appendChild(style);
+    
+    // Simple intersection observer for any missed elements
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'none';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '50px'
+        });
+        
+        allElements.forEach(element => {
+            if (element.style.opacity !== '1') {
+                observer.observe(element);
+            }
+        });
     }
 }
 
-// Initialize Hero Animations - FASTER
-function initializeAnimations() {
-    // Hero company name and content reveal animation
+// Desktop-only animations
+function initializeDesktopAnimations() {
+    if (IS_MOBILE || !grapInitialized) return;
+    
+    console.log('Initializing desktop animations');
+    
+    // Hero animations - desktop only
     gsap.set("#hero-company-name", { opacity: 0, scale: 0.9, y: 50 });
     gsap.set("#hero-tagline", { opacity: 0, y: 30 });
     gsap.set("#hero-subtitle", { opacity: 0, y: 30 });
     gsap.set("#hero-cta", { opacity: 0, y: 30 });
 
-    // Hero sequence animation - MUCH FASTER
-    const heroTl = gsap.timeline({ delay: 0.2 }); // Reduced delay
+    const heroTl = gsap.timeline({ delay: 0.2 });
     
     heroTl
         .to("#hero-company-name", {
-            duration: 0.6, // Reduced from 1.4
+            duration: 0.6,
             opacity: 1,
             scale: 1,
             y: 0,
             ease: "power3.out"
         })
         .to("#hero-tagline", {
-            duration: 0.4, // Reduced from 0.8
+            duration: 0.4,
             opacity: 1,
             y: 0,
             ease: "power2.out"
-        }, "-=0.4") // More overlap
+        }, "-=0.4")
         .to("#hero-subtitle", {
-            duration: 0.3, // Reduced from 0.6
+            duration: 0.3,
             opacity: 1,
             y: 0,
             ease: "power2.out"
         }, "-=0.2")
         .to("#hero-cta", {
-            duration: 0.3, // Reduced from 0.6
+            duration: 0.3,
             opacity: 1,
             y: 0,
             ease: "power2.out"
         }, "-=0.1");
 
-    // Typewriter effect for tagline - FASTER
+    // Typewriter effect for tagline
     gsap.to("#hero-tagline", {
-        duration: 1.2, // Reduced from 2
+        duration: 1.2,
         text: "INFILTRATE • EXPLOIT • SECURE",
         ease: "none",
-        delay: 1.2 // Reduced from 2.5
+        delay: 1.2
     });
 }
 
-// FIXED NAVIGATION SYSTEM
+// Initialize Video
+function initializeVideo() {
+    const heroVideo = document.getElementById('hero-video');
+    if (heroVideo) {
+        heroVideo.muted = true;
+        heroVideo.loop = true;
+        heroVideo.autoplay = true;
+        
+        // Reduce video quality on mobile for performance
+        if (IS_MOBILE) {
+            heroVideo.style.transform = 'scale(1.1)';
+            heroVideo.style.filter = 'blur(0.5px)';
+        }
+        
+        const playPromise = heroVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Hero video started playing');
+            }).catch(error => {
+                console.error('Video autoplay failed:', error);
+                if (!IS_MOBILE) {
+                    document.addEventListener('click', function() {
+                        heroVideo.play().catch(e => console.error('Manual video play failed:', e));
+                    }, { once: true });
+                }
+            });
+        }
+    }
+}
+
+// Navigation system - optimized for mobile
 function initializeNavigation() {
     console.log('Initializing navigation...');
 
@@ -361,28 +264,22 @@ function initializeNavigation() {
     const navMenu = document.getElementById('nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
 
-    console.log('Navigation elements found:', {
-        navbar: !!navbar,
-        navToggle: !!navToggle,
-        navMenu: !!navMenu,
-        navLinksCount: navLinks.length
-    });
-
-    // Navbar scroll effect
-    window.addEventListener('scroll', () => {
+    // Navbar scroll effect - throttled more on mobile
+    const scrollHandler = throttle(() => {
         if (window.scrollY > 100) {
             navbar?.classList.add('scrolled');
         } else {
             navbar?.classList.remove('scrolled');
         }
-    });
+    }, IS_MOBILE ? 100 : 50);
+    
+    window.addEventListener('scroll', scrollHandler, { passive: true });
 
     // Mobile menu toggle
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Hamburger menu clicked');
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
@@ -395,120 +292,80 @@ function initializeNavigation() {
             e.stopPropagation();
 
             const targetId = link.getAttribute('href');
-            console.log('Navigation link clicked:', targetId);
-
-            if (!targetId || !targetId.startsWith('#')) {
-                console.error('Invalid target ID:', targetId);
-                return;
-            }
+            if (!targetId || !targetId.startsWith('#')) return;
 
             const targetSection = document.querySelector(targetId);
             if (targetSection) {
                 const navbarHeight = navbar ? navbar.offsetHeight : 80;
                 smoothScrollToSection(targetSection, navbarHeight);
 
-                // Close mobile menu if open
+                // Close mobile menu
                 if (navToggle && navMenu) {
                     navToggle.classList.remove('active');
                     navMenu.classList.remove('active');
                 }
 
-                // Update active nav link
                 updateActiveNavLink(link, navLinks);
-            } else {
-                console.error('Target section not found:', targetId);
             }
         });
     });
 
-    // Update active nav link on scroll
+    // Update active nav link on scroll - less frequent on mobile
     const scrollThrottled = throttle(() => {
         updateActiveNavLinkOnScroll(navLinks);
-    }, 50); // More responsive
+    }, IS_MOBILE ? 200 : 50);
     
-    window.addEventListener('scroll', scrollThrottled);
-    
+    window.addEventListener('scroll', scrollThrottled, { passive: true });
     navInitialized = true;
 }
 
-// IMPROVED: Smooth scroll function with multiple fallbacks - FASTER
+// Smooth scroll function - mobile optimized
 function smoothScrollToSection(targetElement, offset = 80) {
-    if (!targetElement) {
-        console.error('Target element not provided');
-        return;
-    }
+    if (!targetElement) return;
 
     const targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
     
-    console.log('Smooth scrolling to position:', targetTop);
-    
-    // Method 1: Try GSAP ScrollToPlugin (most reliable) - FASTER
-    if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
-        console.log('Using GSAP ScrollTo');
-        gsap.to(window, {
-            duration: 0.8, // Reduced from 1.2
-            scrollTo: {
-                y: targetTop,
-                autoKill: true
-            },
-            ease: "power2.inOut",
-            onComplete: () => console.log('GSAP scroll complete')
-        });
-        return;
-    }
-    
-    // Method 2: Try GSAP basic scroll (fallback) - FASTER
-    if (typeof gsap !== 'undefined') {
-        console.log('Using GSAP basic scroll');
-        gsap.to(window, {
-            duration: 0.8, // Reduced from 1.2
-            scrollTop: targetTop,
-            ease: "power2.inOut",
-            onComplete: () => console.log('GSAP basic scroll complete')
-        });
-        return;
-    }
-    
-    // Method 3: Modern browser smooth scroll
-    if ('scrollBehavior' in document.documentElement.style) {
-        console.log('Using native smooth scroll');
-        window.scrollTo({
-            top: targetTop,
-            behavior: 'smooth'
-        });
-        return;
-    }
-    
-    // Method 4: Animated scroll fallback for older browsers
-    console.log('Using animated scroll fallback');
-    animatedScrollTo(targetTop);
-}
-
-// Animated scroll fallback for older browsers - FASTER
-function animatedScrollTo(targetY, duration = 800) { // Reduced from 1200
-    const startY = window.pageYOffset;
-    const difference = targetY - startY;
-    const startTime = performance.now();
-
-    function step(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function (ease-in-out)
-        const ease = progress < 0.5 
-            ? 2 * progress * progress 
-            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-            
-        window.scrollTo(0, startY + difference * ease);
-        
-        if (progress < 1) {
-            requestAnimationFrame(step);
+    // Mobile: Use faster, simpler scroll
+    if (IS_MOBILE) {
+        if ('scrollBehavior' in document.documentElement.style) {
+            window.scrollTo({
+                top: targetTop,
+                behavior: 'smooth'
+            });
         } else {
-            console.log('Animated scroll complete');
+            // Instant scroll for very old mobile browsers
+            window.scrollTo(0, targetTop);
         }
+        return;
     }
     
-    requestAnimationFrame(step);
+    // Desktop: Use GSAP if available
+    if (grapInitialized && typeof gsap !== 'undefined') {
+        if (gsap.plugins?.ScrollToPlugin) {
+            gsap.to(window, {
+                duration: 0.8,
+                scrollTo: {
+                    y: targetTop,
+                    autoKill: true
+                },
+                ease: "power2.inOut"
+            });
+            return;
+        }
+        
+        gsap.to(window, {
+            duration: 0.8,
+            scrollTop: targetTop,
+            ease: "power2.inOut"
+        });
+        return;
+    }
+    
+    // Fallback
+    window.scrollTo({
+        top: targetTop,
+        behavior: 'smooth'
+    });
 }
 
 // Update active navigation link
@@ -520,7 +377,7 @@ function updateActiveNavLink(activeLink, allLinks) {
 // Update active nav link based on scroll position
 function updateActiveNavLinkOnScroll(navLinks) {
     const sections = document.querySelectorAll('section[id]');
-    const scrollPos = window.scrollY + 150; // Offset for better detection
+    const scrollPos = window.scrollY + 150;
 
     let currentSection = null;
     
@@ -542,13 +399,10 @@ function updateActiveNavLinkOnScroll(navLinks) {
     }
 }
 
-// FIXED: Universal smooth scroll function - FASTER
+// Smooth scroll utility
 function smoothScrollTo(targetSelector) {
     const target = document.querySelector(targetSelector);
-    if (!target) {
-        console.error('Target not found:', targetSelector);
-        return;
-    }
+    if (!target) return;
 
     const navbar = document.getElementById('navbar');
     const navbarHeight = navbar ? navbar.offsetHeight : 80;
@@ -556,226 +410,188 @@ function smoothScrollTo(targetSelector) {
     smoothScrollToSection(target, navbarHeight);
 }
 
-// FIXED: Initialize all scroll functionality
+// Initialize scroll functionality
 function initializeScrollFunctionality() {
     console.log('Initializing scroll functionality...');
     
-    // Remove any existing event listeners to prevent duplicates
-    const existingListeners = document.querySelectorAll('[data-scroll-initialized]');
-    existingListeners.forEach(el => el.removeAttribute('data-scroll-initialized'));
-    
-    // Add scroll functionality to all anchor links
     const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.nav-link)');
     
     anchorLinks.forEach(anchor => {
-        // Skip if already initialized
-        if (anchor.hasAttribute('data-scroll-initialized')) {
-            return;
-        }
+        if (anchor.hasAttribute('data-scroll-initialized')) return;
         
         anchor.setAttribute('data-scroll-initialized', 'true');
         
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
-            
-            // Skip empty hrefs or just "#"
-            if (!href || href === '#') {
-                return;
-            }
+            if (!href || href === '#') return;
             
             e.preventDefault();
             e.stopPropagation();
-            
-            console.log('Anchor clicked:', href);
             smoothScrollTo(href);
         });
     });
-    
-    console.log(`Initialized scroll for ${anchorLinks.length} anchor links`);
 }
 
-// Contact scroll function
-function scrollToContact() {
-    smoothScrollTo('#contact');
-}
-
-// Initialize Scroll Effects - ULTRA-FAST INSTANT REVEALS FOR MOBILE
+// Scroll effects - DESKTOP ONLY
 function initializeScrollEffects() {
-    // Check if mobile device for performance optimization
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    if (IS_MOBILE || !grapInitialized) return;
     
-    // INSTANT reveals for mobile, fast animations for desktop
-    const animationDuration = isMobile ? 0.1 : 0.2;
-    const staggerTime = isMobile ? 0.02 : 0.05;
+    console.log('Initializing scroll effects for desktop');
     
-    // Reveal animations for sections - INSTANT ON MOBILE
+    const animationDuration = 0.2;
+    const staggerTime = 0.05;
+    
+    // Reveal animations for sections
     const revealElements = document.querySelectorAll('[data-reveal]');
     
     revealElements.forEach(element => {
-        if (isMobile) {
-            // MOBILE: Set initial state but make it almost instant
-            gsap.set(element, { opacity: 0, y: 10 });
-        } else {
-            // DESKTOP: Subtle animation
-            gsap.set(element, { opacity: 0, y: 20 });
-        }
+        gsap.set(element, { opacity: 0, y: 20 });
         
         ScrollTrigger.create({
             trigger: element,
-            start: "top 98%", // Even earlier trigger - almost instant
-            end: "bottom 20%",
+            start: "top 95%",
             onEnter: () => {
                 gsap.to(element, {
                     duration: animationDuration,
                     opacity: 1,
                     y: 0,
-                    ease: isMobile ? "none" : "power1.out" // No easing on mobile for speed
+                    ease: "power1.out"
                 });
             }
         });
     });
 
-    // Service cards - INSTANT ON MOBILE
-    gsap.set(".service-card", { opacity: isMobile ? 0 : 0, y: isMobile ? 5 : 20 });
+    // Service cards
+    gsap.set(".service-card", { opacity: 0, y: 20 });
     
     ScrollTrigger.create({
         trigger: ".services-grid",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".service-card", {
                 duration: animationDuration,
                 opacity: 1,
                 y: 0,
                 stagger: staggerTime,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
         }
     });
 
-    // Case study cards - INSTANT ON MOBILE
-    gsap.set(".case-study-card", { opacity: 0, y: isMobile ? 5 : 20 });
+    // Case study cards
+    gsap.set(".case-study-card", { opacity: 0, y: 20 });
     
     ScrollTrigger.create({
         trigger: ".case-studies-grid",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".case-study-card", {
                 duration: animationDuration,
                 opacity: 1,
                 y: 0,
                 stagger: staggerTime,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
         }
     });
 
-    // Leader cards - INSTANT ON MOBILE
-    gsap.set(".leader-card", { opacity: 0, y: isMobile ? 5 : 20 });
+    // Leader cards
+    gsap.set(".leader-card", { opacity: 0, y: 20 });
     
     ScrollTrigger.create({
         trigger: ".leadership-grid",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".leader-card", {
                 duration: animationDuration,
                 opacity: 1,
                 y: 0,
                 stagger: staggerTime * 2,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
         }
     });
 
-    // Partners grid - INSTANT ON MOBILE
-    gsap.set(".partners-grid", { opacity: 0, y: isMobile ? 5 : 15 });
-    gsap.set(".certifications", { opacity: 0, y: isMobile ? 5 : 15 });
+    // Partners and certifications
+    gsap.set(".partners-grid", { opacity: 0, y: 15 });
+    gsap.set(".certifications", { opacity: 0, y: 15 });
     
     ScrollTrigger.create({
         trigger: ".trusted-by",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".partners-grid", {
                 duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
             
             gsap.to(".certifications", {
                 duration: animationDuration,
                 opacity: 1,
                 y: 0,
-                ease: isMobile ? "none" : "power1.out",
-                delay: isMobile ? 0.05 : 0.1
+                ease: "power1.out",
+                delay: 0.1
             });
         }
     });
 
-    // Innovation showcase - INSTANT ON MOBILE
-    gsap.set(".innovation-showcase", { opacity: 0, scale: isMobile ? 0.99 : 0.98 });
+    // Innovation showcase
+    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.98 });
     
     ScrollTrigger.create({
         trigger: ".innovation-showcase",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".innovation-showcase", {
                 duration: animationDuration * 1.5,
                 opacity: 1,
                 scale: 1,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
         }
     });
 
-    // Contact section - INSTANT ON MOBILE
-    gsap.set(".contact-info", { opacity: 0, x: isMobile ? -10 : -20 });
-    gsap.set(".contact-form-container", { opacity: 0, x: isMobile ? 10 : 20 });
+    // Contact section
+    gsap.set(".contact-info", { opacity: 0, x: -20 });
+    gsap.set(".contact-form-container", { opacity: 0, x: 20 });
     
     ScrollTrigger.create({
         trigger: ".contact-grid",
-        start: "top 98%",
+        start: "top 95%",
         onEnter: () => {
             gsap.to(".contact-info", {
                 duration: animationDuration,
                 opacity: 1,
                 x: 0,
-                ease: isMobile ? "none" : "power1.out"
+                ease: "power1.out"
             });
             
             gsap.to(".contact-form-container", {
                 duration: animationDuration,
                 opacity: 1,
                 x: 0,
-                ease: isMobile ? "none" : "power1.out",
-                delay: isMobile ? 0.02 : 0.05
+                ease: "power1.out",
+                delay: 0.05
             });
         }
     });
-    
-    // MOBILE PERFORMANCE: Reduce ScrollTrigger refresh rate
-    if (isMobile) {
-        ScrollTrigger.config({
-            autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize"
-        });
-    }
 }
 
 // EmailJS Configuration
-// Replace these with your actual EmailJS credentials after setup
 const EMAILJS_CONFIG = {
     publicKey: '7gP0EuJ9W_c2z1tE5', 
     serviceId: 'service_9zn6fvt', 
     templateId: 'template_kpwbdec' 
 };
 
-// Initialize EmailJS - Updated for new SDK version
+// Initialize EmailJS
 function initializeEmailJS() {
     try {
-        // New way to initialize EmailJS
         emailjs.init({
             publicKey: EMAILJS_CONFIG.publicKey,
         });
-        console.log('EmailJS initialized successfully');
         return true;
     } catch (error) {
         console.error('Failed to initialize EmailJS:', error);
@@ -783,32 +599,15 @@ function initializeEmailJS() {
     }
 }
 
-// Alternative: Add a fallback reset function
-function resetSubmitButton(submitButton, originalHTML) {
-    try {
-        submitButton.innerHTML = originalHTML;
-        submitButton.disabled = false;
-        console.log('Button reset successfully');
-    } catch (error) {
-        console.error('Error resetting button:', error);
-        // Force reset as fallback
-        submitButton.textContent = 'Send Secure Message';
-        submitButton.disabled = false;
-    }
-}
-
-// Updated form submission handler with better error handling
+// Contact form initialization
 function initializeContactForm() {
     const form = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
     const fileInput = document.getElementById('attachment');
 
-    if (!form) {
-        console.log('Contact form not found');
-        return;
-    }
+    if (!form) return;
 
-    // Handle file input display
+    // Handle file input
     if (fileInput) {
         fileInput.addEventListener('change', function() {
             const label = document.querySelector('.file-label');
@@ -818,13 +617,6 @@ function initializeContactForm() {
                         <path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
                     </svg>
                     ${this.files[0].name}
-                `;
-            } else {
-                label.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
-                    </svg>
-                    Attach Documentation (Optional)
                 `;
             }
         });
@@ -836,12 +628,8 @@ function initializeContactForm() {
         const submitButton = form.querySelector('button[type="submit"]');
         const originalHTML = submitButton.innerHTML;
         
-        // Prevent double submissions
-        if (submitButton.disabled) {
-            return;
-        }
+        if (submitButton.disabled) return;
         
-        // Check if EmailJS is configured
         const isConfigured = initializeEmailJS();
         
         if (!isConfigured) {
@@ -857,10 +645,8 @@ function initializeContactForm() {
         submitButton.disabled = true;
         
         try {
-            // Get form data
             const formData = new FormData(form);
             
-            // Prepare template parameters for EmailJS
             const templateParams = {
                 from_name: formData.get('name'),
                 from_email: formData.get('email'),
@@ -873,20 +659,16 @@ function initializeContactForm() {
                 subject: `Cybersecurity Inquiry from ${formData.get('organization')}`
             };
 
-            // Send email using EmailJS - Updated method
             const response = await emailjs.send(
                 EMAILJS_CONFIG.serviceId,
                 EMAILJS_CONFIG.templateId,
                 templateParams
             );
 
-            console.log('EmailJS response:', response);
-            
             if (response.status === 200) {
                 showFormStatus('success', 'Message sent successfully! We will contact you within 24 hours.');
                 form.reset();
                 
-                // Reset file input label
                 const fileLabel = document.querySelector('.file-label');
                 if (fileLabel) {
                     fileLabel.innerHTML = `
@@ -905,16 +687,11 @@ function initializeContactForm() {
             
             let errorMessage = 'Failed to send message. Please try again or contact us directly.';
             
-            // Handle specific EmailJS errors
             if (error.text) {
                 if (error.text.includes('unsupported')) {
                     errorMessage = 'Please update your browser and try again, or contact us directly.';
                 } else if (error.text.includes('Invalid template ID')) {
                     errorMessage = 'Email template configuration error. Please contact us directly.';
-                } else if (error.text.includes('Invalid service ID')) {
-                    errorMessage = 'Email service configuration error. Please contact us directly.';
-                } else if (error.text.includes('Invalid public key')) {
-                    errorMessage = 'Email configuration error. Please contact us directly.';
                 } else if (error.text.includes('rate limit')) {
                     errorMessage = 'Too many requests. Please wait a moment and try again.';
                 }
@@ -922,16 +699,9 @@ function initializeContactForm() {
             
             showFormStatus('error', errorMessage);
         } finally {
-            // Enhanced button reset with fallback
-            console.log('Resetting button state...');
-            resetSubmitButton(submitButton, originalHTML);
-            
-            // Additional safety net - force reset after a short delay
             setTimeout(() => {
-                if (submitButton.disabled) {
-                    console.log('Button still disabled, forcing reset...');
-                    resetSubmitButton(submitButton, originalHTML);
-                }
+                submitButton.innerHTML = originalHTML;
+                submitButton.disabled = false;
             }, 1000);
         }
     });
@@ -950,20 +720,19 @@ function initializeContactForm() {
         
         formStatus.style.display = 'block';
         
-        // Animate if GSAP is available - FASTER
-        if (typeof gsap !== 'undefined') {
+        // Simple animation for mobile compatibility
+        if (!IS_MOBILE && grapInitialized) {
             gsap.fromTo(formStatus, 
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" } // Reduced from 0.5
+                { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
             );
             
-            // Hide after 8 seconds for success/error messages
             if (type !== 'loading') {
                 setTimeout(() => {
                     gsap.to(formStatus, {
                         opacity: 0,
                         y: -20,
-                        duration: 0.3, // Reduced from 0.5
+                        duration: 0.3,
                         ease: "power2.out",
                         onComplete: () => {
                             formStatus.style.display = 'none';
@@ -972,7 +741,6 @@ function initializeContactForm() {
                 }, 8000);
             }
         } else {
-            // Fallback without GSAP
             formStatus.style.opacity = '1';
             formStatus.style.transform = 'translateY(0)';
             
@@ -988,8 +756,159 @@ function initializeContactForm() {
     }
 }
 
-// CSS for spinning animation
-const spinnerCSS = `
+// Floating contact button
+function initializeFloatingContact() {
+    const floatingContact = document.getElementById('floating-contact');
+    if (!floatingContact) return;
+    
+    if (!IS_MOBILE && grapInitialized) {
+        ScrollTrigger.create({
+            trigger: "body",
+            start: "top -100",
+            end: "bottom bottom",
+            onUpdate: (self) => {
+                if (self.progress > 0.1) {
+                    floatingContact.classList.add('visible');
+                } else {
+                    floatingContact.classList.remove('visible');
+                }
+            }
+        });
+    } else {
+        // Simple scroll handler for mobile
+        const scrollHandler = throttle(() => {
+            if (window.scrollY > 100) {
+                floatingContact.classList.add('visible');
+            } else {
+                floatingContact.classList.remove('visible');
+            }
+        }, 100);
+        
+        window.addEventListener('scroll', scrollHandler, { passive: true });
+    }
+}
+
+// Service cards interactions - desktop only
+function initializeServiceCards() {
+    if (IS_MOBILE || !grapInitialized) return;
+    
+    const serviceCards = document.querySelectorAll('.service-card');
+    
+    serviceCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            gsap.to(card, {
+                duration: 0.2,
+                y: -10,
+                scale: 1.02,
+                ease: "power2.out"
+            });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                duration: 0.2,
+                y: 0,
+                scale: 1,
+                ease: "power2.out"
+            });
+        });
+    });
+}
+
+// Parallax effects - desktop only
+function initializeParallax() {
+    if (IS_MOBILE || !grapInitialized) return;
+    
+    // Section backgrounds parallax (excluding hero)
+    gsap.utils.toArray('.section:not(.hero)').forEach(section => {
+        const bg = section.querySelector('.section-bg');
+        if (bg) {
+            gsap.to(bg, {
+                yPercent: -30,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            });
+        }
+    });
+}
+
+// Lazy loading images
+function lazyLoadImages() {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const image = entry.target;
+                    image.src = image.dataset.src || image.src;
+                    image.classList.remove('lazy');
+                    imageObserver.unobserve(image);
+                }
+            });
+        }, {
+            rootMargin: IS_MOBILE ? '50px' : '100px'
+        });
+        
+        images.forEach(image => imageObserver.observe(image));
+    }
+}
+
+// Contact modal functions - simplified for mobile
+function openContactModal() {
+    const modal = document.getElementById('contact-modal');
+    if (!modal) return;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    if (!IS_MOBILE && grapInitialized) {
+        gsap.fromTo('.modal-content',
+            { scale: 0.8, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" }
+        );
+    } else {
+        const content = modal.querySelector('.modal-content');
+        if (content) {
+            content.style.opacity = '1';
+            content.style.transform = 'scale(1)';
+        }
+    }
+}
+
+function closeContactModal() {
+    const modal = document.getElementById('contact-modal');
+    if (!modal) return;
+    
+    if (!IS_MOBILE && grapInitialized) {
+        gsap.to('.modal-content', {
+            scale: 0.8,
+            opacity: 0,
+            duration: 0.2,
+            ease: "power2.out",
+            onComplete: () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    } else {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Contact scroll function
+function scrollToContact() {
+    smoothScrollTo('#contact');
+}
+
+// CSS for animations and form styling
+const additionalCSS = `
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -1020,269 +939,82 @@ const spinnerCSS = `
     border: 1px solid #00ccff;
     color: #00ccff;
 }
+
+/* Mobile performance optimizations */
+@media (max-width: 768px) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+    }
+    
+    .section-subtitle,
+    [data-reveal],
+    .service-card,
+    .case-study-card,
+    .leader-card,
+    .partners-grid,
+    .certifications,
+    .innovation-showcase,
+    .contact-info,
+    .contact-form-container {
+        opacity: 1 !important;
+        transform: none !important;
+        visibility: visible !important;
+    }
+    
+    /* Disable transform-based animations that cause reflows */
+    .service-card,
+    .case-study-card,
+    .leader-card {
+        will-change: auto !important;
+    }
+}
+
+/* Desktop hover effects */
+@media (min-width: 769px) {
+    .service-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+    }
+}
 `;
 
-// Inject CSS if not already present
-function injectSpinnerCSS() {
-    if (!document.getElementById('contact-form-css')) {
+// Inject CSS
+function injectCSS() {
+    if (!document.getElementById('rapture-optimization-css')) {
         const style = document.createElement('style');
-        style.id = 'contact-form-css';
-        style.textContent = spinnerCSS;
+        style.id = 'rapture-optimization-css';
+        style.textContent = additionalCSS;
         document.head.appendChild(style);
     }
 }
 
-// Alternative initialization for manual calling
-function initContactForm() {
-    injectSpinnerCSS();
-    initializeContactForm();
-    initializeEmailJS();
-}
-
-// Initialize Floating Contact
-function initializeFloatingContact() {
-    const floatingContact = document.getElementById('floating-contact');
-    
-    if (!floatingContact) return;
-    
-    ScrollTrigger.create({
-        trigger: "body",
-        start: "top -100",
-        end: "bottom bottom",
-        onUpdate: (self) => {
-            if (self.progress > 0.1) {
-                floatingContact.classList.add('visible');
-            } else {
-                floatingContact.classList.remove('visible');
-            }
-        }
-    });
-}
-
-// Service Cards Interactions - FASTER
-function initializeServiceCards() {
-    const serviceCards = document.querySelectorAll('.service-card');
-    
-    serviceCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-                duration: 0.2, // Reduced from 0.3 - MUCH FASTER
-                y: -10,
-                scale: 1.02,
-                ease: "power2.out"
-            });
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-                duration: 0.2, // Reduced from 0.3 - MUCH FASTER
-                y: 0,
-                scale: 1,
-                ease: "power2.out"
-            });
-        });
-    });
-}
-
-// Initialize Parallax Effects - OPTIMIZED (HERO VIDEO PARALLAX DISABLED)
-function initializeParallax() {
-    // Hero parallax - DISABLED to prevent video movement
-    // const heroVideo = document.querySelector(".hero-video");
-    // if (heroVideo) {
-    //     gsap.to(heroVideo, {
-    //         yPercent: -50,
-    //         ease: "none",
-    //         scrollTrigger: {
-    //             trigger: ".hero",
-    //             start: "top bottom",
-    //             end: "bottom top",
-    //             scrub: 1
-    //         }
-    //     });
-    // }
-
-    // Section backgrounds parallax - FASTER (excluding hero)
-    gsap.utils.toArray('.section:not(.hero)').forEach(section => {
-        const bg = section.querySelector('.section-bg');
-        if (bg) {
-            gsap.to(bg, {
-                yPercent: -30,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: 1 // Reduced from true for faster performance
-                }
-            });
-        }
-    });
-}
-
-// Lazy Loading Images
-function lazyLoadImages() {
-    const images = document.querySelectorAll('img[loading="lazy"]');
-    
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const image = entry.target;
-                    image.src = image.dataset.src || image.src;
-                    image.classList.remove('lazy');
-                    imageObserver.unobserve(image);
-                }
-            });
-        });
-        
-        images.forEach(image => imageObserver.observe(image));
-    }
-}
-
-// Contact Modal Functions - FASTER
-function openContactModal() {
-    const modal = document.getElementById('contact-modal');
-    if (!modal) return;
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    gsap.fromTo('.modal-content',
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" } // Reduced from 0.3
-    );
-}
-
-function closeContactModal() {
-    const modal = document.getElementById('contact-modal');
-    if (!modal) return;
-    
-    gsap.to('.modal-content', {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.2, // Reduced from 0.3
-        ease: "power2.out",
-        onComplete: () => {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
-}
-
-// Enhanced scroll system - register ScrollToPlugin properly
-if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollToPlugin);
-}
-
-// MAIN SCROLL FUNCTION - handles all scroll requests - FASTER
-function smoothScrollTo(targetSelector) {
-    console.log('smoothScrollTo called with:', targetSelector);
-    
-    const target = document.querySelector(targetSelector);
-    if (!target) {
-        console.error('Target not found:', targetSelector);
-        return;
-    }
-
-    const navbar = document.getElementById('navbar');
-    const navbarHeight = navbar ? navbar.offsetHeight : 80;
-    const targetTop = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
-    
-    console.log('Scrolling to:', targetSelector, 'position:', targetTop);
-
-    // Method 1: GSAP ScrollToPlugin (preferred) - FASTER
-    if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
-        console.log('Using GSAP ScrollTo plugin');
-        gsap.to(window, {
-            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
-            scrollTo: {
-                y: targetTop,
-                autoKill: true
-            },
-            ease: "power2.inOut"
-        });
-        return;
-    }
-
-    // Method 2: GSAP basic animation - try multiple targets - FASTER
-    if (typeof gsap !== 'undefined') {
-        console.log('Using GSAP basic scroll');
-        
-        // Try animating window first
-        gsap.to(window, {
-            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
-            scrollTo: targetTop,
-            ease: "power2.inOut",
-            onComplete: () => console.log('Window scroll complete')
-        });
-        
-        // Backup: also try document elements
-        gsap.to([document.documentElement, document.body], {
-            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
-            scrollTop: targetTop,
-            ease: "power2.inOut"
-        });
-        return;
-    }
-
-    // Method 3: Native smooth scroll - FORCE it to work
-    console.log('Using native smooth scroll - FORCING');
-    
-    // Try multiple methods to ensure it works
-    try {
-        window.scrollTo({
-            top: targetTop,
-            left: 0,
-            behavior: 'smooth'
-        });
-    } catch (e) {
-        console.log('Native smooth scroll failed, trying instant scroll');
-        window.scrollTo(0, targetTop);
-    }
-    
-    // Backup: also try on document
-    try {
-        document.documentElement.scrollTo({
-            top: targetTop,
-            behavior: 'smooth'
-        });
-    } catch (e) {
-        console.log('Document scroll failed');
-    }
-    
-    return;
-
-    // Method 4: Fallback animation
-    console.log('Using fallback scroll animation');
-    animatedScrollTo(targetTop);
-}
-
-// Initialize comprehensive scroll handling
+// Initialize all scroll handlers
 function initializeAllScrollHandlers() {
     console.log('Initializing comprehensive scroll handlers...');
     
-    // Handle ALL anchor links (including nav links)
     const allAnchorLinks = document.querySelectorAll('a[href^="#"]');
     
     allAnchorLinks.forEach((anchor, index) => {
-        // Remove existing listeners
+        // Remove existing listeners by cloning
         const newAnchor = anchor.cloneNode(true);
         anchor.parentNode.replaceChild(newAnchor, anchor);
         
         newAnchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
             
-            // Skip empty hrefs
-            if (!href || href === '#') {
-                return;
-            }
+            if (!href || href === '#') return;
             
             e.preventDefault();
             e.stopPropagation();
             
-            console.log(`Anchor ${index} clicked:`, href);
-            
-            // Close mobile menu if this is a nav link
+            // Close mobile menu if nav link
             const navToggle = document.getElementById('nav-hamburger');
             const navMenu = document.getElementById('nav-menu');
             if (this.classList.contains('nav-link') && navToggle && navMenu) {
@@ -1290,7 +1022,6 @@ function initializeAllScrollHandlers() {
                 navMenu.classList.remove('active');
             }
             
-            // Perform smooth scroll
             smoothScrollTo(href);
         });
     });
@@ -1298,106 +1029,95 @@ function initializeAllScrollHandlers() {
     console.log(`Initialized ${allAnchorLinks.length} scroll handlers`);
 }
 
-// Contact scroll shortcut function
-function scrollToContact() {
-    console.log('scrollToContact called');
-    smoothScrollTo('#contact');
+// Performance monitoring
+function initializePerformanceMonitoring() {
+    if (IS_MOBILE) {
+        // Monitor frame rate on mobile
+        let lastTime = performance.now();
+        let frameCount = 0;
+        
+        function checkFrameRate() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                console.log('Mobile FPS:', fps);
+                
+                if (fps < 30) {
+                    console.warn('Low FPS detected, applying additional optimizations');
+                    applyEmergencyOptimizations();
+                }
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(checkFrameRate);
+        }
+        
+        requestAnimationFrame(checkFrameRate);
+    }
 }
 
-// Close modal when clicking outside
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('contact-modal');
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target.id === 'contact-modal') {
-                closeContactModal();
-            }
-        });
-    }
-});
-
-// Keyboard navigation for modal
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeContactModal();
-    }
-});
-
-// Initialize all scroll functionality on DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOM ready - initializing all scroll functionality');
+// Emergency optimizations for low-end devices
+function applyEmergencyOptimizations() {
+    console.log('Applying emergency optimizations');
     
-    // Wait for other scripts to load
-    setTimeout(() => {
-        initializeAllScrollHandlers();
-        console.log('All scroll handlers initialized');
-    }, 500);
+    // Disable all remaining animations
+    const emergencyCSS = `
+        *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+        }
+        
+        .hero-video {
+            display: none !important;
+        }
+        
+        .hero::before {
+            background: #000 !important;
+        }
+    `;
     
-    // Inject CSS for forms
-    injectSpinnerCSS();
-});
-
-// Also initialize on window load (backup)
-window.addEventListener('load', function() {
-    console.log('Window loaded - backup scroll initialization');
-    if (!navInitialized) {
-        setTimeout(() => {
-            initializeAllScrollHandlers();
-        }, 200);
+    const emergencyStyle = document.createElement('style');
+    emergencyStyle.textContent = emergencyCSS;
+    document.head.appendChild(emergencyStyle);
+    
+    // Kill all GSAP animations if they exist
+    if (typeof gsap !== 'undefined') {
+        gsap.killTweensOf("*");
+        ScrollTrigger.killAll();
     }
-});
-
-// Optimized scroll handler for performance - MORE RESPONSIVE
-const optimizedScrollHandler = throttle(() => {
-    // Handle scroll-based animations here if needed
-}, 8); // Increased from 16 for better responsiveness
-
-window.addEventListener('scroll', optimizedScrollHandler);
-
-// Optimized resize handler - FASTER
-const optimizedResizeHandler = debounce(() => {
-    if (typeof ScrollTrigger !== 'undefined') {
-        ScrollTrigger.refresh();
-    }
-}, 150); // Reduced from 250 for faster response
-
-window.addEventListener('resize', optimizedResizeHandler);
+}
 
 // Preload critical resources
 function preloadCriticalResources() {
+    if (IS_MOBILE) return; // Skip preloading on mobile to save bandwidth
+    
     const criticalImages = [
         'assets/r12-logo.svg',
-        'assets/r12-logo-large.svg',
-        'assets/hero-background.webm'
+        'assets/r12-logo-large.svg'
     ];
     
     criticalImages.forEach(src => {
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = src;
-        link.as = src.includes('.webm') ? 'video' : 'image';
+        link.as = 'image';
         document.head.appendChild(link);
     });
 }
 
-// Initialize preloading
-preloadCriticalResources();
-
-// Analytics and tracking (placeholder)
+// Analytics and tracking
 function trackEvent(eventName, eventData = {}) {
-    // Replace with your analytics implementation
     console.log('Event tracked:', eventName, eventData);
-    
-    // Example: Google Analytics
-    // gtag('event', eventName, eventData);
-    
-    // Example: Custom analytics
-    // analytics.track(eventName, eventData);
+    // Add your analytics implementation here
 }
 
-// Track key interactions
+// Track interactions
 document.addEventListener('click', (e) => {
-    // Track button clicks
     if (e.target.matches('.btn, .contact-method, .nav-link')) {
         trackEvent('button_click', {
             button_text: e.target.textContent.trim(),
@@ -1406,26 +1126,13 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Track form submissions
-document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', () => {
-            trackEvent('form_submission', {
-                form_type: 'contact'
-            });
-        });
-    }
-});
-
 // Error handling
 window.addEventListener('error', (e) => {
     console.error('Global error:', e.error);
-    // Report to error tracking service
 });
 
-// Service Worker registration (for caching)
-if ('serviceWorker' in navigator) {
+// Service Worker registration for caching (desktop only)
+if (!IS_MOBILE && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
@@ -1437,6 +1144,42 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Initialize everything when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    injectCSS();
+    
+    if (IS_MOBILE) {
+        console.log('Mobile device detected - performance mode enabled');
+        initializePerformanceMonitoring();
+    } else {
+        console.log('Desktop device detected - full features enabled');
+        preloadCriticalResources();
+    }
+});
+
+// Window load backup initialization
+window.addEventListener('load', function() {
+    if (!navInitialized) {
+        setTimeout(() => {
+            initializeAllScrollHandlers();
+        }, 200);
+    }
+});
+
+// Optimized scroll and resize handlers
+const optimizedScrollHandler = throttle(() => {
+    // Minimal scroll handling for performance
+}, IS_MOBILE ? 100 : 16);
+
+const optimizedResizeHandler = debounce(() => {
+    if (!IS_MOBILE && typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+    }
+}, IS_MOBILE ? 500 : 250);
+
+window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
+window.addEventListener('resize', optimizedResizeHandler);
+
 // Export functions for global access
 window.RaptureApp = {
     openContactModal,
@@ -1444,10 +1187,11 @@ window.RaptureApp = {
     scrollToContact,
     trackEvent,
     smoothScrollTo,
-    initializeAllScrollHandlers
+    initializeAllScrollHandlers,
+    isMobile: IS_MOBILE
 };
 
-// Export scroll utilities for global access
+// Export scroll utilities
 window.RaptureScrollUtils = {
     smoothScrollTo,
     scrollToContact,
@@ -1455,17 +1199,15 @@ window.RaptureScrollUtils = {
     smoothScrollToSection
 };
 
-// Debug function to test navigation
+// Debug function
 function debugNavigation() {
     console.log('=== Navigation Debug ===');
+    console.log('Mobile mode:', IS_MOBILE);
     console.log('Nav initialized:', navInitialized);
+    console.log('GSAP initialized:', grapInitialized);
     console.log('Nav links found:', document.querySelectorAll('.nav-link').length);
     console.log('All anchor links:', document.querySelectorAll('a[href^="#"]').length);
-    console.log('GSAP available:', typeof gsap !== 'undefined');
-    console.log('ScrollTrigger available:', typeof ScrollTrigger !== 'undefined');
-    console.log('ScrollToPlugin available:', typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin);
     
-    // Test scroll to first section
     const firstSection = document.querySelector('section[id]');
     if (firstSection) {
         console.log('Testing scroll to:', '#' + firstSection.id);
@@ -1473,7 +1215,43 @@ function debugNavigation() {
     }
 }
 
-// Make debug function globally available
 window.debugNavigation = debugNavigation;
 
-console.log('Rapture Twelve JavaScript loaded successfully - OPTIMIZED FOR ULTRA-FAST SCROLL ANIMATIONS!');
+console.log(`Rapture Twelve JavaScript loaded - ${IS_MOBILE ? 'MOBILE PERFORMANCE MODE' : 'DESKTOP FULL FEATURES'}`);
+
+// Initialize contact form when needed
+window.initContactForm = function() {
+    injectCSS();
+    initializeContactForm();
+    initializeEmailJS();
+};
+
+// Force immediate visibility for mobile critical elements
+if (IS_MOBILE) {
+    // Wait for next frame then force visibility
+    requestAnimationFrame(() => {
+        const criticalElements = document.querySelectorAll(`
+            .section-subtitle,
+            #hero-company-name,
+            #hero-tagline,
+            #hero-subtitle,
+            #hero-cta,
+            [data-reveal],
+            .service-card,
+            .case-study-card,
+            .leader-card
+        `);
+        
+        criticalElements.forEach(element => {
+            if (element) {
+                element.style.cssText = `
+                    opacity: 1 !important;
+                    transform: none !important;
+                    visibility: visible !important;
+                    animation: none !important;
+                    transition: none !important;
+                `;
+            }
+        });
+    });
+}
