@@ -1,4 +1,185 @@
-// Rapture Twelve - Premium Website JavaScript
+// Initialize Scroll Effects - ZERO ANIMATIONS ON MOBILE FOR PERFORMANCE
+function initializeScrollEffects() {
+    // Check if mobile device for performance optimization
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
+    console.log('Mobile detected:', isMobile);
+    
+    if (isMobile) {
+        // MOBILE: NO ANIMATIONS - INSTANT REVEALS ONLY
+        console.log('Mobile mode: Disabling all scroll animations for performance');
+        
+        // Just make all elements visible instantly without any animation
+        const allElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card, .partners-grid, .certifications, .innovation-showcase, .contact-info, .contact-form-container');
+        
+        allElements.forEach(element => {
+            // Set elements visible immediately
+            gsap.set(element, { opacity: 1, x: 0, y: 0, scale: 1 });
+        });
+        
+        // Simple intersection observer for instant reveals as backup
+        const instantObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'none';
+                    instantObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '50px'
+        });
+        
+        allElements.forEach(element => {
+            instantObserver.observe(element);
+        });
+        
+        return; // Exit early for mobile - no ScrollTrigger animations
+    }
+    
+    // DESKTOP ONLY: Keep fast animations
+    const animationDuration = 0.2;
+    const staggerTime = 0.05;
+    
+    // Reveal animations for sections - DESKTOP ONLY
+    const revealElements = document.querySelectorAll('[data-reveal]');
+    
+    revealElements.forEach(element => {
+        gsap.set(element, { opacity: 0, y: 20 });
+        
+        ScrollTrigger.create({
+            trigger: element,
+            start: "top 98%",
+            end: "bottom 20%",
+            onEnter: () => {
+                gsap.to(element, {
+                    duration: animationDuration,
+                    opacity: 1,
+                    y: 0,
+                    ease: "power1.out"
+                });
+            }
+        });
+    });
+
+    // Service cards - DESKTOP ONLY
+    gsap.set(".service-card", { opacity: 0, y: 20 });
+    
+    ScrollTrigger.create({
+        trigger: ".services-grid",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".service-card", {
+                duration: animationDuration,
+                opacity: 1,
+                y: 0,
+                stagger: staggerTime,
+                ease: "power1.out"
+            });
+        }
+    });
+
+    // Case study cards - DESKTOP ONLY
+    gsap.set(".case-study-card", { opacity: 0, y: 20 });
+    
+    ScrollTrigger.create({
+        trigger: ".case-studies-grid",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".case-study-card", {
+                duration: animationDuration,
+                opacity: 1,
+                y: 0,
+                stagger: staggerTime,
+                ease: "power1.out"
+            });
+        }
+    });
+
+    // Leader cards - DESKTOP ONLY
+    gsap.set(".leader-card", { opacity: 0, y: 20 });
+    
+    ScrollTrigger.create({
+        trigger: ".leadership-grid",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".leader-card", {
+                duration: animationDuration,
+                opacity: 1,
+                y: 0,
+                stagger: staggerTime * 2,
+                ease: "power1.out"
+            });
+        }
+    });
+
+    // Partners grid - DESKTOP ONLY
+    gsap.set(".partners-grid", { opacity: 0, y: 15 });
+    gsap.set(".certifications", { opacity: 0, y: 15 });
+    
+    ScrollTrigger.create({
+        trigger: ".trusted-by",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".partners-grid", {
+                duration: animationDuration,
+                opacity: 1,
+                y: 0,
+                ease: "power1.out"
+            });
+            
+            gsap.to(".certifications", {
+                duration: animationDuration,
+                opacity: 1,
+                y: 0,
+                ease: "power1.out",
+                delay: 0.1
+            });
+        }
+    });
+
+    // Innovation showcase - DESKTOP ONLY
+    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.98 });
+    
+    ScrollTrigger.create({
+        trigger: ".innovation-showcase",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".innovation-showcase", {
+                duration: animationDuration * 1.5,
+                opacity: 1,
+                scale: 1,
+                ease: "power1.out"
+            });
+        }
+    });
+
+    // Contact section - DESKTOP ONLY
+    gsap.set(".contact-info", { opacity: 0, x: -20 });
+    gsap.set(".contact-form-container", { opacity: 0, x: 20 });
+    
+    ScrollTrigger.create({
+        trigger: ".contact-grid",
+        start: "top 98%",
+        onEnter: () => {
+            gsap.to(".contact-info", {
+                duration: animationDuration,
+                opacity: 1,
+                x: 0,
+                ease: "power1.out"
+            });
+            
+            gsap.to(".contact-form-container", {
+                duration: animationDuration,
+                opacity: 1,
+                x: 0,
+                ease: "power1.out",
+                delay: 0.05
+            });
+        }
+    });
+}// Rapture Twelve - Premium Website JavaScript
 // Defense-grade cybersecurity and AI company - OPTIMIZED FAST SCROLL
 
 // Initialize GSAP
