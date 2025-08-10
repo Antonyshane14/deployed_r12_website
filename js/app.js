@@ -254,16 +254,8 @@ function initializeFloatingContact() {
 function initializeHeroAnimations() {
     console.log('Initializing hero animations...');
     
-    // Ensure hero elements are visible first (fallback)
+    // Always animate on both mobile and desktop
     const heroElements = ['#hero-company-name', '#hero-tagline', '#hero-subtitle', '#hero-cta'];
-    heroElements.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (element) {
-            // Set visible as fallback immediately
-            element.style.opacity = '1';
-            element.style.transform = 'none';
-        }
-    });
     
     // If GSAP is available, use it for smooth animations
     if (typeof gsap !== 'undefined') {
@@ -284,49 +276,50 @@ function initializeHeroAnimations() {
             gsap.set("#hero-subtitle", { opacity: 0, y: 30 });
             gsap.set("#hero-cta", { opacity: 0, y: 30 });
             
-            // Hero animation timeline
-            const heroTimeline = gsap.timeline({ delay: 0.5 });
+            // Hero animation timeline - faster on mobile
+            const duration = isMobile() ? 0.4 : 0.6;
+            const heroTimeline = gsap.timeline({ delay: 0.3 });
             
             heroTimeline
                 .to("#hero-company-name", {
-                    duration: 0.8,
+                    duration: duration * 1.3,
                     opacity: 1,
                     scale: 1,
                     y: 0,
                     ease: "power3.out"
                 })
                 .to("#hero-tagline", {
-                    duration: 0.6,
-                    opacity: 1,
-                    y: 0,
-                    ease: "power2.out"
-                }, "-=0.4")
-                .to("#hero-subtitle", {
-                    duration: 0.6,
+                    duration: duration,
                     opacity: 1,
                     y: 0,
                     ease: "power2.out"
                 }, "-=0.3")
-                .to("#hero-cta", {
-                    duration: 0.6,
+                .to("#hero-subtitle", {
+                    duration: duration,
                     opacity: 1,
                     y: 0,
                     ease: "power2.out"
-                }, "-=0.2");
+                }, "-=0.2")
+                .to("#hero-cta", {
+                    duration: duration,
+                    opacity: 1,
+                    y: 0,
+                    ease: "power2.out"
+                }, "-=0.1");
             
-            // Cool typewriter effect for tagline
+            // Cool typewriter effect for tagline - works on mobile too
             if (typeof TextPlugin !== 'undefined') {
                 setTimeout(() => {
                     const taglineElement = document.querySelector("#hero-tagline");
                     if (taglineElement) {
                         gsap.to("#hero-tagline", {
-                            duration: 1.8,
+                            duration: isMobile() ? 1.2 : 1.8,
                             text: "INFILTRATE • EXPLOIT • SECURE",
                             ease: "none",
-                            delay: 0.3
+                            delay: 0.2
                         });
                     }
-                }, 1200);
+                }, 800);
             }
             
             console.log('Hero animations initialized successfully');
@@ -341,15 +334,15 @@ function initializeHeroAnimations() {
     }
 }
 
-// Fallback hero animation without GSAP
+// Fallback hero animation without GSAP - works on mobile
 function fallbackHeroAnimation() {
     console.log('Using fallback hero animations...');
     
     const heroElements = [
-        { selector: '#hero-company-name', delay: 500 },
-        { selector: '#hero-tagline', delay: 800 },
-        { selector: '#hero-subtitle', delay: 1000 },
-        { selector: '#hero-cta', delay: 1200 }
+        { selector: '#hero-company-name', delay: 300 },
+        { selector: '#hero-tagline', delay: 600 },
+        { selector: '#hero-subtitle', delay: 800 },
+        { selector: '#hero-cta', delay: 1000 }
     ];
     
     heroElements.forEach(({ selector, delay }) => {
@@ -368,79 +361,197 @@ function fallbackHeroAnimation() {
         }
     });
     
-    // Simple typewriter effect fallback
+    // Simple typewriter effect fallback - mobile friendly
     setTimeout(() => {
         const tagline = document.querySelector('#hero-tagline');
         if (tagline) {
-            const originalText = tagline.textContent;
             const text = "INFILTRATE • EXPLOIT • SECURE";
             tagline.textContent = "";
             let i = 0;
+            const speed = isMobile() ? 120 : 100; // Slightly slower on mobile for better effect
             const typeInterval = setInterval(() => {
                 tagline.textContent += text[i];
                 i++;
                 if (i >= text.length) {
                     clearInterval(typeInterval);
                 }
-            }, 100);
+            }, speed);
         }
-    }, 1800);
+    }, 1200);
 }
 
-// Simple animations for other sections
-function initializeScrollAnimations() {
-    if (isMobile()) return;
+// Mobile-friendly scroll animations
+function initializeMobileAnimations() {
+    console.log('Initializing mobile animations...');
     
-    // Only add animations if GSAP is available
+    // Simple CSS-based animations for mobile
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Mobile animation classes */
+        @media (max-width: 768px) {
+            .mobile-fade-in {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            
+            .mobile-fade-in.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            .service-card, .case-study-card, .leader-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .service-card:active, .case-study-card:active, .leader-card:active {
+                transform: scale(0.98);
+            }
+            
+            /* Pulse effect for floating contact */
+            .floating-contact.visible {
+                animation: mobilePulse 2s infinite;
+            }
+            
+            @keyframes mobilePulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+            
+            /* Subtle hover effects for mobile */
+            .btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add mobile animation classes to elements
+    const animatedElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card');
+    
+    animatedElements.forEach(element => {
+        element.classList.add('mobile-fade-in');
+    });
+    
+    // Intersection observer for mobile animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '50px'
+    });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+    
+    // Add touch feedback
+    document.addEventListener('touchstart', (e) => {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
+            e.target.style.transform = 'scale(0.95)';
+        }
+    });
+    
+    document.addEventListener('touchend', (e) => {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
+            setTimeout(() => {
+                e.target.style.transform = '';
+            }, 150);
+        }
+    });
+}
+
+// Enhanced scroll animations for desktop
+function initializeScrollAnimations() {
     if (typeof gsap === 'undefined') return;
     
     try {
+        console.log('Initializing desktop scroll animations...');
+        
         // Register ScrollTrigger if available
         if (typeof ScrollTrigger !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
         }
         
-        // Simple fade-in animations for sections
-        const animatedElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card');
+        // Staggered animations for service cards
+        gsap.set(".service-card", { opacity: 0, y: 50, scale: 0.9 });
         
-        animatedElements.forEach(element => {
-            gsap.set(element, { opacity: 0, y: 30 });
-            
-            if (typeof ScrollTrigger !== 'undefined') {
-                ScrollTrigger.create({
-                    trigger: element,
-                    start: "top 90%",
-                    onEnter: () => {
-                        gsap.to(element, {
-                            opacity: 1,
-                            y: 0,
-                            duration: 0.6,
-                            ease: "power2.out"
-                        });
-                    }
+        ScrollTrigger.create({
+            trigger: ".services-grid",
+            start: "top 85%",
+            onEnter: () => {
+                gsap.to(".service-card", {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    ease: "power2.out"
                 });
-            } else {
-                // Fallback with Intersection Observer
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            gsap.to(entry.target, {
-                                opacity: 1,
-                                y: 0,
-                                duration: 0.6,
-                                ease: "power2.out"
-                            });
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.1 });
-                
-                observer.observe(element);
             }
         });
         
+        // Case study cards with slide effect
+        gsap.set(".case-study-card", { opacity: 0, x: -50 });
+        
+        ScrollTrigger.create({
+            trigger: ".case-studies-grid",
+            start: "top 85%",
+            onEnter: () => {
+                gsap.to(".case-study-card", {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.7,
+                    stagger: 0.15,
+                    ease: "power2.out"
+                });
+            }
+        });
+        
+        // Leader cards with scale effect
+        gsap.set(".leader-card", { opacity: 0, scale: 0.8 });
+        
+        ScrollTrigger.create({
+            trigger: ".leaders-grid",
+            start: "top 85%",
+            onEnter: () => {
+                gsap.to(".leader-card", {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    ease: "back.out(1.7)"
+                });
+            }
+        });
+        
+        // Section reveals with different effects
+        const revealElements = document.querySelectorAll('[data-reveal]');
+        revealElements.forEach(element => {
+            gsap.set(element, { opacity: 0, y: 30 });
+            
+            ScrollTrigger.create({
+                trigger: element,
+                start: "top 90%",
+                onEnter: () => {
+                    gsap.to(element, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        });
+        
     } catch (error) {
-        console.warn('Scroll animations failed:', error);
+        console.warn('Desktop scroll animations failed:', error);
     }
 }
 
