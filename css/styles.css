@@ -97,6 +97,7 @@ h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
 p {
     margin-top: 3.19rem;
 
+
     font-family: var(--font-secondary);
     color: var(--primary-gray);
     line-height: 1.7;
@@ -316,6 +317,7 @@ p {
     font-size: clamp(3.5rem, 10vw, 7rem);
     font-weight: 900;
     letter-spacing: 4px;
+    margin-top: 10rem;
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, var(--primary-white) 0%, var(--silver) 100%);
     -webkit-background-clip: text;
@@ -447,7 +449,7 @@ section {
 .section-header {
     text-align: center;
     margin-bottom: 4rem;
-    max-width: 800px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -468,56 +470,68 @@ section {
     background: var(--silver);
 }
 
-.section-subtitle {
-    font-size: 1.1rem;
-    line-height: 1.8;
-}
+
 
 /* About Section */
 .about {
     background: linear-gradient(135deg, var(--dark-gray) 0%, var(--primary-black) 100%);
 }
 
-  .leaders-grid {
+.leaders-grid {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin-top: 2rem;
-  }
+}
 
-  .leader-card {
+.leader-card {
     background: #111;
     color: #fff;
     padding: 1.5rem;
     border-radius: 10px;
-    width: 320px;
+    width: 380px; /* increased from 320px */
     text-align: center;
     border: 1px solid #333;
-  }
-
-  .leader-title {
+    box-sizing: border-box;
+    word-wrap: break-word;
+}
+.leader-title {
     font-weight: bold;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
     color: #0ff;
-  }
+}
 
-  .leader-bio {
+.leader-bio {
     font-size: 0.95rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
     line-height: 1.4rem;
-  }
+    text-align: justify;
+    text-justify: inter-word;
+}
+.section-subtitle p{
+    
+    text-align: center;
+}
 
-  .leader-contact a {
+.section-subtitle {
+    text-align: justify;
+    text-justify: inter-word;
+    max-width: 1200px; /* keeps it from stretching too wide */
+    margin: 0 auto;   /* centers the paragraph */
+}
+
+.leader-contact a {
     color: #0ff;
     text-decoration: none;
-  }
+}
 
-  .leader-contact a:hover {
+.leader-contact a:hover {
     text-decoration: underline;
-  }
+}
+
 /* Contact links styling */
 .contact-link {
     display: inline-block;
@@ -530,6 +544,7 @@ section {
 .contact-link:hover {
     text-decoration: underline;
 }
+
 
 /* Services Section */
 .services {
@@ -634,7 +649,7 @@ section {
 .case-studies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 3rem;
+    gap: 0.5rem;
     justify-content: center; /* Centers the grid items horizontally */
 }
 

@@ -124,6 +124,11 @@ function initializeVideo() {
         heroVideo.loop = true;
         heroVideo.autoplay = true;
         
+        // Move video up more to show the bottom content
+        heroVideo.style.objectFit = 'cover';
+        heroVideo.style.objectPosition = 'center top';
+        heroVideo.style.transform = 'translateY(-25%)';
+        
         heroVideo.play().catch(error => {
             console.log('Video autoplay failed:', error);
         });
@@ -646,11 +651,17 @@ function initialize() {
         initializeContactForm();
         initializeFloatingContact();
         initializeLazyLoading();
-        initializeHeroAnimations();
+        
+        // Initialize hero animations immediately
+        setTimeout(() => {
+            initializeHeroAnimations();
+        }, 100);
         
         // Only add scroll animations on desktop if GSAP is available
         if (!isMobile() && typeof gsap !== 'undefined') {
-            initializeScrollAnimations();
+            setTimeout(() => {
+                initializeScrollAnimations();
+            }, 200);
         }
         
         isInitialized = true;
