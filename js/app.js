@@ -1,5 +1,5 @@
 // Rapture Twelve - Premium Website JavaScript
-// Defense-grade cybersecurity and AI company - FIXED NAVIGATION
+// Defense-grade cybersecurity and AI company - OPTIMIZED FAST SCROLL
 
 // Initialize GSAP
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, TextPlugin);
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize scroll functionality as backup
     setTimeout(() => {
         initializeScrollFunctionality();
-    }, 100);
+    }, 500);
 });
 
 // Initialize Video
@@ -124,7 +124,7 @@ function initializeVideo() {
     }
 }
 
-// Initialize Hero Animations
+// Initialize Hero Animations - FASTER
 function initializeAnimations() {
     // Hero company name and content reveal animation
     gsap.set("#hero-company-name", { opacity: 0, scale: 0.9, y: 50 });
@@ -132,42 +132,42 @@ function initializeAnimations() {
     gsap.set("#hero-subtitle", { opacity: 0, y: 30 });
     gsap.set("#hero-cta", { opacity: 0, y: 30 });
 
-    // Hero sequence animation
-    const heroTl = gsap.timeline({ delay: 0.5 });
+    // Hero sequence animation - MUCH FASTER
+    const heroTl = gsap.timeline({ delay: 0.2 }); // Reduced delay
     
     heroTl
         .to("#hero-company-name", {
-            duration: 1.4,
+            duration: 0.6, // Reduced from 1.4
             opacity: 1,
             scale: 1,
             y: 0,
             ease: "power3.out"
         })
         .to("#hero-tagline", {
-            duration: 0.8,
+            duration: 0.4, // Reduced from 0.8
             opacity: 1,
             y: 0,
             ease: "power2.out"
-        }, "-=0.8")
+        }, "-=0.4") // More overlap
         .to("#hero-subtitle", {
-            duration: 0.6,
+            duration: 0.3, // Reduced from 0.6
             opacity: 1,
             y: 0,
             ease: "power2.out"
-        }, "-=0.4")
+        }, "-=0.2")
         .to("#hero-cta", {
-            duration: 0.6,
+            duration: 0.3, // Reduced from 0.6
             opacity: 1,
             y: 0,
             ease: "power2.out"
-        }, "-=0.2");
+        }, "-=0.1");
 
-    // Typewriter effect for tagline
+    // Typewriter effect for tagline - FASTER
     gsap.to("#hero-tagline", {
-        duration: 2,
+        duration: 1.2, // Reduced from 2
         text: "INFILTRATE • EXPLOIT • SECURE",
         ease: "none",
-        delay: 2.5
+        delay: 1.2 // Reduced from 2.5
     });
 }
 
@@ -243,15 +243,14 @@ function initializeNavigation() {
     // Update active nav link on scroll
     const scrollThrottled = throttle(() => {
         updateActiveNavLinkOnScroll(navLinks);
-    }, 50);
+    }, 50); // More responsive
     
-
     window.addEventListener('scroll', scrollThrottled);
     
     navInitialized = true;
 }
 
-// IMPROVED: Smooth scroll function with multiple fallbacks
+// IMPROVED: Smooth scroll function with multiple fallbacks - FASTER
 function smoothScrollToSection(targetElement, offset = 80) {
     if (!targetElement) {
         console.error('Target element not provided');
@@ -262,11 +261,11 @@ function smoothScrollToSection(targetElement, offset = 80) {
     
     console.log('Smooth scrolling to position:', targetTop);
     
-    // Method 1: Try GSAP ScrollToPlugin (most reliable)
+    // Method 1: Try GSAP ScrollToPlugin (most reliable) - FASTER
     if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
         console.log('Using GSAP ScrollTo');
         gsap.to(window, {
-            duration: 1,
+            duration: 0.8, // Reduced from 1.2
             scrollTo: {
                 y: targetTop,
                 autoKill: true
@@ -277,11 +276,11 @@ function smoothScrollToSection(targetElement, offset = 80) {
         return;
     }
     
-    // Method 2: Try GSAP basic scroll (fallback)
+    // Method 2: Try GSAP basic scroll (fallback) - FASTER
     if (typeof gsap !== 'undefined') {
         console.log('Using GSAP basic scroll');
         gsap.to(window, {
-            duration: 1.2,
+            duration: 0.8, // Reduced from 1.2
             scrollTop: targetTop,
             ease: "power2.inOut",
             onComplete: () => console.log('GSAP basic scroll complete')
@@ -304,8 +303,8 @@ function smoothScrollToSection(targetElement, offset = 80) {
     animatedScrollTo(targetTop);
 }
 
-// Animated scroll fallback for older browsers
-function animatedScrollTo(targetY, duration = 1000) {
+// Animated scroll fallback for older browsers - FASTER
+function animatedScrollTo(targetY, duration = 800) { // Reduced from 1200
     const startY = window.pageYOffset;
     const difference = targetY - startY;
     const startTime = performance.now();
@@ -362,7 +361,7 @@ function updateActiveNavLinkOnScroll(navLinks) {
     }
 }
 
-// FIXED: Universal smooth scroll function
+// FIXED: Universal smooth scroll function - FASTER
 function smoothScrollTo(targetSelector) {
     const target = document.querySelector(targetSelector);
     if (!target) {
@@ -419,21 +418,21 @@ function scrollToContact() {
     smoothScrollTo('#contact');
 }
 
-// Initialize Scroll Effects
+// Initialize Scroll Effects - MASSIVELY OPTIMIZED FOR SPEED
 function initializeScrollEffects() {
-    // Reveal animations for sections
+    // Reveal animations for sections - MUCH FASTER AND EARLIER
     const revealElements = document.querySelectorAll('[data-reveal]');
     
     revealElements.forEach(element => {
-        gsap.set(element, { opacity: 0, y: 50 });
+        gsap.set(element, { opacity: 0, y: 30 }); // Reduced y from 50
         
         ScrollTrigger.create({
             trigger: element,
-            start: "top 80%",
+            start: "top 95%", // Changed from 80% to 95% - appears much earlier
             end: "bottom 20%",
             onEnter: () => {
                 gsap.to(element, {
-                    duration: 0.8,
+                    duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                     opacity: 1,
                     y: 0,
                     ease: "power2.out"
@@ -442,91 +441,91 @@ function initializeScrollEffects() {
         });
     });
 
-    // Service cards stagger animation
-    gsap.set(".service-card", { opacity: 0, y: 50 });
+    // Service cards stagger animation - FASTER
+    gsap.set(".service-card", { opacity: 0, y: 30 }); // Reduced y from 50
     
     ScrollTrigger.create({
         trigger: ".services-grid",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".service-card", {
-                duration: 0.6,
+                duration: 0.3, // Reduced from 0.6 - MUCH FASTER
                 opacity: 1,
                 y: 0,
-                stagger: 0.15,
+                stagger: 0.08, // Reduced from 0.15 - faster stagger
                 ease: "power2.out"
             });
         }
     });
 
-    // Case study cards animation
-    gsap.set(".case-study-card", { opacity: 0, y: 50 });
+    // Case study cards animation - FASTER
+    gsap.set(".case-study-card", { opacity: 0, y: 30 }); // Reduced y from 50
     
     ScrollTrigger.create({
         trigger: ".case-studies-grid",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".case-study-card", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 y: 0,
-                stagger: 0.2,
+                stagger: 0.1, // Reduced from 0.2 - faster stagger
                 ease: "power2.out"
             });
         }
     });
 
-    // Leader cards animation
-    gsap.set(".leader-card", { opacity: 0, y: 50 });
+    // Leader cards animation - FASTER
+    gsap.set(".leader-card", { opacity: 0, y: 30 }); // Reduced y from 50
     
     ScrollTrigger.create({
         trigger: ".leadership-grid",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".leader-card", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 y: 0,
-                stagger: 0.3,
+                stagger: 0.15, // Reduced from 0.3 - faster stagger
                 ease: "power2.out"
             });
         }
     });
 
-    // Partners grid animation
-    gsap.set(".partners-grid", { opacity: 0, y: 30 });
-    gsap.set(".certifications", { opacity: 0, y: 30 });
+    // Partners grid animation - FASTER
+    gsap.set(".partners-grid", { opacity: 0, y: 20 }); // Reduced y from 30
+    gsap.set(".certifications", { opacity: 0, y: 20 }); // Reduced y from 30
     
     ScrollTrigger.create({
         trigger: ".trusted-by",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".partners-grid", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 y: 0,
                 ease: "power2.out"
             });
             
             gsap.to(".certifications", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 y: 0,
                 ease: "power2.out",
-                delay: 0.3
+                delay: 0.15 // Reduced from 0.3
             });
         }
     });
 
-    // Innovation showcase animation
-    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.95 });
+    // Innovation showcase animation - FASTER
+    gsap.set(".innovation-showcase", { opacity: 0, scale: 0.98 }); // Reduced scale from 0.95
     
     ScrollTrigger.create({
         trigger: ".innovation-showcase",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".innovation-showcase", {
-                duration: 1,
+                duration: 0.5, // Reduced from 1 - MUCH FASTER
                 opacity: 1,
                 scale: 1,
                 ease: "power2.out"
@@ -534,27 +533,27 @@ function initializeScrollEffects() {
         }
     });
 
-    // Contact section animation
-    gsap.set(".contact-info", { opacity: 0, x: -50 });
-    gsap.set(".contact-form-container", { opacity: 0, x: 50 });
+    // Contact section animation - FASTER
+    gsap.set(".contact-info", { opacity: 0, x: -30 }); // Reduced x from -50
+    gsap.set(".contact-form-container", { opacity: 0, x: 30 }); // Reduced x from 50
     
     ScrollTrigger.create({
         trigger: ".contact-grid",
-        start: "top 80%",
+        start: "top 95%", // Changed from 80% to 95%
         onEnter: () => {
             gsap.to(".contact-info", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 x: 0,
                 ease: "power2.out"
             });
             
             gsap.to(".contact-form-container", {
-                duration: 0.8,
+                duration: 0.4, // Reduced from 0.8 - MUCH FASTER
                 opacity: 1,
                 x: 0,
                 ease: "power2.out",
-                delay: 0.2
+                delay: 0.1 // Reduced from 0.2
             });
         }
     });
@@ -750,11 +749,11 @@ function initializeContactForm() {
         
         formStatus.style.display = 'block';
         
-        // Animate if GSAP is available
+        // Animate if GSAP is available - FASTER
         if (typeof gsap !== 'undefined') {
             gsap.fromTo(formStatus, 
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+                { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" } // Reduced from 0.5
             );
             
             // Hide after 8 seconds for success/error messages
@@ -763,7 +762,7 @@ function initializeContactForm() {
                     gsap.to(formStatus, {
                         opacity: 0,
                         y: -20,
-                        duration: 0.5,
+                        duration: 0.3, // Reduced from 0.5
                         ease: "power2.out",
                         onComplete: () => {
                             formStatus.style.display = 'none';
@@ -859,14 +858,14 @@ function initializeFloatingContact() {
     });
 }
 
-// Service Cards Interactions
+// Service Cards Interactions - FASTER
 function initializeServiceCards() {
     const serviceCards = document.querySelectorAll('.service-card');
     
     serviceCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             gsap.to(card, {
-                duration: 0.3,
+                duration: 0.2, // Reduced from 0.3 - MUCH FASTER
                 y: -10,
                 scale: 1.02,
                 ease: "power2.out"
@@ -875,7 +874,7 @@ function initializeServiceCards() {
         
         card.addEventListener('mouseleave', () => {
             gsap.to(card, {
-                duration: 0.3,
+                duration: 0.2, // Reduced from 0.3 - MUCH FASTER
                 y: 0,
                 scale: 1,
                 ease: "power2.out"
@@ -884,25 +883,25 @@ function initializeServiceCards() {
     });
 }
 
-// Initialize Parallax Effects
+// Initialize Parallax Effects - OPTIMIZED (HERO VIDEO PARALLAX DISABLED)
 function initializeParallax() {
-    // Hero parallax
-    const heroVideo = document.querySelector(".hero-video");
-    if (heroVideo) {
-        gsap.to(heroVideo, {
-            yPercent: -50,
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".hero",
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true
-            }
-        });
-    }
+    // Hero parallax - DISABLED to prevent video movement
+    // const heroVideo = document.querySelector(".hero-video");
+    // if (heroVideo) {
+    //     gsap.to(heroVideo, {
+    //         yPercent: -50,
+    //         ease: "none",
+    //         scrollTrigger: {
+    //             trigger: ".hero",
+    //             start: "top bottom",
+    //             end: "bottom top",
+    //             scrub: 1
+    //         }
+    //     });
+    // }
 
-    // Section backgrounds parallax
-    gsap.utils.toArray('.section').forEach(section => {
+    // Section backgrounds parallax - FASTER (excluding hero)
+    gsap.utils.toArray('.section:not(.hero)').forEach(section => {
         const bg = section.querySelector('.section-bg');
         if (bg) {
             gsap.to(bg, {
@@ -912,7 +911,7 @@ function initializeParallax() {
                     trigger: section,
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: true
+                    scrub: 1 // Reduced from true for faster performance
                 }
             });
         }
@@ -939,7 +938,7 @@ function lazyLoadImages() {
     }
 }
 
-// Contact Modal Functions
+// Contact Modal Functions - FASTER
 function openContactModal() {
     const modal = document.getElementById('contact-modal');
     if (!modal) return;
@@ -949,7 +948,7 @@ function openContactModal() {
     
     gsap.fromTo('.modal-content',
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" }
+        { scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" } // Reduced from 0.3
     );
 }
 
@@ -960,7 +959,7 @@ function closeContactModal() {
     gsap.to('.modal-content', {
         scale: 0.8,
         opacity: 0,
-        duration: 0.3,
+        duration: 0.2, // Reduced from 0.3
         ease: "power2.out",
         onComplete: () => {
             modal.classList.remove('active');
@@ -974,7 +973,7 @@ if (typeof gsap !== 'undefined') {
     gsap.registerPlugin(ScrollToPlugin);
 }
 
-// MAIN SCROLL FUNCTION - handles all scroll requests
+// MAIN SCROLL FUNCTION - handles all scroll requests - FASTER
 function smoothScrollTo(targetSelector) {
     console.log('smoothScrollTo called with:', targetSelector);
     
@@ -990,11 +989,11 @@ function smoothScrollTo(targetSelector) {
     
     console.log('Scrolling to:', targetSelector, 'position:', targetTop);
 
-    // Method 1: GSAP ScrollToPlugin (preferred)
+    // Method 1: GSAP ScrollToPlugin (preferred) - FASTER
     if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
         console.log('Using GSAP ScrollTo plugin');
         gsap.to(window, {
-            duration: 1,
+            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
             scrollTo: {
                 y: targetTop,
                 autoKill: true
@@ -1004,13 +1003,13 @@ function smoothScrollTo(targetSelector) {
         return;
     }
 
-    // Method 2: GSAP basic animation - try multiple targets
+    // Method 2: GSAP basic animation - try multiple targets - FASTER
     if (typeof gsap !== 'undefined') {
         console.log('Using GSAP basic scroll');
         
         // Try animating window first
         gsap.to(window, {
-            duration: 1,
+            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
             scrollTo: targetTop,
             ease: "power2.inOut",
             onComplete: () => console.log('Window scroll complete')
@@ -1018,7 +1017,7 @@ function smoothScrollTo(targetSelector) {
         
         // Backup: also try document elements
         gsap.to([document.documentElement, document.body], {
-            duration: 1,
+            duration: 0.8, // Reduced from 1.2 - MUCH FASTER
             scrollTop: targetTop,
             ease: "power2.inOut"
         });
@@ -1131,7 +1130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         initializeAllScrollHandlers();
         console.log('All scroll handlers initialized');
-    }, 100);
+    }, 500);
     
     // Inject CSS for forms
     injectSpinnerCSS();
@@ -1147,20 +1146,19 @@ window.addEventListener('load', function() {
     }
 });
 
-// Optimized scroll handler for performance
+// Optimized scroll handler for performance - MORE RESPONSIVE
 const optimizedScrollHandler = throttle(() => {
     // Handle scroll-based animations here if needed
-}, 8); // ~60fps
+}, 8); // Increased from 16 for better responsiveness
 
 window.addEventListener('scroll', optimizedScrollHandler);
 
-// Optimized resize handler
+// Optimized resize handler - FASTER
 const optimizedResizeHandler = debounce(() => {
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
     }
-}, 200);
-
+}, 150); // Reduced from 250 for faster response
 
 window.addEventListener('resize', optimizedResizeHandler);
 
@@ -1277,3 +1275,4 @@ function debugNavigation() {
 // Make debug function globally available
 window.debugNavigation = debugNavigation;
 
+console.log('Rapture Twelve JavaScript loaded successfully - OPTIMIZED FOR ULTRA-FAST SCROLL ANIMATIONS!');
