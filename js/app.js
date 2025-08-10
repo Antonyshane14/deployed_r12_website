@@ -1277,4 +1277,3 @@ function debugNavigation() {
 // Make debug function globally available
 window.debugNavigation = debugNavigation;
 
-console.log('Rapture Twelve JavaScript loaded successfully - All 1176+ lines preserved and navigation fixed!');
