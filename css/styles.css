@@ -95,6 +95,8 @@ h2 { font-size: clamp(2rem, 4vw, 3rem); }
 h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
 
 p {
+    margin-top: 3.19rem;
+
     font-family: var(--font-secondary);
     color: var(--primary-gray);
     line-height: 1.7;
