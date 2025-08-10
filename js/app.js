@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize scroll functionality as backup
     setTimeout(() => {
         initializeScrollFunctionality();
-    }, 500);
+    }, 100);
 });
 
 // Initialize Video
@@ -243,8 +243,9 @@ function initializeNavigation() {
     // Update active nav link on scroll
     const scrollThrottled = throttle(() => {
         updateActiveNavLinkOnScroll(navLinks);
-    }, 100);
+    }, 50);
     
+
     window.addEventListener('scroll', scrollThrottled);
     
     navInitialized = true;
@@ -265,7 +266,7 @@ function smoothScrollToSection(targetElement, offset = 80) {
     if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
         console.log('Using GSAP ScrollTo');
         gsap.to(window, {
-            duration: 1.2,
+            duration: 1,
             scrollTo: {
                 y: targetTop,
                 autoKill: true
@@ -304,7 +305,7 @@ function smoothScrollToSection(targetElement, offset = 80) {
 }
 
 // Animated scroll fallback for older browsers
-function animatedScrollTo(targetY, duration = 1200) {
+function animatedScrollTo(targetY, duration = 1000) {
     const startY = window.pageYOffset;
     const difference = targetY - startY;
     const startTime = performance.now();
@@ -993,7 +994,7 @@ function smoothScrollTo(targetSelector) {
     if (typeof gsap !== 'undefined' && gsap.plugins?.ScrollToPlugin) {
         console.log('Using GSAP ScrollTo plugin');
         gsap.to(window, {
-            duration: 1.2,
+            duration: 1,
             scrollTo: {
                 y: targetTop,
                 autoKill: true
@@ -1009,7 +1010,7 @@ function smoothScrollTo(targetSelector) {
         
         // Try animating window first
         gsap.to(window, {
-            duration: 1.2,
+            duration: 1,
             scrollTo: targetTop,
             ease: "power2.inOut",
             onComplete: () => console.log('Window scroll complete')
@@ -1017,7 +1018,7 @@ function smoothScrollTo(targetSelector) {
         
         // Backup: also try document elements
         gsap.to([document.documentElement, document.body], {
-            duration: 1.2,
+            duration: 1,
             scrollTop: targetTop,
             ease: "power2.inOut"
         });
@@ -1130,7 +1131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         initializeAllScrollHandlers();
         console.log('All scroll handlers initialized');
-    }, 500);
+    }, 100);
     
     // Inject CSS for forms
     injectSpinnerCSS();
@@ -1149,7 +1150,7 @@ window.addEventListener('load', function() {
 // Optimized scroll handler for performance
 const optimizedScrollHandler = throttle(() => {
     // Handle scroll-based animations here if needed
-}, 16); // ~60fps
+}, 8); // ~60fps
 
 window.addEventListener('scroll', optimizedScrollHandler);
 
@@ -1158,7 +1159,8 @@ const optimizedResizeHandler = debounce(() => {
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
     }
-}, 250);
+}, 200);
+
 
 window.addEventListener('resize', optimizedResizeHandler);
 
