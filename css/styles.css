@@ -514,6 +514,10 @@ section {
     will-change: transform, box-shadow;
     transform-origin: center; /* scales from center */
 }
+.section-subtitle_a{
+    font-size: 1rem;
+
+}
 
 /* Laser border effect — thicker + brighter */
 .leader-card::before {
@@ -1128,13 +1132,7 @@ section {
             background-clip: text;
         }
 
-        .section-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            color: var(--primary-gray);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
+
 
         .innovation-showcase {
             position: relative;
@@ -1261,8 +1259,10 @@ section {
 
         /* Hide loading spinner when iframe loads */
         .showcase-iframe.iframe-loaded::before {
+
             display: none;
         }
+
 .section-title {
     font-size: clamp(1.5rem, 3vw, 2.2rem);
     font-weight: 800;
