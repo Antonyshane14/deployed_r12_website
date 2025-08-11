@@ -851,4 +851,5 @@ window.testNavigation = function() {
     }
 };
 
+
 console.log('Rapture Twelve JavaScript loaded successfully');
