@@ -1,213 +1,74 @@
-// Rapture Twelve - Complete Enhanced Navigation System
-// Navigation works + Hero animations work
+// Rapture Twelve - Clean Navigation System
+// Simple, reliable, and performant
 
 // Global state
 let isInitialized = false;
-let touchStartX = 0;
-let touchStartY = 0;
-let activeCard = null;
 
-// Enhanced mobile detection with device capabilities
+// Simple mobile detection
 function isMobile() {
-    const userAgent = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const touchCapable = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const smallScreen = window.innerWidth <= 768;
-    return userAgent || (touchCapable && smallScreen);
+    return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// Detect iOS for specific optimizations
-function isIOS() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
-
-// Haptic feedback for supported devices
-function triggerHaptic(style = 'light') {
-    if ('vibrate' in navigator) {
-        switch(style) {
-            case 'light': navigator.vibrate(10); break;
-            case 'medium': navigator.vibrate(20); break;
-            case 'heavy': navigator.vibrate(30); break;
-            case 'success': navigator.vibrate([10, 50, 10]); break;
-        }
-    }
-}
-
-// Enhanced smooth scroll with momentum scrolling for iOS
-function smoothScrollTo(targetId, callback) {
-    // Remove the # if it exists
-    const cleanId = targetId.replace('#', '');
-    const target = document.getElementById(cleanId);
-    
+// Simple smooth scroll function
+function smoothScrollTo(targetId) {
+    const target = document.querySelector(targetId);
     if (!target) {
         console.warn('Target not found:', targetId);
         return;
     }
     
-    // Calculate offset for fixed navbar
-    const navbar = document.getElementById('navbar');
-    const navbarHeight = navbar ? navbar.offsetHeight : 0;
-    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
-    
-    if (isMobile()) {
-        // Use native smooth scrolling on mobile for better performance
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
-        
-        // Callback after scroll completes (approximate)
-        if (callback) {
-            setTimeout(callback, 600);
-        }
-    } else {
-        // Custom smooth scroll for desktop
-        const startPosition = window.pageYOffset;
-        const distance = targetPosition - startPosition;
-        const duration = 800;
-        let start = null;
-        
-        function animation(currentTime) {
-            if (start === null) start = currentTime;
-            const timeElapsed = currentTime - start;
-            const progress = Math.min(timeElapsed / duration, 1);
-            
-            // Easing function for smooth deceleration
-            const easeOut = progress * (2 - progress);
-            window.scrollTo(0, startPosition + distance * easeOut);
-            
-            if (timeElapsed < duration) {
-                requestAnimationFrame(animation);
-            } else if (callback) {
-                callback();
-            }
-        }
-        
-        requestAnimationFrame(animation);
-    }
+    target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }
 
-// Initialize enhanced mobile navigation
+// Initialize navigation
 function initializeNavigation() {
-    console.log('Initializing enhanced navigation system...');
+    console.log('Initializing navigation system...');
     
     const navbar = document.getElementById('navbar');
     const navToggle = document.getElementById('nav-hamburger');
     const navMenu = document.getElementById('nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    // Enhanced navbar scroll effect with iOS bounce handling
-    let lastScrollY = 0;
-    let ticking = false;
-    
-    function updateNavbar() {
-        const scrollY = window.pageYOffset;
-        
-        if (scrollY > 50) {
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
             navbar?.classList.add('scrolled');
         } else {
             navbar?.classList.remove('scrolled');
         }
-        
-        // Hide/show navbar on scroll for mobile
-        if (isMobile() && Math.abs(scrollY - lastScrollY) > 5) {
-            if (scrollY > lastScrollY && scrollY > 100) {
-                navbar?.classList.add('navbar-hidden');
-            } else {
-                navbar?.classList.remove('navbar-hidden');
-            }
-            lastScrollY = scrollY;
-        }
-        
-        ticking = false;
-    }
-    
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(updateNavbar);
-            ticking = true;
-        }
     }, { passive: true });
     
-    // Enhanced mobile menu toggle with swipe gestures
+    // Mobile menu toggle
     if (navToggle && navMenu) {
-        // Click toggle
         navToggle.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            toggleMobileMenu();
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
-        
-        // Touch events for hamburger
-        navToggle.addEventListener('touchstart', (e) => {
-            e.target.classList.add('touching');
-        }, { passive: true });
-        
-        navToggle.addEventListener('touchend', (e) => {
-            setTimeout(() => {
-                e.target.classList.remove('touching');
-            }, 200);
-        }, { passive: true });
-        
-        // Swipe to close menu
-        if (isMobile()) {
-            let menuTouchStartX = 0;
-            
-            navMenu.addEventListener('touchstart', (e) => {
-                menuTouchStartX = e.touches[0].clientX;
-            }, { passive: true });
-            
-            navMenu.addEventListener('touchmove', (e) => {
-                const touchX = e.touches[0].clientX;
-                const diff = touchX - menuTouchStartX;
-                
-                // Swipe right to close
-                if (diff > 100 && navMenu.classList.contains('active')) {
-                    toggleMobileMenu(false);
-                    triggerHaptic('light');
-                }
-            }, { passive: true });
-        }
     }
     
-    // Fix navigation links - properly handle both href="#section" and onclick="scrollToSection('section')"
+    // Navigation links
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             
-            // Get the target section from href or onclick
-            let targetSection = link.getAttribute('href');
-            
-            // If href is just "#" or empty, try to extract from onclick
-            if (!targetSection || targetSection === '#') {
-                const onclickAttr = link.getAttribute('onclick');
-                if (onclickAttr) {
-                    // Extract section name from onclick="scrollToSection('section')"
-                    const match = onclickAttr.match(/scrollToSection\(['"]([^'"]+)['"]\)/);
-                    if (match && match[1]) {
-                        targetSection = '#' + match[1];
-                    }
-                }
-            }
-            
-            if (targetSection && targetSection !== '#') {
-                handleNavClick(link, targetSection);
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                // Close mobile menu
+                navToggle?.classList.remove('active');
+                navMenu?.classList.remove('active');
+                
+                // Update active state
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Smooth scroll
+                smoothScrollTo(href);
             }
         });
-        
-        // Touch feedback for mobile
-        if (isMobile()) {
-            link.addEventListener('touchstart', () => {
-                link.classList.add('touch-active');
-                triggerHaptic('light');
-            }, { passive: true });
-            
-            link.addEventListener('touchend', () => {
-                setTimeout(() => {
-                    link.classList.remove('touch-active');
-                }, 200);
-            }, { passive: true });
-        }
     });
     
     // Handle all other anchor links
@@ -218,58 +79,14 @@ function initializeNavigation() {
             const href = anchor.getAttribute('href');
             if (href && href !== '#') {
                 smoothScrollTo(href);
-                triggerHaptic('light');
             }
         });
     });
     
-    // Update active nav on scroll with debouncing
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateActiveNav, 100);
-    }, { passive: true });
+    // Update active nav on scroll
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
     
     console.log('Navigation initialized successfully');
-}
-
-// Toggle mobile menu with animation
-function toggleMobileMenu(state) {
-    const navToggle = document.getElementById('nav-hamburger');
-    const navMenu = document.getElementById('nav-menu');
-    
-    if (!navToggle || !navMenu) return;
-    
-    const shouldOpen = state !== undefined ? state : !navMenu.classList.contains('active');
-    
-    if (shouldOpen) {
-        navToggle.classList.add('active');
-        navMenu.classList.add('active');
-        document.body.classList.add('menu-open');
-        triggerHaptic('medium');
-    } else {
-        navToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.classList.remove('menu-open');
-        triggerHaptic('light');
-    }
-}
-
-// Handle navigation click with smooth transitions
-function handleNavClick(link, targetSection) {
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Close mobile menu
-    toggleMobileMenu(false);
-    
-    // Update active state
-    navLinks.forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-    
-    // Smooth scroll with callback
-    smoothScrollTo(targetSection, () => {
-        triggerHaptic('success');
-    });
 }
 
 // Update active navigation link based on scroll position
@@ -292,78 +109,30 @@ function updateActiveNav() {
     if (currentSection) {
         navLinks.forEach(link => {
             link.classList.remove('active');
-            // Check both href and onclick attributes
-            const href = link.getAttribute('href');
-            const onclickAttr = link.getAttribute('onclick');
-            
-            if (href === `#${currentSection}`) {
-                link.classList.add('active');
-            } else if (onclickAttr && onclickAttr.includes(`'${currentSection}'`)) {
+            if (link.getAttribute('href') === `#${currentSection}`) {
                 link.classList.add('active');
             }
         });
     }
 }
 
-// Enhanced video initialization for mobile
+// Initialize video
 function initializeVideo() {
     const heroVideo = document.getElementById('hero-video');
-    if (!heroVideo) return;
-    
-    // Configure video for optimal mobile performance
-    heroVideo.muted = true;
-    heroVideo.loop = true;
-    heroVideo.playsInline = true; // Important for iOS
-    heroVideo.autoplay = true;
-    
-    // Adjust video positioning
-    heroVideo.style.objectFit = 'cover';
-    heroVideo.style.objectPosition = 'center top';
-    
-    if (isMobile()) {
-        // Reduce video quality on mobile for better performance
-        heroVideo.style.transform = 'translateY(-15%)';
+    if (heroVideo) {
+        heroVideo.muted = true;
+        heroVideo.loop = true;
+        heroVideo.autoplay = true;
         
-        // Pause video when not visible to save battery
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    heroVideo.play().catch(() => {});
-                } else {
-                    heroVideo.pause();
-                }
-            });
-        }, { threshold: 0.25 });
-        
-        observer.observe(heroVideo);
-    } else {
+        // Move video up more to show the bottom content
+        heroVideo.style.objectFit = 'cover';
+        heroVideo.style.objectPosition = 'center top';
         heroVideo.style.transform = 'translateY(-25%)';
+        
+        heroVideo.play().catch(error => {
+            console.log('Video autoplay failed:', error);
+        });
     }
-    
-    // Try to play video
-    heroVideo.play().catch(error => {
-        console.log('Video autoplay failed:', error);
-        // Add play button for mobile if autoplay fails
-        if (isMobile()) {
-            addVideoPlayButton(heroVideo);
-        }
-    });
-}
-
-// Add play button for video if autoplay fails
-function addVideoPlayButton(video) {
-    const playBtn = document.createElement('button');
-    playBtn.className = 'video-play-btn';
-    playBtn.innerHTML = '▶';
-    playBtn.setAttribute('aria-label', 'Play video');
-    
-    video.parentElement.appendChild(playBtn);
-    
-    playBtn.addEventListener('click', () => {
-        video.play();
-        playBtn.remove();
-        triggerHaptic('medium');
-    });
 }
 
 // EmailJS Configuration
@@ -386,23 +155,13 @@ function initializeEmailJS() {
     return false;
 }
 
-// Enhanced contact form with mobile optimizations
+// Contact form handling
 function initializeContactForm() {
     const form = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
     
     if (!form) return;
     
-    // Auto-resize textarea on mobile
-    const textarea = form.querySelector('textarea');
-    if (textarea && isMobile()) {
-        textarea.addEventListener('input', () => {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        });
-    }
-    
-    // Enhanced form submission
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -411,19 +170,15 @@ function initializeContactForm() {
         
         if (submitButton.disabled) return;
         
-        // Haptic feedback
-        triggerHaptic('medium');
-        
         // Check EmailJS
         if (!initializeEmailJS()) {
             showFormStatus('error', 'Email service unavailable. Please contact us directly.');
             return;
         }
         
-        // Show loading with animation
+        // Show loading
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
-        submitButton.classList.add('loading');
         
         try {
             const formData = new FormData(form);
@@ -449,12 +204,6 @@ function initializeContactForm() {
             if (response.status === 200) {
                 showFormStatus('success', 'Message sent successfully! We will contact you within 24 hours.');
                 form.reset();
-                triggerHaptic('success');
-                
-                // Reset textarea height on mobile
-                if (textarea && isMobile()) {
-                    textarea.style.height = 'auto';
-                }
             } else {
                 throw new Error('Failed to send email');
             }
@@ -462,33 +211,16 @@ function initializeContactForm() {
         } catch (error) {
             console.error('Contact form error:', error);
             showFormStatus('error', 'Failed to send message. Please try again or contact us directly.');
-            triggerHaptic('heavy');
         } finally {
             setTimeout(() => {
                 submitButton.textContent = originalText;
                 submitButton.disabled = false;
-                submitButton.classList.remove('loading');
             }, 1000);
         }
     });
-    
-    // Add input validation feedback on mobile
-    if (isMobile()) {
-        const inputs = form.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('blur', () => {
-                if (input.hasAttribute('required') && !input.value.trim()) {
-                    input.classList.add('error');
-                    triggerHaptic('light');
-                } else {
-                    input.classList.remove('error');
-                }
-            });
-        });
-    }
 }
 
-// Show form status with animations
+// Show form status
 function showFormStatus(type, message) {
     const formStatus = document.getElementById('form-status');
     if (!formStatus) return;
@@ -496,81 +228,41 @@ function showFormStatus(type, message) {
     formStatus.className = `form-status ${type}`;
     formStatus.textContent = message;
     formStatus.style.display = 'block';
-    formStatus.classList.add('fade-in');
     
     if (type !== 'loading') {
         setTimeout(() => {
-            formStatus.classList.add('fade-out');
-            setTimeout(() => {
-                formStatus.style.display = 'none';
-                formStatus.classList.remove('fade-in', 'fade-out');
-            }, 300);
+            formStatus.style.display = 'none';
         }, 5000);
     }
 }
 
-// Enhanced floating contact button for mobile
+// Floating contact button
 function initializeFloatingContact() {
     const floatingContact = document.getElementById('floating-contact');
     if (!floatingContact) return;
     
-    let lastScrollY = 0;
-    let scrollTimeout;
-    
     window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        
-        const scrollY = window.pageYOffset;
-        
-        // Show button after scrolling down
-        if (scrollY > 100) {
+        if (window.scrollY > 100) {
             floatingContact.classList.add('visible');
-            
-            // Hide temporarily while scrolling on mobile
-            if (isMobile() && Math.abs(scrollY - lastScrollY) > 50) {
-                floatingContact.classList.add('scrolling');
-                
-                scrollTimeout = setTimeout(() => {
-                    floatingContact.classList.remove('scrolling');
-                }, 1000);
-            }
         } else {
             floatingContact.classList.remove('visible');
         }
-        
-        lastScrollY = scrollY;
     }, { passive: true });
-    
-    // Add touch feedback
-    if (isMobile()) {
-        const floatingBtn = floatingContact.querySelector('.floating-btn');
-        if (floatingBtn) {
-            floatingBtn.addEventListener('touchstart', () => {
-                floatingBtn.classList.add('touch-active');
-                triggerHaptic('medium');
-            }, { passive: true });
-            
-            floatingBtn.addEventListener('touchend', () => {
-                setTimeout(() => {
-                    floatingBtn.classList.remove('touch-active');
-                }, 200);
-            }, { passive: true });
-        }
-    }
 }
 
-// Enhanced hero animations with mobile optimizations
+// Hero animations - the cool entrance effect
 function initializeHeroAnimations() {
     console.log('Initializing hero animations...');
     
+    // Always animate on both mobile and desktop
     const heroElements = ['#hero-company-name', '#hero-tagline', '#hero-subtitle', '#hero-cta'];
     
-    // Use GSAP if available, with mobile optimizations
+    // If GSAP is available, use it for smooth animations
     if (typeof gsap !== 'undefined') {
         try {
             console.log('GSAP detected, initializing premium animations...');
             
-            // Register plugins
+            // Initialize GSAP plugins
             if (typeof ScrollTrigger !== 'undefined') {
                 gsap.registerPlugin(ScrollTrigger);
             }
@@ -578,23 +270,15 @@ function initializeHeroAnimations() {
                 gsap.registerPlugin(TextPlugin);
             }
             
-            // Mobile-optimized timings
-            const isMobileDevice = isMobile();
-            const duration = isMobileDevice ? 0.4 : 0.6;
-            const delay = isMobileDevice ? 0.2 : 0.3;
+            // Set initial animation states
+            gsap.set("#hero-company-name", { opacity: 0, scale: 0.9, y: 50 });
+            gsap.set("#hero-tagline", { opacity: 0, y: 30 });
+            gsap.set("#hero-subtitle", { opacity: 0, y: 30 });
+            gsap.set("#hero-cta", { opacity: 0, y: 30 });
             
-            // Set initial states
-            gsap.set("#hero-company-name", { 
-                opacity: 0, 
-                scale: isMobileDevice ? 0.95 : 0.9, 
-                y: isMobileDevice ? 30 : 50 
-            });
-            gsap.set("#hero-tagline", { opacity: 0, y: 20 });
-            gsap.set("#hero-subtitle", { opacity: 0, y: 20 });
-            gsap.set("#hero-cta", { opacity: 0, y: 20 });
-            
-            // Create timeline
-            const heroTimeline = gsap.timeline({ delay: delay });
+            // Hero animation timeline - faster on mobile
+            const duration = isMobile() ? 0.4 : 0.6;
+            const heroTimeline = gsap.timeline({ delay: 0.3 });
             
             heroTimeline
                 .to("#hero-company-name", {
@@ -623,22 +307,19 @@ function initializeHeroAnimations() {
                     ease: "power2.out"
                 }, "-=0.1");
             
-            // Typewriter effect - optimized for mobile
+            // Cool typewriter effect for tagline - works on mobile too
             if (typeof TextPlugin !== 'undefined') {
                 setTimeout(() => {
                     const taglineElement = document.querySelector("#hero-tagline");
                     if (taglineElement) {
-                        // Skip typewriter on very small screens to avoid layout issues
-                        if (window.innerWidth > 360) {
-                            gsap.to("#hero-tagline", {
-                                duration: isMobileDevice ? 1.2 : 1.8,
-                                text: "INFILTRATE • EXPLOIT • SECURE",
-                                ease: "none",
-                                delay: 0.2
-                            });
-                        }
+                        gsap.to("#hero-tagline", {
+                            duration: isMobile() ? 1.2 : 1.8,
+                            text: "INFILTRATE • EXPLOIT • SECURE",
+                            ease: "none",
+                            delay: 0.2
+                        });
                     }
-                }, isMobileDevice ? 600 : 800);
+                }, 800);
             }
             
             console.log('Hero animations initialized successfully');
@@ -653,18 +334,15 @@ function initializeHeroAnimations() {
     }
 }
 
-// Fallback hero animation optimized for mobile
+// Fallback hero animation without GSAP - works on mobile
 function fallbackHeroAnimation() {
     console.log('Using fallback hero animations...');
     
-    const isMobileDevice = isMobile();
-    const baseDelay = isMobileDevice ? 200 : 300;
-    
     const heroElements = [
-        { selector: '#hero-company-name', delay: baseDelay },
-        { selector: '#hero-tagline', delay: baseDelay + 300 },
-        { selector: '#hero-subtitle', delay: baseDelay + 500 },
-        { selector: '#hero-cta', delay: baseDelay + 700 }
+        { selector: '#hero-company-name', delay: 300 },
+        { selector: '#hero-tagline', delay: 600 },
+        { selector: '#hero-subtitle', delay: 800 },
+        { selector: '#hero-cta', delay: 1000 }
     ];
     
     heroElements.forEach(({ selector, delay }) => {
@@ -672,8 +350,8 @@ function fallbackHeroAnimation() {
         if (element) {
             // Set initial state
             element.style.opacity = '0';
-            element.style.transform = `translateY(${isMobileDevice ? '20px' : '30px'})`;
-            element.style.transition = `opacity ${isMobileDevice ? '0.5s' : '0.6s'} ease, transform ${isMobileDevice ? '0.5s' : '0.6s'} ease`;
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             
             // Animate in
             setTimeout(() => {
@@ -683,14 +361,14 @@ function fallbackHeroAnimation() {
         }
     });
     
-    // Simple typewriter effect
+    // Simple typewriter effect fallback - mobile friendly
     setTimeout(() => {
         const tagline = document.querySelector('#hero-tagline');
-        if (tagline && window.innerWidth > 360) {
+        if (tagline) {
             const text = "INFILTRATE • EXPLOIT • SECURE";
             tagline.textContent = "";
             let i = 0;
-            const speed = isMobileDevice ? 80 : 100;
+            const speed = isMobile() ? 120 : 100; // Slightly slower on mobile for better effect
             const typeInterval = setInterval(() => {
                 tagline.textContent += text[i];
                 i++;
@@ -699,106 +377,94 @@ function fallbackHeroAnimation() {
                 }
             }, speed);
         }
-    }, isMobileDevice ? 1000 : 1200);
+    }, 1200);
 }
 
-// Initialize case study cards with mobile interactions
-function initializeCaseStudyCards() {
-    const cards = document.querySelectorAll(".case-study-card");
+// Mobile-friendly scroll animations
+function initializeMobileAnimations() {
+    console.log('Initializing mobile animations...');
     
-    if (!cards.length) return;
+    // Simple CSS-based animations for mobile
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Mobile animation classes */
+        @media (max-width: 768px) {
+            .mobile-fade-in {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            
+            .mobile-fade-in.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            .service-card, .case-study-card, .leader-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .service-card:active, .case-study-card:active, .leader-card:active {
+                transform: scale(0.98);
+            }
+            
+            /* Pulse effect for floating contact */
+            .floating-contact.visible {
+                animation: mobilePulse 2s infinite;
+            }
+            
+            @keyframes mobilePulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+            
+            /* Subtle hover effects for mobile */
+            .btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+        }
+    `;
+    document.head.appendChild(style);
     
-    cards.forEach(card => {
-        // Desktop click handler
-        card.addEventListener("click", (e) => {
-            if (!isMobile()) {
-                handleCardActivation(card, cards);
+    // Add mobile animation classes to elements
+    const animatedElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card');
+    
+    animatedElements.forEach(element => {
+        element.classList.add('mobile-fade-in');
+    });
+    
+    // Intersection observer for mobile animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
             }
         });
-        
-        // Mobile touch handlers with better UX
-        if (isMobile()) {
-            let touchStartTime;
-            let touchMoved = false;
-            
-            card.addEventListener('touchstart', (e) => {
-                touchStartTime = Date.now();
-                touchMoved = false;
-                
-                // Add touch feedback
-                card.classList.add('touch-press');
-                triggerHaptic('light');
-                
-                // Store touch position
-                if (e.touches.length === 1) {
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
-                }
-            }, { passive: true });
-            
-            card.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 1) {
-                    const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
-                    const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
-                    
-                    // Detect if user is scrolling instead of tapping
-                    if (deltaX > 10 || deltaY > 10) {
-                        touchMoved = true;
-                        card.classList.remove('touch-press');
-                    }
-                }
-            }, { passive: true });
-            
-            card.addEventListener('touchend', (e) => {
-                const touchDuration = Date.now() - touchStartTime;
-                card.classList.remove('touch-press');
-                
-                // Only activate if it was a tap (not scroll)
-                if (!touchMoved && touchDuration < 500) {
-                    e.preventDefault();
-                    handleCardActivation(card, cards);
-                    triggerHaptic('medium');
-                }
-            });
+    }, {
+        threshold: 0.1,
+        rootMargin: '50px'
+    });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+    
+    // Add touch feedback
+    document.addEventListener('touchstart', (e) => {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
+            e.target.style.transform = 'scale(0.95)';
         }
     });
     
-    // Close card when clicking outside on mobile
-    if (isMobile()) {
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.case-study-card') && activeCard) {
-                cards.forEach(c => c.classList.remove('active'));
-                activeCard = null;
-            }
-        });
-    }
-}
-
-// Handle card activation with smooth animations
-function handleCardActivation(card, allCards) {
-    const wasActive = card.classList.contains('active');
-    
-    // Remove active class from all cards
-    allCards.forEach(c => c.classList.remove('active'));
-    
-    if (!wasActive) {
-        // Add active class to clicked card
-        card.classList.add('active');
-        activeCard = card;
-        
-        // Scroll card into view on mobile
-        if (isMobile()) {
+    document.addEventListener('touchend', (e) => {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
             setTimeout(() => {
-                card.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                    inline: 'nearest'
-                });
-            }, 100);
+                e.target.style.transform = '';
+            }, 150);
         }
-    } else {
-        activeCard = null;
-    }
+    });
 }
 
 // Enhanced scroll animations for desktop
@@ -818,13 +484,13 @@ function initializeScrollAnimations() {
         
         ScrollTrigger.create({
             trigger: ".services-grid",
-            start: "top 85%",
+            start: "top 95%",
             onEnter: () => {
                 gsap.to(".service-card", {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.6,
+                    duration: 0.1,
                     stagger: 0.1,
                     ease: "power2.out"
                 });
@@ -872,7 +538,7 @@ function initializeScrollAnimations() {
             
             ScrollTrigger.create({
                 trigger: element,
-                start: "top 90%",
+                start: "top 95%",
                 onEnter: () => {
                     gsap.to(element, {
                         opacity: 1,
@@ -889,301 +555,26 @@ function initializeScrollAnimations() {
     }
 }
 
-// Enhanced mobile animations with better performance
-function initializeMobileAnimations() {
-    if (!isMobile()) return;
-    
-    console.log('Initializing enhanced mobile animations...');
-    
-    // Inject mobile-specific styles
-    const style = document.createElement('style');
-    style.textContent = `
-        /* Video play button for mobile */
-        .video-play-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 255, 136, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: #000;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 10;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(0, 255, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
-        }
-        
-        /* Enhanced mobile animations */
-        @media (max-width: 768px) {
-            /* Fix leaders grid for mobile */
-            .leaders-grid {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                gap: 1.5rem !important;
-                padding: 0 1rem !important;
-                width: 100% !important;
-                flex-wrap: nowrap !important;
-            }
-            
-            .leader-card {
-                width: 100% !important;
-                max-width: 400px !important;
-                margin: 0 auto !important;
-                padding: 1.5rem !important;
-            }
-            
-            .leader-bio {
-                text-align: left !important;
-                font-size: 0.9rem !important;
-            }
-            
-            /* Smooth fade-in animations */
-            .mobile-fade-in {
-                opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.5s ease, transform 0.5s ease;
-            }
-            
-            .mobile-fade-in.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            
-            /* Touch feedback states */
-            .touch-active {
-                transform: scale(0.98) !important;
-                opacity: 0.9 !important;
-            }
-            
-            .touch-press {
-                transform: scale(0.96) !important;
-                box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3) !important;
-            }
-            
-            .touching {
-                transform: scale(0.9) !important;
-            }
-            
-            /* Card interactions */
-            .service-card, .case-study-card {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            .case-study-card.active {
-                transform: scale(1.02);
-                box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
-                z-index: 10;
-            }
-            
-            /* Button interactions */
-            .btn {
-                transition: all 0.2s ease;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            .btn:active {
-                transform: scale(0.95);
-            }
-            
-            .btn.loading {
-                position: relative;
-                color: transparent;
-            }
-            
-            .btn.loading::after {
-                content: '';
-                position: absolute;
-                width: 20px;
-                height: 20px;
-                margin: auto;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                border: 2px solid transparent;
-                border-top-color: #00ff88;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-            }
-            
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-            }
-            
-            /* Floating button animations */
-            .floating-contact.scrolling {
-                transform: translateY(100px);
-                opacity: 0.3;
-            }
-            
-            .floating-contact.visible {
-                animation: mobilePulse 3s infinite;
-            }
-            
-            @keyframes mobilePulse {
-                0%, 100% { 
-                    transform: scale(1); 
-                    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
-                }
-                50% { 
-                    transform: scale(1.05); 
-                    box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
-                }
-            }
-            
-            /* Navigation improvements */
-            .navbar-hidden {
-                transform: translateY(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .nav-link.touch-active {
-                background: rgba(0, 255, 136, 0.1);
-                border-radius: 8px;
-            }
-            
-            /* Form enhancements */
-            input.error, textarea.error {
-                border-color: #ff4444 !important;
-                animation: shake 0.3s ease;
-            }
-            
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                75% { transform: translateX(5px); }
-            }
-            
-            /* Smooth transitions */
-            .fade-in {
-                animation: fadeIn 0.3s ease;
-            }
-            
-            .fade-out {
-                animation: fadeOut 0.3s ease;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @keyframes fadeOut {
-                from { opacity: 1; transform: translateY(0); }
-                to { opacity: 0; transform: translateY(10px); }
-            }
-            
-            /* iOS-specific fixes */
-            .ios-device {
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .ios-device input,
-            .ios-device textarea,
-            .ios-device select {
-                font-size: 16px; /* Prevents zoom on focus */
-            }
-            
-            /* Prevent overscroll bounce on iOS */
-            .menu-open {
-                position: fixed;
-                width: 100%;
-                overflow: hidden;
-            }
-        }
-    `;
-    
-    document.head.appendChild(style);
-    
-    // Add iOS class if needed
-    if (isIOS()) {
-        document.body.classList.add('ios-device');
+// Modal functions
+function openContactModal() {
+    const modal = document.getElementById('contact-modal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
-    
-    // Add mobile animation classes to elements
-    const animatedElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card');
-    
-    animatedElements.forEach(element => {
-        element.classList.add('mobile-fade-in');
-    });
-    
-    // Use Intersection Observer for performance
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '50px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add slight delay for staggered effect
-                const delay = entry.target.dataset.delay || 0;
-                setTimeout(() => {
-                    entry.target.classList.add('visible');
-                    // Haptic feedback for important reveals
-                    if (entry.target.classList.contains('service-card') || 
-                        entry.target.classList.contains('case-study-card')) {
-                        triggerHaptic('light');
-                    }
-                }, delay * 100);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-    
-    animatedElements.forEach((element, index) => {
-        // Add stagger delay
-        if (element.classList.contains('service-card') || 
-            element.classList.contains('case-study-card') || 
-            element.classList.contains('leader-card')) {
-            element.dataset.delay = index % 3;
-        }
-        observer.observe(element);
-    });
-    
-    // Touch event optimizations
-    setupTouchOptimizations();
 }
 
-// Setup touch optimizations
-function setupTouchOptimizations() {
-    // Prevent double-tap zoom on buttons
-    const buttons = document.querySelectorAll('button, .btn, .nav-link');
-    buttons.forEach(button => {
-        button.addEventListener('touchend', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-    });
-    
-    // Add touch feedback to interactive elements
-    const interactiveElements = document.querySelectorAll('.service-card, .case-study-card, .btn, .contact-method');
-    
-    interactiveElements.forEach(element => {
-        element.addEventListener('touchstart', () => {
-            element.classList.add('touch-feedback');
-        }, { passive: true });
-        
-        element.addEventListener('touchend', () => {
-            setTimeout(() => {
-                element.classList.remove('touch-feedback');
-            }, 150);
-        }, { passive: true });
-        
-        element.addEventListener('touchcancel', () => {
-            element.classList.remove('touch-feedback');
-        }, { passive: true });
-    });
+function closeContactModal() {
+    const modal = document.getElementById('contact-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Scroll to contact
+function scrollToContact() {
+    smoothScrollTo('#contact');
 }
 
 // Lazy load images
@@ -1208,31 +599,7 @@ function initializeLazyLoading() {
     }
 }
 
-// Modal functions
-function openContactModal() {
-    const modal = document.getElementById('contact-modal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        triggerHaptic('medium');
-    }
-}
-
-function closeContactModal() {
-    const modal = document.getElementById('contact-modal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        triggerHaptic('light');
-    }
-}
-
-// Scroll to contact
-function scrollToContact() {
-    smoothScrollTo('#contact');
-}
-
-// Add CSS for form status and other elements
+// Add CSS for form status
 function injectFormCSS() {
     const css = `
         .form-status {
@@ -1363,12 +730,6 @@ function injectFormCSS() {
             transform: translateY(-2px);
         }
         
-        /* Touch feedback */
-        .touch-feedback {
-            opacity: 0.8;
-            transform: scale(0.98);
-        }
-        
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .floating-contact {
@@ -1401,19 +762,11 @@ function initialize() {
         initializeContactForm();
         initializeFloatingContact();
         initializeLazyLoading();
-        initializeCaseStudyCards();
         
         // Initialize hero animations immediately
         setTimeout(() => {
             initializeHeroAnimations();
         }, 100);
-        
-        // Initialize mobile animations
-        if (isMobile()) {
-            setTimeout(() => {
-                initializeMobileAnimations();
-            }, 150);
-        }
         
         // Only add scroll animations on desktop if GSAP is available
         if (!isMobile() && typeof gsap !== 'undefined') {
