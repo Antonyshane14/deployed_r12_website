@@ -560,6 +560,48 @@ section {
     }
 }
 
+<<<<<<< HEAD
+=======
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Title underline styling */
+h2.section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h2.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px; /* increased length */
+    height: 3px;
+    background: linear-gradient(90deg, #00ffff, #0066ff);
+    border-radius: 2px;
+}
+/* Mobile view: stack leaders vertically */
+@media (max-width: 768px) {
+    .leaders-grid {
+        flex-wrap: wrap;        /* allow stacking */
+        flex-direction: column; /* stack top-to-bottom */
+        align-items: center;    /* center the cards */
+        overflow-x: hidden;     /* remove horizontal scroll */
+    }
+
+    .leader-card {
+        max-width: 90%;         /* take most of screen width */
+    }
+}
+>>>>>>> e2dff45ed880835e7d01a35b9ffe9d26d50e529b
 
 /* Services Section */
 .services {
