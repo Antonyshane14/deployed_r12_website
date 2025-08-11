@@ -471,80 +471,131 @@ section {
 }
 
 
-
 /* About Section */
 .about {
     background: linear-gradient(135deg, var(--dark-gray) 0%, var(--primary-black) 100%);
+    padding: 3rem 1rem;
+    animation: fadeInUp 0.8s ease-in-out;
 }
 
+/* Grid Layout */
 .leaders-grid {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; /* prevents wrapping */
     margin-top: 2rem;
+    overflow-x: auto; /* fallback if screen too small */
+    padding-bottom: 1rem;
 }
 
+/* Leader Card */
 .leader-card {
-    background: #111;
+    flex: 1 1 300px;
+    max-width: 350px;
+    background: linear-gradient(145deg, #111, #1a1a1a);
     color: #fff;
     padding: 1.5rem;
-    border-radius: 10px;
-    width: 380px; /* increased from 320px */
+    border-radius: 15px;
     text-align: center;
-    border: 1px solid #333;
-    box-sizing: border-box;
-    word-wrap: break-word;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* Card Hover Effect */
+.leader-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.2);
+}
+
+/* Leader Title */
 .leader-title {
     font-weight: bold;
     margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    color: #0ff;
+    font-size: 1.2rem;
+    color: #00eaff;
+    letter-spacing: 0.5px;
 }
 
+/* Leader Bio */
 .leader-bio {
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
-    line-height: 1.4rem;
+    line-height: 1.5rem;
     text-align: justify;
     text-justify: inter-word;
-}
-.section-subtitle p{
-    
-    text-align: center;
+    color: #ddd;
 }
 
+/* Section Subtitle */
 .section-subtitle {
-    text-align: justify;
-    text-justify: inter-word;
-    max-width: 1200px; /* keeps it from stretching too wide */
-    margin: 0 auto;   /* centers the paragraph */
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    color: #ccc;
+    line-height: 1.6;
+    animation: fadeIn 1s ease-in-out;
 }
 
-.leader-contact a {
-    color: #0ff;
-    text-decoration: none;
-}
-
-.leader-contact a:hover {
-    text-decoration: underline;
-}
-
-/* Contact links styling */
-.contact-link {
+/* Contact Links */
+.leader-contact a, .contact-link {
     display: inline-block;
-    color: #66d9ff;
-    margin-top: 0.5rem;
+    color: #00eaff;
     text-decoration: none;
     font-weight: bold;
+    transition: all 0.3s ease;
 }
 
-.contact-link:hover {
+.leader-contact a:hover, .contact-link:hover {
     text-decoration: underline;
+    color: #66d9ff;
 }
 
+/* Glow Animation on Hover */
+.leader-card:hover .leader-title {
+    text-shadow: 0 0 5px #00eaff, 0 0 15px #00eaff;
+}
+
+/* Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Title underline styling */
+h2.section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h2.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px; /* increased length */
+    height: 3px;
+    background: linear-gradient(90deg, #00ffff, #0066ff);
+    border-radius: 2px;
+}
 
 /* Services Section */
 .services {
@@ -555,6 +606,20 @@ section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
+}
+.service-image {
+    width: 100%;
+    height: 200px; /* Fixed height for uniformity */
+    object-fit: cover; /* Crops image to fill without distortion */
+    border-radius: 10px; /* Rounded corners */
+    margin-bottom: 1rem; /* Space below the image */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover .service-image {
+    transform: scale(1.03); /* Slight zoom on hover */
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
 .service-card {
@@ -567,6 +632,8 @@ section {
     cursor: pointer;
     opacity: 0;
     transform: translateY(50px);
+    height: auto;
+
 }
 
 .service-card:hover {
@@ -661,8 +728,10 @@ section {
     background: var(--charcoal);
     border: 1px solid var(--steel);
     transition: all 0.4s ease;
-    height: 400px; /* Fixed height for consistency */
-    width: 500px;
+    height: 400px; /* Keep for desktop */
+    /* REMOVE fixed width */
+    width: 100%; /* Let it fill available space */
+    max-width: 500px; /* Optional so huge screens don't stretch too far */
 }
 
 .case-study-card:hover {
@@ -720,6 +789,7 @@ section {
     transition: opacity 0.4s ease;
 }
 
+
 .case-study-card:hover .case-study-overlay {
     opacity: 1;
 }
@@ -740,6 +810,11 @@ section {
     letter-spacing: 2px;
     margin-bottom: 1rem;
     text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+.case-study-type,
+.metric-value {
+    color: gold;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
 .case-study-overlay p {
@@ -822,49 +897,44 @@ section {
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
-    .case-studies-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+    .service-card {
+        opacity: 1 !important; /* Always visible */
+        transform: none !important; /* Remove translateY */
+        cursor: default; /* No pointer hand on mobile */
+        transition: none !important; /* Kill animations */
     }
-    
-    .case-study-card {
-        height: 300px;
+
+    .service-card:hover {
+        transform: none;
+        border-color: var(--steel);
+        box-shadow: none;
     }
-    
-    /* On mobile, show overlay by default (no hover) */
-    .case-study-overlay {
-        opacity: 0.95;
-        background: linear-gradient(
-            135deg, 
-            rgba(0, 20, 40, 0.9) 0%, 
-            rgba(0, 0, 0, 0.85) 100%
-        );
+
+    .service-icon {
+        transform: none !important;
+        background: var(--medium-gray);
+        border-color: var(--steel);
+        color: var(--silver);
+        transition: none !important;
     }
-    
-    .case-study-content {
-        transform: translateY(0);
-        background: none;
-        position: static;
-        padding: 1.5rem;
+
+    .service-card:hover .service-icon {
+        background: var(--medium-gray);
+        border-color: var(--steel);
+        color: var(--silver);
+        transform: none;
     }
-    
-    .case-study-metrics {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-    }
-    
-    .metric {
-        padding: 0.75rem 0.5rem;
-    }
-    
-    .metric-value {
-        font-size: 1.2rem;
-    }
-    
-    .metric-label {
-        font-size: 0.7rem;
+
+    /* Make service details always visible */
+    .service-details {
+        opacity: 1 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        transition: none !important;
     }
 }
+
+
 /* Tablet adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
     .case-studies-grid {
@@ -873,10 +943,35 @@ section {
     
     .case-study-card {
         width: 350px;
-        height: 350px;
+        height: 450px;
     }
 }
 
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .case-studies-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        justify-items: center; /* Center single column cards */
+    }
+    
+    .case-study-card {
+        height: auto; /* Let it adapt to content/image ratio */
+        min-height: 350px; /* Optional */
+        max-width: 100%;
+    }
+
+    .case-study-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .case-study-card:focus {
+    outline: none; /* Remove default browser outline */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* gold glow */
+    border-color: gold;
+}
+}
 /* Large screen adjustments */
 @media (min-width: 1200px) {
     .case-studies-grid {
@@ -1399,6 +1494,11 @@ section {
         grid-template-columns: 1fr;
         gap: 2rem;
         text-align: center;
+    }
+        .case-study-card:focus {
+        outline: none;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        border-color: gold;
     }
 }
 
