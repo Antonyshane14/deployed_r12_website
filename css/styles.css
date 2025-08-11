@@ -2211,27 +2211,11 @@ section {
 
 /* Footer */
 .footer {
-    position: relative;
     background: linear-gradient(145deg, var(--dark-gray), #0a0a0a);
     border-top: 1px solid rgba(0, 255, 255, 0.2);
     padding: 4rem 0 2rem;
+    position: relative;
     overflow: hidden;
-}
-
-/* Animated gradient glow behind footer */
-.footer::before {
-    content: "";
-    position: absolute;
-    inset: -50%;
-    background: conic-gradient(
-        from 0deg,
-        rgba(0, 255, 255, 0.15),
-        transparent,
-        rgba(255, 0, 255, 0.15),
-        transparent
-    );
-    animation: footer-glow 20s linear infinite;
-    z-index: 0;
 }
 
 /* Subtle grain texture overlay for depth */
@@ -2331,12 +2315,6 @@ section {
 .footer-bottom p {
     color: var(--primary-gray);
     font-size: 0.9rem;
-}
-
-/* Glow Animation */
-@keyframes footer-glow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 
