@@ -591,6 +591,20 @@ Leading applied research in AI and advanced ML system development, combining ful
 
     <!-- Scripts -->
     <script src="js/app.js"></script>
-    
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".case-study-card");
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => {
+      // Remove active class from all cards
+      cards.forEach(c => c.classList.remove("active"));
+      // Add to the clicked one
+      card.classList.add("active");
+    });
+  });
+});
+</script>
+
 </body>
 </html>
