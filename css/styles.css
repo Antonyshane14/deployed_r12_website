@@ -545,10 +545,17 @@ section {
 }
 
 @keyframes laser-move {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0%   { background-position: 0% 0%; }      /* top-left */
+    12.5% { background-position: 50% 0%; }    /* mid-top */
+    25%  { background-position: 100% 0%; }    /* top-right */
+    37.5% { background-position: 100% 50%; }  /* mid-right */
+    50%  { background-position: 100% 100%; }  /* bottom-right */
+    62.5% { background-position: 50% 100%; }  /* mid-bottom */
+    75%  { background-position: 0% 100%; }    /* bottom-left */
+    87.5% { background-position: 0% 50%; }    /* mid-left */
+    100% { background-position: 0% 0%; }      /* back to top-left */
 }
+
 
 /* Leader Name */
 .leader-title {
