@@ -724,7 +724,7 @@ section {
 
 /* Case Studies Section */
 .case-studies {
-    background: linear-gradient(135deg, var(--primary-black) 100%, var(--medium-gray) 0%);
+    background: linear-gradient(#040c14);
     padding: 6rem 0;
 }
 
