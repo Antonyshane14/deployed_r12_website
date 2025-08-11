@@ -1,5 +1,5 @@
-// Rapture Twelve - Fixed Navigation System
-// Reliable instant navigation that works every time
+// Rapture Twelve - Clean Navigation System
+// Simple, reliable, and performant
 
 // Global state
 let isInitialized = false;
@@ -9,39 +9,21 @@ function isMobile() {
     return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// FIXED: Instant reliable smooth scroll function
+// Simple smooth scroll function
 function smoothScrollTo(targetId) {
-    console.log('Scrolling to:', targetId);
-    
     const target = document.querySelector(targetId);
     if (!target) {
         console.warn('Target not found:', targetId);
         return;
     }
     
-    // Force immediate scroll with perfect positioning
-    const navbarHeight = 80; // Account for fixed navbar
-    const targetPosition = target.offsetTop - navbarHeight;
-    
-    // Use both methods for maximum compatibility
-    window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
+    target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
     });
-    
-    // Backup method in case the first doesn't work
-    setTimeout(() => {
-        target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest'
-        });
-    }, 50);
-    
-    console.log('Scroll initiated to:', targetId, 'at position:', targetPosition);
 }
 
-// Initialize navigation with bulletproof event handling
+// Initialize navigation
 function initializeNavigation() {
     console.log('Initializing navigation system...');
     
@@ -63,105 +45,144 @@ function initializeNavigation() {
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
-            console.log('Mobile menu toggled');
         });
     }
     
-    // FIXED: Navigation links with instant scroll
-    navLinks.forEach((link, index) => {
-        console.log('Setting up nav link:', link.getAttribute('href'));
-        
+    // Navigation links
+    navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             
             const href = link.getAttribute('href');
-            console.log('Nav link clicked:', href);
-            
             if (href && href.startsWith('#')) {
-                // Close mobile menu immediately
-                if (navToggle && navMenu) {
-                    navToggle.classList.remove('active');
-                    navMenu.classList.remove('active');
-                }
+                // Close mobile menu
+                navToggle?.classList.remove('active');
+                navMenu?.classList.remove('active');
                 
                 // Update active state
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
                 
-                // INSTANT smooth scroll - this will work!
+                // Smooth scroll
                 smoothScrollTo(href);
             }
         });
     });
     
-    // FIXED: Handle ALL anchor links consistently
-    document.addEventListener('click', (e) => {
-        // Check if clicked element is an anchor link
-        const anchor = e.target.closest('a[href^="#"]');
-        if (anchor && !anchor.classList.contains('nav-link')) {
+    // Handle all other anchor links
+    const allAnchorLinks = document.querySelectorAll('a[href^="#"]:not(.nav-link)');
+    allAnchorLinks.forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            
             const href = anchor.getAttribute('href');
-            console.log('Anchor clicked:', href);
-            
-            if (href && href !== '#' && href.length > 1) {
+            if (href && href !== '#') {
                 smoothScrollTo(href);
             }
-        }
+        });
     });
     
-    // FIXED: Update active nav on scroll with better detection
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateActiveNav, 50);
-    }, { passive: true });
+    // Update active nav on scroll
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
     
     console.log('Navigation initialized successfully');
 }
 
-// IMPROVED: Update active navigation link based on scroll position
+// Call this from DOMContentLoaded (once)
+function initializeNavigationWithObserver() {
+  console.log('initializeNavigationWithObserver()');
+
+  const navbar = document.getElementById('navbar');
+  const navToggle = document.getElementById('nav-hamburger');
+  const navMenu = document.getElementById('nav-menu');
+  const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  const sections = Array.from(document.querySelectorAll('section[id]'));
+
+  // existing click handlers (smooth scroll + mobile close)
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      navToggle?.classList.remove('active');
+      navMenu?.classList.remove('active');
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // If IntersectionObserver supported — use it
+  if ('IntersectionObserver' in window) {
+    const navbarHeight = navbar ? navbar.offsetHeight : 0;
+
+    // rootMargin pushes the "viewport" down by navbarHeight and then the bottom by -40% so
+    // section becomes active when it's roughly top+40% in view — tweak as desired.
+    const ioOptions = {
+      root: null,
+      rootMargin: `-${Math.round(navbarHeight)}px 0px -40% 0px`,
+      threshold: 0
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${id}`));
+        }
+      });
+    }, ioOptions);
+
+    sections.forEach(s => io.observe(s));
+
+    // run once to set initial state
+    // choose section that is currently intersecting (or topmost)
+    sections.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top - navbarHeight <= window.innerHeight * 0.4 && rect.bottom > navbarHeight) {
+        const id = s.id;
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${id}`));
+      }
+    });
+
+  } else {
+    // Fallback to scroll handler if IO not supported
+    console.log('IntersectionObserver not supported — falling back to scroll.');
+    updateActiveNav(); // call once
+    window.addEventListener('scroll', throttle(updateActiveNav, 120), { passive: true });
+  }
+}
+
+// Update active navigation link based on scroll position
 function updateActiveNav() {
+    console.log('updateActiveNav called');
+
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    const scrollPos = window.scrollY + 120; // Better offset for navbar
-    
-    let currentSection = null;
-    let closestSection = null;
-    let closestDistance = Infinity;
-    
+
+    // Adjust this offset to trigger highlight earlier/later
+    const scrollPos = window.scrollY + window.innerHeight / 3;
+
+    let currentSection = sections[0]?.getAttribute('id');
+
     sections.forEach(section => {
         const top = section.offsetTop;
         const bottom = top + section.offsetHeight;
-        const distance = Math.abs(scrollPos - top);
-        
-        // Find the closest section to current scroll position
-        if (distance < closestDistance) {
-            closestDistance = distance;
-            closestSection = section.getAttribute('id');
-        }
-        
-        // Check if we're currently in this section
+
         if (scrollPos >= top && scrollPos < bottom) {
             currentSection = section.getAttribute('id');
         }
     });
-    
-    // Use current section if available, otherwise use closest
-    const activeSection = currentSection || closestSection;
-    
-    if (activeSection) {
-        navLinks.forEach(link => {
-            const isActive = link.getAttribute('href') === `#${activeSection}`;
-            link.classList.toggle('active', isActive);
-        });
-    }
+
+    // Update menu highlight
+    navLinks.forEach(link => {
+        link.classList.toggle(
+            'active',
+            link.getAttribute('href') === `#${currentSection}`
+        );
+    });
 }
+
 
 // Initialize video
 function initializeVideo() {
@@ -619,9 +640,8 @@ function closeContactModal() {
     }
 }
 
-// FIXED: Scroll to contact function
+// Scroll to contact
 function scrollToContact() {
-    console.log('Scrolling to contact section');
     smoothScrollTo('#contact');
 }
 
@@ -824,7 +844,7 @@ function initialize() {
         }
         
         isInitialized = true;
-        console.log('Website initialized successfully - Navigation will work instantly!');
+        console.log('Website initialized successfully');
         
     } catch (error) {
         console.error('Initialization error:', error);
@@ -885,20 +905,24 @@ window.openContactModal = openContactModal;
 window.closeContactModal = closeContactModal;
 window.scrollToContact = scrollToContact;
 
-// ENHANCED: Debug function with instant scroll test
+// Debug function
 window.testNavigation = function() {
     console.log('Testing navigation...');
     console.log('Available sections:', Array.from(document.querySelectorAll('section[id]')).map(s => s.id));
     console.log('Nav links:', Array.from(document.querySelectorAll('.nav-link')).map(l => l.getAttribute('href')));
     
-    // Test scroll to each section
-    const sections = Array.from(document.querySelectorAll('section[id]'));
-    sections.forEach((section, index) => {
-        setTimeout(() => {
-            console.log('Testing scroll to:', section.id);
-            smoothScrollTo('#' + section.id);
-        }, index * 2000);
-    });
+    // Test scroll to first section
+    const firstSection = document.querySelector('section[id]');
+    if (firstSection) {
+        console.log('Testing scroll to:', firstSection.id);
+        smoothScrollTo('#' + firstSection.id);
+    }
 };
 
-console.log('Rapture Twelve JavaScript loaded successfully - Navigation is FIXED!');
+
+console.log('Rapture Twelve JavaScript loaded successfully');
+
+document.addEventListener("DOMContentLoaded", () => {
+    initializeNavigation();
+    updateActiveNav(); // highlight correct menu at start
+});
