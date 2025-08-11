@@ -1,0 +1,373 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Mock Security Workflow Demo (600×600)</title>
+<style>
+  :root{
+    --bg:#0b1020; --text:#eaf2ff; --muted:#9fb3d6;
+    --line:rgba(140,170,255,.35); --accent:#7dd3fc;
+    --pink:#f472b6; --blue:#60a5fa; --green:#34d399; --yellow:#facc15; --orange:#fb923c; --purple:#a78bfa;
+    --red:#ff5c5c; --blue-ok:#5bbcff;
+  }
+  html,body{margin:0;height:100%;background:#111}
+  #wf{
+    width:600px;height:600px;margin:16px auto;background:var(--bg);
+    border-radius:18px; position:relative; overflow:hidden;
+    box-shadow:0 12px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    font:500 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+  }
+  .hdr{
+    position:absolute; inset:0 0 auto 0; height:40px; display:flex; align-items:center; gap:8px; padding:0 12px;
+    background:linear-gradient(90deg,#0f1734,#0b1330); font-weight:700;
+  }
+  .tag{font:600 10px/1 ui-sans-serif;border:1px solid rgba(255,255,255,.12);padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.06)}
+  .controls{
+    position:absolute; top:46px; left:12px; right:12px; height:30px; display:flex; gap:8px; align-items:center;
+  }
+  .controls input{
+    flex:1; height:30px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
+    background:#0c1532; color:var(--text); padding:0 10px; outline:none;
+  }
+  .controls button{
+    height:30px; padding:0 10px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.06); color:var(--text); cursor:pointer;
+  }
+  .stage{position:absolute; left:12px; bottom:116px; color:var(--muted); font-weight:500}
+  .log{
+    position:absolute; left:12px; right:12px; bottom:12px; height:92px; overflow:auto;
+    background:#0b152c; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .log h4{margin:0 0 6px 0; font-size:12px; color:var(--text); opacity:.9}
+  .log .item{display:flex; justify-content:space-between; align-items:center; gap:10px;
+             padding:6px 8px; border-radius:8px; margin-bottom:6px; background:rgba(255,255,255,.03);
+             border:1px solid rgba(255,255,255,.06)}
+  .sev{font-size:10px; padding:2px 6px; border-radius:999px; border:1px solid rgba(255,255,255,.14)}
+  .sev.red{color:#ffd2d2; background:rgba(255,60,60,.08); border-color:rgba(255,60,60,.3)}
+  .sev.blue{color:#d2e8ff; background:rgba(60,150,255,.08); border-color:rgba(60,150,255,.3)}
+  .count-badge{
+    position:absolute; background:rgba(255,165,0,.1); color:var(--orange);
+    border:1px solid rgba(255,165,0,.35); padding:2px 6px; border-radius:8px; font-weight:700; font-size:11px;
+    pointer-events:none; transform:translate(-50%,-130%);
+  }
+</style>
+</head>
+<body>
+<div id="wf">
+  <div class="hdr">
+    Mock Security Workflow (Demo)
+    <span class="tag" style="color:var(--purple)">AI + RAG</span>
+    <span class="tag" style="color:var(--blue)">Tools</span>
+    <span class="tag" style="color:var(--yellow)">Feedback</span>
+    <span style="margin-left:auto;color:var(--green)">Live</span>
+  </div>
+
+  <div class="controls">
+    <input id="urlIn" placeholder="https://target.example.com" value="https://demo.site"/>
+    <button id="startBtn">Start Demo</button>
+    <button id="pauseBtn">Pause</button>
+  </div>
+
+  <div class="stage">Ready (randomized visualizer — no real scanning)</div>
+  <div class="log">
+    <h4>Vulnerabilities Log (mock)</h4>
+    <div id="logItems"></div>
+  </div>
+</div>
+
+<script>
+/* 100% MOCK VISUALIZER — everything below is randomized.
+   No network, no real tools. Just visuals to showcase flow. */
+(function(){
+  // --- DEMO TUNING ---
+  const FIND_PROB = 0.38;      // chance a tool "finds" a vuln on a step
+  const ENDPOINTS_RANGE = [8, 18]; // total endpoints per cycle (inclusive)
+  const STEP_MS = 1050;        // token/packet base timing
+
+  const host = document.getElementById('wf');
+  const stage = host.querySelector('.stage');
+  const urlIn = document.getElementById('urlIn');
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const logItems = document.getElementById('logItems');
+
+  const css = getComputedStyle(document.documentElement);
+  const C = k => css.getPropertyValue(k).trim();
+  const COLORS = {
+    text: C('--text')||'#eaf2ff',
+    line: C('--line')||'rgba(140,170,255,.35)',
+    accent: C('--accent')||'#7dd3fc',
+    green: C('--green')||'#34d399',
+    yellow: C('--yellow')||'#facc15',
+    orange: C('--orange')||'#fb923c',
+    blue: C('--blue')||'#60a5fa',
+    purple: C('--purple')||'#a78bfa',
+    pink: C('--pink')||'#f472b6',
+    red: C('--red')||'#ff5c5c',
+    blueok: C('--blue-ok')||'#5bbcff'
+  };
+
+  const NS="http://www.w3.org/2000/svg";
+  const svg = mk('svg',{viewBox:'0 0 600 600', width:'100%', height:'100%', preserveAspectRatio:'xMidYMid meet'});
+  host.appendChild(svg);
+
+  const defs = mk('defs'); svg.appendChild(defs);
+  const glow = mk('filter',{id:'glow', x:'-30%', y:'-30%', width:'160%', height:'160%'}); defs.appendChild(glow);
+  glow.appendChild(mk('feGaussianBlur',{stdDeviation:'2', result:'b'}));
+  const merge = mk('feMerge'); merge.appendChild(mk('feMergeNode',{in:'b'})); merge.appendChild(mk('feMergeNode',{in:'SourceGraphic'})); glow.appendChild(merge);
+
+  const marker = mk('marker',{id:'arr', markerWidth:10, markerHeight:8, refX:10, refY:4, orient:'auto', markerUnits:'userSpaceOnUse'});
+  marker.appendChild(mk('path',{d:'M0 0 L10 4 L0 8 Z', fill:COLORS.line}));
+  defs.appendChild(marker);
+
+  const edgeLayer = mk('g'); svg.appendChild(edgeLayer);
+  const packetLayer = mk('g'); svg.appendChild(packetLayer);
+  const nodeLayer = mk('g'); svg.appendChild(nodeLayer);
+
+  // --- Reduced, high-signal nodes ---
+  const nodes = [
+    nd('URL','Target URL','Input',COLORS.green,'input'),
+    nd('DISC','Discover Endpoints','discover',COLORS.orange,'process'),
+    nd('AI','AI Planner (RAG)','AI',COLORS.purple,'process'),
+    nd('TOOL','Tool Runner','tool',COLORS.blue,'process'),
+    nd('ANALYZE','Analyze & Decide','feedback',COLORS.yellow,'process'),
+    nd('LOG','Vulnerabilities Log','output',COLORS.blue,'output')
+  ];
+
+  const edges = [
+    ['URL','DISC'],
+    ['DISC','AI'],
+    ['AI','TOOL'],
+    ['TOOL','ANALYZE'],
+    ['ANALYZE','LOG'],
+    ['ANALYZE','URL'] // if clean, restart from top
+  ];
+
+  // visuals
+  nodes.forEach((n,i)=>{
+    n.x = 100 + i*80 + (Math.random()*12-6);
+    n.y = n.kind==='input' ? 95 : n.kind==='output' ? 515 : 300 + (Math.random()*80-40);
+    n.vx = n.vy = 0;
+
+    const g = mk('g'); nodeLayer.appendChild(g); n.g=g;
+    const w=160,h=30,r=10;
+    n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w,height:h, fill:'#101a33', stroke:'rgba(255,255,255,.08)', 'stroke-width':1, filter:'url(#glow)'});
+    const bar = mk('rect',{x:-w/2,y:-h/2,width:4,height:h,fill:n.color,opacity:.95});
+    const label = tspan(-w/2+10,4,n.label,12,COLORS.text,700);
+    const chip  = pill(w/2-38,-h/2+15,n.chip);
+    g.append(n.box, bar, label, chip);
+
+    if (n.id==='DISC'){ // orange endpoint counter badge
+      n.badge = document.createElement('div');
+      n.badge.className='count-badge';
+      n.badge.style.display='none';
+      host.appendChild(n.badge);
+    }
+  });
+
+  const edgeEls = edges.map(([a,b])=>{
+    const e = mk('line',{x1:0,y1:0,x2:0,y2:0, stroke:COLORS.line, 'stroke-width':1.8, markerEnd:'url(#arr)'});
+    edgeLayer.appendChild(e);
+    return {a:by(a), b:by(b), el:e};
+  });
+
+  // token
+  const token = mk('circle',{r:6, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
+  const halo  = mk('circle',{r:16, fill:'none', stroke:COLORS.accent, 'stroke-width':2, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
+  moveTokenTo(by('URL'));
+
+  // physics (vis-like)
+  const SPR=0.02, LEN=150, REP=11000, DAMP=0.85, PULL=0.0015, TOP=95, BOT=515;
+  function physics(){
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i], b=nodes[j];
+        let dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy; if(d2<0.01){ dx+=Math.random()*0.1; dy+=Math.random()*0.1; d2=dx*dx+dy*dy; }
+        const f = REP/d2, inv=1/Math.sqrt(d2);
+        a.vx += dx*inv*f; a.vy += dy*inv*f; b.vx -= dx*inv*f; b.vy -= dy*inv*f;
+      }
+    }
+    edgeEls.forEach(({a,b})=>{
+      const dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)||0.001;
+      const diff=d-LEN, f=SPR*diff, nx=dx/d, ny=dy/d;
+      a.vx += nx*f; a.vy += ny*f; b.vx -= nx*f; b.vy -= ny*f;
+    });
+    nodes.forEach(n=>{
+      n.vx += (300-n.x)*PULL;
+      if(n.kind==='input') n.vy += (TOP-n.y)*0.04;
+      else if(n.kind==='output') n.vy += (BOT-n.y)*0.04;
+      else n.vy += (300-n.y)*0.004;
+      n.vx*=DAMP; n.vy*=DAMP; n.x+=n.vx*0.016; n.y+=n.vy*0.016;
+      n.x=Math.max(50,Math.min(550,n.x)); n.y=Math.max(70,Math.min(560,n.y));
+    });
+  }
+  function render(){
+    edgeEls.forEach(({a,b,el})=>{ el.setAttribute('x1',a.x); el.setAttribute('y1',a.y); el.setAttribute('x2',b.x); el.setAttribute('y2',b.y);});
+    nodes.forEach(n=>{
+      n.g.setAttribute('transform',`translate(${n.x},${n.y})`);
+      if(n.badge){ n.badge.style.left = n.x+'px'; n.badge.style.top = n.y+'px'; }
+    });
+  }
+
+  // packets
+  function packets(from,to,count=6,dur=STEP_MS,color=COLORS.accent){
+    for(let i=0;i<count;i++){
+      const p = mk('circle',{r:2.5, fill:color, opacity:0.9}); packetLayer.appendChild(p);
+      const start = performance.now()+ i*60;
+      const tick = now=>{
+        const t = Math.min(1,(now-start)/dur);
+        const x = lerp(from.x,to.x,ease(t)), y = lerp(from.y,to.y,ease(t));
+        p.setAttribute('cx',x); p.setAttribute('cy',y); p.setAttribute('opacity', String(0.9*(1-t)));
+        if(t<1) requestAnimationFrame(tick); else packetLayer.removeChild(p);
+      };
+      requestAnimationFrame(tick);
+    }
+  }
+  function move(from,to,dur=STEP_MS,cb){
+    const start = performance.now();
+    const go = now=>{
+      const t = Math.min(1,(now-start)/dur);
+      const x = lerp(from.x,to.x,ease(t)), y = lerp(from.y,to.y,ease(t));
+      token.setAttribute('cx',x); token.setAttribute('cy',y);
+      halo.setAttribute('cx',x);  halo.setAttribute('cy',y);
+      if(t<1) requestAnimationFrame(go);
+      else { halo.animate([{r:14,opacity:.22},{r:20,opacity:.10},{r:14,opacity:.20}],{duration:600,iterations:1,easing:'ease-in-out'}); cb && cb(); }
+    };
+    requestAnimationFrame(go);
+  }
+  function moveTokenTo(n){ token.setAttribute('cx',n.x); token.setAttribute('cy',n.y); halo.setAttribute('cx',n.x); halo.setAttribute('cy',n.y); }
+
+  // demo state
+  const tools = ['SQLMap','Nuclei','ffuf','Custom'];
+  const vulns = ['SQL Injection','XSS','SSRF','Open Redirect','Dir Traversal','RCE','CSRF','IDOR','Clickjacking'];
+  const endpointsKinds = ['form','api','upload','search','redirect','admin'];
+  let paused=false, running=false;
+  let epTotal=0, epLeft=0;
+
+  function reset(){
+    logItems.innerHTML='';
+    epTotal=epLeft=0;
+    setTool('Tool Runner');
+    stage.textContent='Ready (mock)';
+    moveTokenTo(by('URL'));
+    hideBadge();
+  }
+
+  function start(){
+    if(running) return;
+    running=true; paused=false;
+    discover();
+  }
+
+  function discover(){
+    const URL = by('URL'), DISC = by('DISC');
+    stage.textContent='Discovering endpoints…';
+    epTotal = randInt(ENDPOINTS_RANGE[0], ENDPOINTS_RANGE[1]); epLeft = epTotal;
+    showBadge(epLeft);
+    packets(URL, DISC, 10, STEP_MS, COLORS.accent);
+    move(URL, DISC, STEP_MS, aiPick);
+  }
+
+  function aiPick(){
+    if (epLeft<=0){ // finished a cycle → rediscover new set
+      stage.textContent='Cycle complete. Rescanning…';
+      setTimeout(discover, 600);
+      return;
+    }
+    const DISC = by('DISC'), AI = by('AI');
+    const pickedEndpoint = randOf(endpointsKinds);
+    const pickedTool = randOf(tools);
+    setTool(pickedTool);
+    stage.textContent=`AI picked ${pickedTool} for ${pickedEndpoint}`;
+    packets(DISC, AI, 6, STEP_MS, COLORS.orange);
+    move(DISC, AI, STEP_MS, ()=> toolRun(pickedTool));
+  }
+
+  function toolRun(tool){
+    const AI = by('AI'), TOOL = by('TOOL'), ANALYZE = by('ANALYZE');
+    packets(AI, TOOL, 6, STEP_MS, COLORS.purple);
+    move(AI, TOOL, STEP_MS, ()=>{
+      // RANDOM OUTCOME
+      const found = Math.random() < FIND_PROB;
+      const color = found ? COLORS.red : COLORS.blueok;
+      // pulse tool border
+      pulseBorder(TOOL.box, found ? 'red' : 'blue');
+      // packets to analyze, then branch
+      packets(TOOL, ANALYZE, 10, STEP_MS, color);
+      move(TOOL, ANALYZE, STEP_MS, ()=>{
+        epLeft--; showBadge(epLeft);
+        if(found){
+          const L = by('LOG');
+          logVuln(urlIn.value, randOf(vulns), tool);
+          stage.textContent=`Found vuln via ${tool} — logging & continuing…`;
+          packets(ANALYZE, L, 6, STEP_MS*0.8, COLORS.red);
+          move(ANALYZE, L, STEP_MS*0.8, ()=> setTimeout(aiPick, 500)); // continue hunting
+        }else{
+          stage.textContent=`Clean with ${tool}. Restarting from top…`;
+          const URL = by('URL');
+          packets(ANALYZE, URL, 8, STEP_MS, COLORS.blueok);
+          move(ANALYZE, URL, STEP_MS, ()=> setTimeout(discover, 300)); // restart discover
+        }
+      });
+    });
+  }
+
+  // UI helpers
+  function setTool(name){
+    const n = by('TOOL');
+    n.g.querySelector('text').textContent = name;
+  }
+  function pulseBorder(box, kind){
+    const col = kind==='red' ? 'rgba(255,80,80,1)' : 'rgba(90,170,255,.9)';
+    box.setAttribute('stroke', col); box.setAttribute('stroke-width','2.2');
+    setTimeout(()=>{ box.setAttribute('stroke','rgba(255,255,255,.08)'); box.setAttribute('stroke-width','1'); }, 480);
+  }
+  function logVuln(url, vuln, tool){
+    const row = document.createElement('div');
+    row.className='item';
+    row.innerHTML = `<div><b>${esc(vuln)}</b> <span style="opacity:.8">via</span> ${esc(tool)} <span style="opacity:.7">on</span> ${esc(url)}</div>
+                     <span class="sev red">found</span>`;
+    logItems.prepend(row);
+    while(logItems.children.length>8) logItems.removeChild(logItems.lastChild);
+  }
+  function showBadge(count){
+    const d = by('DISC'); if(!d.badge) return;
+    d.badge.style.display='block';
+    d.badge.textContent = `${count} endpoints`;
+    d.badge.animate([{transform:'translate(-50%,-130%) scale(1)'},{transform:'translate(-50%,-130%) scale(1.08)'},{transform:'translate(-50%,-130%) scale(1)'}],
+                    {duration:360, easing:'ease-in-out'});
+  }
+  function hideBadge(){ const d=by('DISC'); if(d.badge) d.badge.style.display='none'; }
+
+  // frame loop
+  function frame(){
+    if(!paused){
+      physics(); render();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // controls
+  startBtn.onclick = ()=>{ reset(); start(); };
+  pauseBtn.onclick = ()=>{ paused=!paused; pauseBtn.textContent = paused?'Resume':'Pause'; };
+
+  // utils
+  function by(id){ return nodes.find(n=>n.id===id); }
+  function nd(id,label,chip,color,kind){ return {id,label,chip,color,kind}; }
+  function mk(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+  function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||500}); t.textContent=txt; return t; }
+  function pill(x,y,text){ const g=mk('g'); const w=44,h=16,r=6;
+    g.appendChild(mk('rect',{x:x-w/2,y:y-h/2,rx:r,ry:r,width:w,height:h,fill:'rgba(255,255,255,.06)',stroke:'rgba(255,255,255,.12)','stroke-width':1}));
+    const t=tspan(x,y,text,10,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;
+  }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m])); }
+  function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function randOf(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+})();
+</script>
+</body>
+</html>

@@ -355,27 +355,45 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
     <section id="innovation" class="innovation">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Innovation in Action</h2>
+                <h3 class="section-title">Innovation in Action</h3>
                 <p class="section-subtitle">
                     Advanced AI-powered security operations and automated threat response systems.
                 </p>
             </div>
 
             <div class="innovation-showcase" data-reveal>
-                <div class="showcase-video">
-                    <video autoplay muted loop playsinline>
-                        <source src="assets/ai-soc-demo.webm" type="video/webm">
-                        <source src="assets/ai-soc-demo.mp4" type="video/mp4">
-                    </video>
-                    <div class="showcase-overlay">
-                        <h3>AI-Powered SOC Pipeline</h3>
-                        <p>Real-time threat detection and automated response workflow demonstration</p>
-                    </div>
+                <div class="showcase-iframe">
+                    <iframe id="demoFrame" 
+                            src="assets/ai_penttest.html"
+                            width="100%"
+                            height="100%"
+                            scrolling="no"
+                            frameborder="0"
+                            style="border: none; border-radius: 10px; overflow: hidden;">
+                    </iframe>
                 </div>
             </div>
         </div>
     </section>
 
+    <script>
+        // Handle iframe loading
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.getElementById('demoFrame');
+            const showcaseContainer = document.querySelector('.showcase-iframe');
+            
+            iframe.addEventListener('load', function() {
+                this.classList.add('loaded');
+                showcaseContainer.classList.add('iframe-loaded');
+            });
+            
+            // Fallback to remove loading spinner after 3 seconds
+            setTimeout(() => {
+                iframe.classList.add('loaded');
+                showcaseContainer.classList.add('iframe-loaded');
+            }, 3000);
+        });
+    </script>
 <!-- Contact Section -->
 <section id="contact" class="contact">
     <div class="container">
