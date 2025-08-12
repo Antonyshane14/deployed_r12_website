@@ -1082,29 +1082,9 @@ section {
         transition: transform 0.3s ease !important;
     }
     
-    /* Staggered reveal on mobile only */
-    .case-study-card:nth-child(1).in-view {
-        transition-delay: 0.2s !important;
-    }
-    
-    .case-study-card:nth-child(2).in-view {
-        transition-delay: 0.4s !important;
-    }
-    
-    .case-study-card:nth-child(3).in-view {
-        transition-delay: 0.6s !important;
-    }
-    
-    .case-study-card:nth-child(4).in-view {
-        transition-delay: 0.8s !important;
-    }
-    
-    .case-study-card:nth-child(5).in-view {
-        transition-delay: 1.0s !important;
-    }
-    
-    .case-study-card:nth-child(6).in-view {
-        transition-delay: 1.2s !important;
+    /* Remove staggered delays - only one card active at a time */
+    .case-study-card.in-view {
+        transition-delay: 0s !important; /* No delays - immediate activation */
     }
     
     /* FORCE override any hover effects on mobile */
@@ -1135,6 +1115,36 @@ section {
     }
 }
 
+/* IMPORTANT: Make sure desktop styles are NOT affected */
+@media (min-width: 769px) {
+    /* Ensure desktop layout shows all 6 cards properly */
+    .case-studies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    /* Ensure desktop cards work normally */
+    .case-study-card {
+        pointer-events: auto; /* Make sure hover works on desktop */
+    }
+    
+    /* Remove any mobile classes that might interfere */
+    .case-study-card.in-view,
+    .case-study-card.leaving {
+        /* Reset any mobile-specific classes on desktop */
+    }
+}
+
+/* Large screen adjustments to ensure all 6 cards show */
+@media (min-width: 1200px) {
+    .case-studies-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
 /* IMPORTANT: Make sure desktop styles are NOT affected */
 @media (min-width: 769px) {
     /* Ensure desktop layout shows all 6 cards properly */
