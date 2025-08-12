@@ -536,7 +536,7 @@ section {
 .leaders-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
     margin-top: 1.5rem;
 }
 
@@ -840,9 +840,9 @@ section {
     height: 100%;
     object-fit: cover;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                filter 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth zoom + blur */
+                filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: block;
-    opacity: 0.8;
+    opacity: 0.5; /* Reduced from 0.8 for better text readability */
 }
 
 .case-study-card:hover .case-study-image img {
@@ -889,14 +889,14 @@ section {
 }
 
 .case-study-type {
-    color: var(--neon-green);
-    font-size: 0.9rem;
+    color: gold;
+    font-size: 1.3rem; /* Increased from 0.9rem */
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-}
+    margin-bottom: 1.2rem; /* Slightly more space */
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+ } 
 .case-study-type,
 .metric-value {
     color: gold;
@@ -973,6 +973,7 @@ section {
     font-size: 1.5rem;
     margin-bottom: 3.2rem;
     color: #fff;
+    text-align: left;
 }
 
 .case-study-content p {
@@ -1001,10 +1002,22 @@ section {
     .case-study-overlay {
         opacity: 0 !important;
     }
+        .case-study-overlay h3 {
+        font-size: 1.8rem; /* Slightly smaller on mobile but still larger than before */
+        margin-top: 0.8rem;
+        margin-bottom: 0.6rem;
+    }
+        .case-study-type {
+        font-size: 1.3rem; /* Increased from 0.75rem on mobile */
+        margin-bottom: 1rem;
+    }
+    
+   
     
     .case-study-image img {
         transform: scale(1) !important;
         filter: none !important;
+        opacity: 0.4 !important;
     }
     
     .case-study-content {
@@ -1173,6 +1186,17 @@ section {
         grid-template-columns: repeat(3, 1fr);
         max-width: 1400px;
         margin: 0 auto;
+    }
+}
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .case-study-overlay h3 {
+        font-size: 2rem;
+        margin-top: 0.8rem;
+    }
+    
+    .case-study-type {
+        font-size: 1.3rem;
     }
 }
 /* Trusted By Section */
