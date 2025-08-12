@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>Mock Security Workflow Demo (600×600)</title>
+<title>Mock Security Workflow Demo (Full Screen)</title>
 <style>
   :root{
     --bg:#0b1020; --text:#eaf2ff; --muted:#9fb3d6;
@@ -10,12 +10,131 @@
     --pink:#f472b6; --blue:#60a5fa; --green:#34d399; --yellow:#facc15; --orange:#fb923c; --purple:#a78bfa;
     --red:#ff5c5c; --blue-ok:#5bbcff;
   }
-  html,body{margin:0;height:100%;background:#111}
+  html,body{margin:0;padding:0;height:100vh;background:#111;overflow:hidden}
   #wf{
-    width:600px;height:600px;margin:16px auto;background:var(--bg);
-    border-radius:18px; position:relative; overflow:hidden;
+    width:100vw;height:100vh;background:var(--bg);
+    position:relative; overflow:hidden;
     box-shadow:0 12px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
     font:500 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    #wf {
+      font-size: 10px;
+    }
+    .hdr {
+      height: 35px;
+      padding: 0 8px;
+      font-size: 11px;
+    }
+    .controls {
+      top: 40px;
+      left: 8px;
+      right: 8px;
+      height: 28px;
+      gap: 6px;
+    }
+    .controls input {
+      height: 28px;
+      font-size: 11px;
+      padding: 0 8px;
+    }
+    .controls button {
+      height: 28px;
+      padding: 0 8px;
+      font-size: 11px;
+    }
+    .stage {
+      left: 8px;
+      bottom: 55px;
+      font-size: 11px;
+    }
+    .log {
+      left: 8px;
+      right: 8px;
+      bottom: -15px;
+      height: 45px;
+      padding: 6px 8px;
+    }
+    .log h4 {
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .log .item {
+      padding: 4px 6px;
+      margin-bottom: 4px;
+      font-size: 10px;
+    }
+    .sev {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+    .count-badge {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #wf {
+      font-size: 9px;
+    }
+    .hdr {
+      height: 32px;
+      padding: 0 6px;
+      font-size: 10px;
+    }
+    .tag {
+      font-size: 8px;
+      padding: 2px 4px;
+    }
+    .controls {
+      top: 36px;
+      left: 6px;
+      right: 6px;
+      height: 26px;
+      gap: 4px;
+    }
+    .controls input {
+      height: 26px;
+      font-size: 10px;
+      padding: 0 6px;
+    }
+    .controls button {
+      height: 26px;
+      padding: 0 6px;
+      font-size: 10px;
+    }
+    .stage {
+      left: 6px;
+      bottom: 45px;
+      font-size: 10px;
+    }
+    .log {
+      left: 6px;
+      right: 6px;
+      bottom: -10px;
+      height: 40px;
+      padding: 4px 6px;
+    }
+    .log h4 {
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .log .item {
+      padding: 3px 5px;
+      margin-bottom: 3px;
+      font-size: 9px;
+    }
+    .sev {
+      font-size: 8px;
+      padding: 1px 3px;
+    }
+    .count-badge {
+      font-size: 8px;
+      padding: 1px 3px;
+    }
   }
   .hdr{
     position:absolute; inset:0 0 auto 0; height:40px; display:flex; align-items:center; gap:8px; padding:0 12px;
@@ -33,9 +152,9 @@
     height:30px; padding:0 10px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
     background:rgba(255,255,255,.06); color:var(--text); cursor:pointer;
   }
-  .stage{position:absolute; left:12px; bottom:116px; color:var(--muted); font-weight:500}
+  .stage{position:absolute; left:12px; bottom:84px; color:var(--muted); font-weight:500}
   .log{
-    position:absolute; left:12px; right:12px; bottom:-20px; height:92px; overflow:auto;
+    position:absolute; left:12px; right:12px; bottom:-20px; height:60px; overflow:auto;
     background:#0b152c; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
   }
@@ -109,7 +228,7 @@
   };
 
   const NS="http://www.w3.org/2000/svg";
-  const svg = mk('svg',{viewBox:'0 0 600 600', width:'100%', height:'100%', preserveAspectRatio:'xMidYMid meet'});
+  const svg = mk('svg',{viewBox:'0 0 '+ window.innerWidth + ' ' + window.innerHeight, width:'100%', height:'100%', preserveAspectRatio:'xMidYMid meet'});
   host.appendChild(svg);
 
   const defs = mk('defs'); svg.appendChild(defs);
@@ -144,18 +263,28 @@
     ['ANALYZE','URL'] // if clean, restart from top
   ];
 
-  // visuals
+  // visuals - adjusted for full screen horizontal layout with mobile optimization
+  const centerY = window.innerHeight / 2;
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 480;
+  
+  const spacing = isMobile ? Math.min(120, window.innerWidth / 7) : Math.min(200, window.innerWidth / 7);
+  
   nodes.forEach((n,i)=>{
-    n.x = 100 + i*80 + (Math.random()*12-6);
-    n.y = n.kind==='input' ? 95 : n.kind==='output' ? 515 : 300 + (Math.random()*80-40);
+    n.x = (isMobile ? 60 : 100) + i*spacing + (Math.random()*8-4);
+    n.y = n.kind==='input' ? centerY - (isMobile ? 120 : 200) : n.kind==='output' ? centerY + (isMobile ? 120 : 200) : centerY + (Math.random()*(isMobile ? 50 : 80)-((isMobile ? 50 : 80)/2));
     n.vx = n.vy = 0;
 
     const g = mk('g'); nodeLayer.appendChild(g); n.g=g;
-    const w=160,h=30,r=10;
+    const w = isMobile ? (isSmallMobile ? 110 : 130) : 160;
+    const h = isMobile ? (isSmallMobile ? 24 : 26) : 30;
+    const r = isMobile ? 6 : 10;
+    const fontSize = isMobile ? (isSmallMobile ? 9 : 10) : 12;
+    
     n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w,height:h, fill:'#101a33', stroke:'rgba(255,255,255,.08)', 'stroke-width':1, filter:'url(#glow)'});
-    const bar = mk('rect',{x:-w/2,y:-h/2,width:4,height:h,fill:n.color,opacity:.95});
-    const label = tspan(-w/2+10,4,n.label,12,COLORS.text,700);
-    const chip  = pill(w/2-38,-h/2+15,n.chip);
+    const bar = mk('rect',{x:-w/2,y:-h/2,width:3,height:h,fill:n.color,opacity:.95});
+    const label = tspan(-w/2+8,3,n.label,fontSize,COLORS.text,700);
+    const chip = pill(w/2-(isMobile ? 28 : 38),3,n.chip, isMobile);
     g.append(n.box, bar, label, chip);
 
     if (n.id==='DISC'){ // orange endpoint counter badge
@@ -173,12 +302,23 @@
   });
 
   // token
-  const token = mk('circle',{r:6, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
-  const halo  = mk('circle',{r:16, fill:'none', stroke:COLORS.accent, 'stroke-width':2, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
+  const tokenSize = isMobile ? (isSmallMobile ? 4 : 5) : 6;
+  const haloSize = isMobile ? (isSmallMobile ? 12 : 14) : 16;
+  
+  const token = mk('circle',{r:tokenSize, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
+  const halo  = mk('circle',{r:haloSize, fill:'none', stroke:COLORS.accent, 'stroke-width':isMobile ? 1.5 : 2, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
   moveTokenTo(by('URL'));
 
-  // physics (vis-like)
-  const SPR=0.02, LEN=150, REP=11000, DAMP=0.85, PULL=0.0015, TOP=95, BOT=515;
+  // physics (vis-like) - adjusted for full screen with mobile optimization
+  const SPR=0.02;
+  const LEN=spacing*1.2;
+  const REP = isMobile ? 8000 : 15000;
+  const DAMP=0.85;
+  const PULL = isMobile ? 0.002 : 0.0015;
+  const TOP = centerY - (isMobile ? 120 : 200);
+  const BOT = centerY + (isMobile ? 120 : 200);
+  const margin = isMobile ? 40 : 80;
+  
   function physics(){
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
@@ -194,12 +334,12 @@
       a.vx += nx*f; a.vy += ny*f; b.vx -= nx*f; b.vy -= ny*f;
     });
     nodes.forEach(n=>{
-      n.vx += (300-n.x)*PULL;
+      n.vx += (window.innerWidth/2-n.x)*PULL;
       if(n.kind==='input') n.vy += (TOP-n.y)*0.04;
       else if(n.kind==='output') n.vy += (BOT-n.y)*0.04;
-      else n.vy += (300-n.y)*0.004;
+      else n.vy += (centerY-n.y)*0.004;
       n.vx*=DAMP; n.vy*=DAMP; n.x+=n.vx*0.016; n.y+=n.vy*0.016;
-      n.x=Math.max(50,Math.min(550,n.x)); n.y=Math.max(70,Math.min(560,n.y));
+      n.x=Math.max(margin,Math.min(window.innerWidth-margin,n.x)); n.y=Math.max(isMobile ? 80 : 100,Math.min(window.innerHeight-(isMobile ? 90 : 120),n.y));
     });
   }
   function render(){
@@ -212,9 +352,12 @@
 
   // packets
   function packets(from,to,count=6,dur=STEP_MS,color=COLORS.accent){
-    for(let i=0;i<count;i++){
-      const p = mk('circle',{r:2.5, fill:color, opacity:0.9}); packetLayer.appendChild(p);
-      const start = performance.now()+ i*60;
+    const packetCount = isMobile ? Math.max(3, count-2) : count;
+    const packetSize = isMobile ? 1.8 : 2.5;
+    
+    for(let i=0;i<packetCount;i++){
+      const p = mk('circle',{r:packetSize, fill:color, opacity:0.9}); packetLayer.appendChild(p);
+      const start = performance.now()+ i*(isMobile ? 80 : 60);
       const tick = now=>{
         const t = Math.min(1,(now-start)/dur);
         const x = lerp(from.x,to.x,ease(t)), y = lerp(from.y,to.y,ease(t));
@@ -225,16 +368,119 @@
     }
   }
   function move(from,to,dur=STEP_MS,cb){
-    const start = performance.now();
-    const go = now=>{
-      const t = Math.min(1,(now-start)/dur);
-      const x = lerp(from.x,to.x,ease(t)), y = lerp(from.y,to.y,ease(t));
-      token.setAttribute('cx',x); token.setAttribute('cy',y);
-      halo.setAttribute('cx',x);  halo.setAttribute('cy',y);
-      if(t<1) requestAnimationFrame(go);
-      else { halo.animate([{r:14,opacity:.22},{r:20,opacity:.10},{r:14,opacity:.20}],{duration:600,iterations:1,easing:'ease-in-out'}); cb && cb(); }
+    // Cancel any existing animation
+    if(activeAnimation) {
+      cancelAnimationFrame(activeAnimation);
+      activeAnimation = null;
+    }
+    
+    // Set up animation state
+    animationState = {
+      isActive: true,
+      startTime: performance.now(),
+      duration: dur,
+      fromNode: from,
+      toNode: to,
+      callback: cb,
+      pausedAt: 0,
+      pausedProgress: 0
     };
-    requestAnimationFrame(go);
+    
+    const animate = (now) => {
+      if(paused) {
+        // Store pause information
+        animationState.pausedAt = now;
+        animationState.pausedProgress = Math.min(1, (now - animationState.startTime) / dur);
+        activeAnimation = null;
+        return;
+      }
+      
+      const elapsed = now - animationState.startTime;
+      const t = Math.min(1, elapsed / dur);
+      
+      const x = lerp(from.x, to.x, ease(t));
+      const y = lerp(from.y, to.y, ease(t));
+      token.setAttribute('cx', x);
+      token.setAttribute('cy', y);
+      halo.setAttribute('cx', x);
+      halo.setAttribute('cy', y);
+      
+      if(t < 1) {
+        activeAnimation = requestAnimationFrame(animate);
+      } else {
+        // Animation complete
+        activeAnimation = null;
+        animationState.isActive = false;
+        halo.animate([
+          {r:haloSize-2,opacity:.22},
+          {r:haloSize+4,opacity:.10},
+          {r:haloSize,opacity:.20}
+        ], {duration:isMobile ? 400 : 600, iterations:1, easing:'ease-in-out'});
+        
+        if(cb && !paused) cb();
+      }
+    };
+    
+    activeAnimation = requestAnimationFrame(animate);
+  }
+  
+  function resumeAnimation() {
+    if(!animationState.isActive || !animationState.fromNode || !animationState.toNode) return;
+    
+    const remainingProgress = 1 - animationState.pausedProgress;
+    if(remainingProgress <= 0.01) {
+      // Animation was nearly complete, just finish it
+      animationState.isActive = false;
+      if(animationState.callback) animationState.callback();
+      return;
+    }
+    
+    const remainingDuration = animationState.duration * remainingProgress;
+    const resumeStartTime = performance.now();
+    
+    const animate = (now) => {
+      if(paused) {
+        // Paused again during resume
+        const newElapsed = now - resumeStartTime;
+        const newProgress = Math.min(1, newElapsed / remainingDuration);
+        animationState.pausedProgress = animationState.pausedProgress + newProgress * remainingProgress;
+        animationState.pausedAt = now;
+        activeAnimation = null;
+        return;
+      }
+      
+      const elapsed = now - resumeStartTime;
+      const t = Math.min(1, elapsed / remainingDuration);
+      const totalProgress = animationState.pausedProgress + t * remainingProgress;
+      
+      const x = lerp(animationState.fromNode.x, animationState.toNode.x, ease(totalProgress));
+      const y = lerp(animationState.fromNode.y, animationState.toNode.y, ease(totalProgress));
+      token.setAttribute('cx', x);
+      token.setAttribute('cy', y);
+      halo.setAttribute('cx', x);
+      halo.setAttribute('cy', y);
+      
+      if(t < 1) {
+        activeAnimation = requestAnimationFrame(animate);
+      } else {
+        // Animation complete
+        activeAnimation = null;
+        animationState.isActive = false;
+        halo.animate([
+          {r:haloSize-2,opacity:.22},
+          {r:haloSize+4,opacity:.10},
+          {r:haloSize,opacity:.20}
+        ], {duration:isMobile ? 400 : 600, iterations:1, easing:'ease-in-out'});
+        
+        if(animationState.callback) {
+          const cb = animationState.callback;
+          animationState.callback = null;
+          cb();
+        }
+      }
+    };
+    
+    activeAnimation = requestAnimationFrame(animate);
   }
   function moveTokenTo(n){ token.setAttribute('cx',n.x); token.setAttribute('cy',n.y); halo.setAttribute('cx',n.x); halo.setAttribute('cy',n.y); }
 
@@ -244,6 +490,18 @@
   const endpointsKinds = ['form','api','upload','search','redirect','admin'];
   let paused=false, running=false;
   let epTotal=0, epLeft=0;
+  let currentTimeout = null;
+  let activeAnimation = null;
+  let animationState = {
+    isActive: false,
+    startTime: 0,
+    duration: 0,
+    fromNode: null,
+    toNode: null,
+    callback: null,
+    pausedAt: 0,
+    pausedProgress: 0
+  };
 
   function reset(){
     logItems.innerHTML='';
@@ -252,6 +510,29 @@
     stage.textContent='Ready (mock)';
     moveTokenTo(by('URL'));
     hideBadge();
+    running=false;
+    paused=false;
+    
+    // Clear everything
+    if(activeAnimation) {
+      cancelAnimationFrame(activeAnimation);
+      activeAnimation = null;
+    }
+    if(currentTimeout) {
+      clearTimeout(currentTimeout);
+      currentTimeout = null;
+    }
+    
+    animationState = {
+      isActive: false,
+      startTime: 0,
+      duration: 0,
+      fromNode: null,
+      toNode: null,
+      callback: null,
+      pausedAt: 0,
+      pausedProgress: 0
+    };
   }
 
   function start(){
@@ -270,9 +551,10 @@
   }
 
   function aiPick(){
+    if(paused) return;
     if (epLeft<=0){ // finished a cycle → rediscover new set
       stage.textContent='Cycle complete. Rescanning…';
-      setTimeout(discover, 600);
+      currentTimeout = setTimeout(discover, 600);
       return;
     }
     const DISC = by('DISC'), AI = by('AI');
@@ -285,9 +567,11 @@
   }
 
   function toolRun(tool){
+    if(paused) return;
     const AI = by('AI'), TOOL = by('TOOL'), ANALYZE = by('ANALYZE');
     packets(AI, TOOL, 6, STEP_MS, COLORS.purple);
     move(AI, TOOL, STEP_MS, ()=>{
+      if(paused) return;
       // RANDOM OUTCOME
       const found = Math.random() < FIND_PROB;
       const color = found ? COLORS.red : COLORS.blueok;
@@ -296,18 +580,23 @@
       // packets to analyze, then branch
       packets(TOOL, ANALYZE, 10, STEP_MS, color);
       move(TOOL, ANALYZE, STEP_MS, ()=>{
+        if(paused) return;
         epLeft--; showBadge(epLeft);
         if(found){
           const L = by('LOG');
           logVuln(urlIn.value, randOf(vulns), tool);
           stage.textContent=`Found vuln via ${tool} — logging & continuing…`;
           packets(ANALYZE, L, 6, STEP_MS*0.8, COLORS.red);
-          move(ANALYZE, L, STEP_MS*0.8, ()=> setTimeout(aiPick, 500)); // continue hunting
+          move(ANALYZE, L, STEP_MS*0.8, ()=> {
+            if(!paused) currentTimeout = setTimeout(aiPick, 500);
+          }); // continue hunting
         }else{
           stage.textContent=`Clean with ${tool}. Restarting from top…`;
           const URL = by('URL');
           packets(ANALYZE, URL, 8, STEP_MS, COLORS.blueok);
-          move(ANALYZE, URL, STEP_MS, ()=> setTimeout(discover, 300)); // restart discover
+          move(ANALYZE, URL, STEP_MS, ()=> {
+            if(!paused) currentTimeout = setTimeout(discover, 300);
+          }); // restart discover
         }
       });
     });
@@ -351,16 +640,35 @@
 
   // controls
   startBtn.onclick = ()=>{ reset(); start(); };
-  pauseBtn.onclick = ()=>{ paused=!paused; pauseBtn.textContent = paused?'Resume':'Pause'; };
+  pauseBtn.onclick = ()=>{ 
+    paused = !paused; 
+    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+    
+    if(currentTimeout) {
+      clearTimeout(currentTimeout);
+      currentTimeout = null;
+    }
+    
+    if(!paused && running) {
+      // Resume the animation from where it was paused
+      resumeAnimation();
+    }
+  };
+
+  // Handle window resize
+  function handleResize() {
+    svg.setAttribute('viewBox', '0 0 ' + window.innerWidth + ' ' + window.innerHeight);
+  }
+  window.addEventListener('resize', handleResize);
 
   // utils
   function by(id){ return nodes.find(n=>n.id===id); }
   function nd(id,label,chip,color,kind){ return {id,label,chip,color,kind}; }
   function mk(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
   function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||500}); t.textContent=txt; return t; }
-  function pill(x,y,text){ const g=mk('g'); const w=44,h=16,r=6;
+  function pill(x,y,text,mobile){ const g=mk('g'); const w=mobile ? (isSmallMobile ? 32 : 38) : 44, h=mobile ? (isSmallMobile ? 12 : 14) : 16, r=mobile ? 4 : 6;
     g.appendChild(mk('rect',{x:x-w/2,y:y-h/2,rx:r,ry:r,width:w,height:h,fill:'rgba(255,255,255,.06)',stroke:'rgba(255,255,255,.12)','stroke-width':1}));
-    const t=tspan(x,y,text,10,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;
+    const t=tspan(x,y,text,mobile ? (isSmallMobile ? 7 : 8) : 10,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;
   }
   function lerp(a,b,t){ return a+(b-a)*t; }
   function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
