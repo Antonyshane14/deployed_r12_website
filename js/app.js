@@ -455,19 +455,20 @@ function fallbackHeroAnimation() {
     }, 1200);
 }
 
-// Mobile-friendly scroll animations
+// Enhanced Mobile-friendly scroll animations with Intersection Observer
 function initializeMobileAnimations() {
-    console.log('Initializing mobile animations...');
+    console.log('Initializing enhanced mobile animations...');
     
-    // Simple CSS-based animations for mobile
+    // Enhanced CSS for mobile animations
     const style = document.createElement('style');
     style.textContent = `
         /* Mobile animation classes */
         @media (max-width: 768px) {
+            /* Base animation states */
             .mobile-fade-in {
                 opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.5s ease, transform 0.5s ease;
+                transform: translateY(30px);
+                transition: opacity 0.6s ease, transform 0.6s ease;
             }
             
             .mobile-fade-in.visible {
@@ -475,71 +476,253 @@ function initializeMobileAnimations() {
                 transform: translateY(0);
             }
             
-            .service-card, .case-study-card, .leader-card {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            .mobile-slide-left {
+                opacity: 0;
+                transform: translateX(-40px);
+                transition: opacity 0.7s ease, transform 0.7s ease;
+            }
+            
+            .mobile-slide-left.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            
+            .mobile-slide-right {
+                opacity: 0;
+                transform: translateX(40px);
+                transition: opacity 0.7s ease, transform 0.7s ease;
+            }
+            
+            .mobile-slide-right.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            
+            .mobile-scale-in {
+                opacity: 0;
+                transform: scale(0.8);
+                transition: opacity 0.6s ease, transform 0.6s ease;
+            }
+            
+            .mobile-scale-in.visible {
+                opacity: 1;
+                transform: scale(1);
+            }
+            
+            .mobile-rotate-in {
+                opacity: 0;
+                transform: rotateY(20deg) translateY(20px);
+                transition: opacity 0.8s ease, transform 0.8s ease;
+            }
+            
+            .mobile-rotate-in.visible {
+                opacity: 1;
+                transform: rotateY(0deg) translateY(0);
+            }
+            
+            /* Staggered animations */
+            .mobile-stagger-1 { transition-delay: 0.1s; }
+            .mobile-stagger-2 { transition-delay: 0.2s; }
+            .mobile-stagger-3 { transition-delay: 0.3s; }
+            .mobile-stagger-4 { transition-delay: 0.4s; }
+            .mobile-stagger-5 { transition-delay: 0.5s; }
+            .mobile-stagger-6 { transition-delay: 0.6s; }
+            
+            /* Enhanced touch feedback */
+            .service-card, .case-study-card, .leader-card, .contact-method {
+                transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             }
             
             .service-card:active, .case-study-card:active, .leader-card:active {
-                transform: scale(0.98);
+                transform: scale(0.95);
+                box-shadow: 0 2px 10px rgba(0, 255, 136, 0.2);
             }
             
-            /* Pulse effect for floating contact */
+            /* Floating contact enhanced */
             .floating-contact.visible {
-                animation: mobilePulse 2s infinite;
+                animation: mobilePulse 3s infinite;
             }
             
             @keyframes mobilePulse {
                 0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
+                50% { transform: scale(1.1); }
             }
             
-            /* Subtle hover effects for mobile */
+            /* Button enhancements */
             .btn:active {
                 transform: scale(0.95);
                 transition: transform 0.1s ease;
+            }
+            
+            /* Section headers */
+            .section-header {
+                opacity: 0;
+                transform: translateY(25px);
+                transition: opacity 0.7s ease, transform 0.7s ease;
+            }
+            
+            .section-header.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     `;
     document.head.appendChild(style);
     
-    // Add mobile animation classes to elements
-    const animatedElements = document.querySelectorAll('[data-reveal], .service-card, .case-study-card, .leader-card');
-    
-    animatedElements.forEach(element => {
-        element.classList.add('mobile-fade-in');
-    });
-    
-    // Intersection observer for mobile animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+    // Enhanced element selection and animation assignment
+    function setupMobileAnimations() {
+        // Section headers
+        const sectionHeaders = document.querySelectorAll('h2, .section-title, .hero-title');
+        sectionHeaders.forEach((header, index) => {
+            if (!header.classList.contains('mobile-fade-in')) {
+                header.classList.add('section-header');
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '50px'
-    });
+        
+        // Service cards with staggered animation
+        const serviceCards = document.querySelectorAll('.service-card');
+        serviceCards.forEach((card, index) => {
+            card.classList.add('mobile-scale-in', `mobile-stagger-${(index % 6) + 1}`);
+        });
+        
+        // Case study cards with slide effect
+        const caseStudyCards = document.querySelectorAll('.case-study-card');
+        caseStudyCards.forEach((card, index) => {
+            if (index % 2 === 0) {
+                card.classList.add('mobile-slide-left', `mobile-stagger-${(index % 4) + 1}`);
+            } else {
+                card.classList.add('mobile-slide-right', `mobile-stagger-${(index % 4) + 1}`);
+            }
+        });
+        
+        // Leader cards with rotate effect
+        const leaderCards = document.querySelectorAll('.leader-card');
+        leaderCards.forEach((card, index) => {
+            card.classList.add('mobile-rotate-in', `mobile-stagger-${(index % 4) + 1}`);
+        });
+        
+        // Contact methods
+        const contactMethods = document.querySelectorAll('.contact-method, .contact-option');
+        contactMethods.forEach((method, index) => {
+            method.classList.add('mobile-fade-in', `mobile-stagger-${(index % 3) + 1}`);
+        });
+        
+        // General elements with data-reveal
+        const revealElements = document.querySelectorAll('[data-reveal]');
+        revealElements.forEach((element, index) => {
+            if (!element.classList.contains('mobile-scale-in') && 
+                !element.classList.contains('mobile-slide-left') && 
+                !element.classList.contains('mobile-slide-right') &&
+                !element.classList.contains('mobile-rotate-in')) {
+                element.classList.add('mobile-fade-in');
+            }
+        });
+        
+        // Paragraphs and text content
+        const textElements = document.querySelectorAll('p, .text-content, .description');
+        textElements.forEach((element, index) => {
+            if (!element.classList.contains('mobile-fade-in')) {
+                element.classList.add('mobile-fade-in');
+            }
+        });
+        
+        // Buttons and CTAs
+        const buttons = document.querySelectorAll('.btn, .cta-button');
+        buttons.forEach((button, index) => {
+            if (!button.classList.contains('mobile-scale-in')) {
+                button.classList.add('mobile-scale-in', `mobile-stagger-${(index % 3) + 1}`);
+            }
+        });
+    }
+    
+    // Enhanced Intersection Observer with better options
+    function createMobileObserver() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '50px 0px -20px 0px' // Start animation before element is fully visible
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add visible class to trigger animation
+                    entry.target.classList.add('visible');
+                    
+                    // Optional: Keep observing for repeated animations
+                    // Comment out the next line if you want animations to repeat
+                    observer.unobserve(entry.target);
+                    
+                    console.log('Mobile animation triggered for:', entry.target.className);
+                }
+            });
+        }, observerOptions);
+        
+        return observer;
+    }
+    
+    // Initialize everything
+    setupMobileAnimations();
+    const observer = createMobileObserver();
+    
+    // Observe all animated elements
+    const animatedElements = document.querySelectorAll(`
+        .mobile-fade-in,
+        .mobile-slide-left,
+        .mobile-slide-right,
+        .mobile-scale-in,
+        .mobile-rotate-in,
+        .section-header
+    `);
+    
+    console.log(`Observing ${animatedElements.length} elements for mobile animations`);
     
     animatedElements.forEach(element => {
         observer.observe(element);
     });
     
-    // Add touch feedback
+    // Enhanced touch feedback
     document.addEventListener('touchstart', (e) => {
-        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card, .leader-card')) {
             e.target.style.transform = 'scale(0.95)';
+            e.target.style.transition = 'transform 0.1s ease';
         }
-    });
+    }, { passive: true });
     
     document.addEventListener('touchend', (e) => {
-        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card')) {
+        if (e.target.matches('.btn, .contact-method, .service-card, .case-study-card, .leader-card')) {
             setTimeout(() => {
                 e.target.style.transform = '';
+                e.target.style.transition = '';
             }, 150);
         }
-    });
+    }, { passive: true });
+    
+    // Special animation for hero elements on mobile
+    if (isMobile()) {
+        const heroElements = document.querySelectorAll('#hero-company-name, #hero-tagline, #hero-subtitle, #hero-cta');
+        heroElements.forEach((element, index) => {
+            if (!element.classList.contains('visible')) {
+                element.classList.add('mobile-fade-in');
+                setTimeout(() => {
+                    element.classList.add('visible');
+                }, 300 + (index * 200));
+            }
+        });
+    }
+    
+    console.log('Enhanced mobile animations initialized successfully');
+}
+function initializeEnhancedMobile() {
+    if (isMobile()) {
+        console.log('Mobile device detected - initializing enhanced animations');
+        initializeMobileAnimations();
+    } else {
+        console.log('Desktop device - using existing animations');
+        // Your existing desktop animations remain unchanged
+        if (typeof gsap !== 'undefined') {
+            initializeScrollAnimations();
+        }
+    }
 }
 
 // Enhanced scroll animations for desktop
@@ -843,12 +1026,18 @@ function initialize() {
             initializeHeroAnimations();
         }, 100);
         
-        // Only add scroll animations on desktop if GSAP is available
-        if (!isMobile() && typeof gsap !== 'undefined') {
-            setTimeout(() => {
-                initializeScrollAnimations();
-            }, 200);
-        }
+        // UPDATED: Use enhanced mobile/desktop detection
+        setTimeout(() => {
+            if (isMobile()) {
+                console.log('Mobile device - using enhanced scroll animations');
+                initializeMobileAnimations(); // This will be your new enhanced function
+            } else {
+                console.log('Desktop device - using existing GSAP animations');
+                if (typeof gsap !== 'undefined') {
+                    initializeScrollAnimations();
+                }
+            }
+        }, 200);
         
         isInitialized = true;
         console.log('Website initialized successfully');
@@ -856,8 +1045,91 @@ function initialize() {
     } catch (error) {
         console.error('Initialization error:', error);
     }
+}function autoAssignAnimationClasses() {
+    // This function will automatically add the right animation classes
+    // to elements based on their type and position
+    
+    // Service cards
+    document.querySelectorAll('.service-card').forEach((card, index) => {
+        card.classList.add('mobile-scale-in', `mobile-stagger-${(index % 6) + 1}`);
+    });
+    
+    // Case study cards - alternate slide directions
+    document.querySelectorAll('.case-study-card').forEach((card, index) => {
+        if (index % 2 === 0) {
+            card.classList.add('mobile-slide-left');
+        } else {
+            card.classList.add('mobile-slide-right');
+        }
+        card.classList.add(`mobile-stagger-${(index % 4) + 1}`);
+    });
+    
+    // Leader cards
+    document.querySelectorAll('.leader-card').forEach((card, index) => {
+        card.classList.add('mobile-rotate-in', `mobile-stagger-${(index % 4) + 1}`);
+    });
+    
+    // Section headers
+    document.querySelectorAll('h2, h3, .section-title').forEach(header => {
+        header.classList.add('section-header');
+    });
+    
+    // Paragraphs and content
+    document.querySelectorAll('p, .description, .text-content').forEach(element => {
+        element.classList.add('mobile-fade-in');
+    });
+    
+    // Buttons
+    document.querySelectorAll('.btn, .cta-button').forEach((btn, index) => {
+        btn.classList.add('mobile-scale-in', `mobile-stagger-${(index % 3) + 1}`);
+    });
+    
+    // Contact methods
+    document.querySelectorAll('.contact-method, .contact-option').forEach((method, index) => {
+        method.classList.add('mobile-fade-in', `mobile-stagger-${(index % 3) + 1}`);
+    });
 }
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-assign animation classes first
+    if (isMobile()) {
+        autoAssignAnimationClasses();
+    }
+    
+    // Then initialize everything
+    initialize();
+    
+    // Your existing mobile menu code
+    setTimeout(function() {
+        const navToggle = document.getElementById('nav-hamburger');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (navToggle && navMenu) {
+            navToggle.onclick = function(e) {
+                e.preventDefault();
+                console.log('Mobile menu working!');
+                navToggle.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            };
+        }
+    }, 100);
+});
 
+// STEP 4: Optional - Add this function to manually trigger animations for testing
+window.testMobileAnimations = function() {
+    console.log('Testing mobile animations...');
+    
+    // Remove all visible classes
+    document.querySelectorAll('.visible').forEach(el => {
+        el.classList.remove('visible');
+    });
+    
+    // Re-initialize
+    setTimeout(() => {
+        if (isMobile()) {
+            initializeMobileAnimations();
+        }
+    }, 100);
+};
 // Handle clicks outside mobile menu
 document.addEventListener('click', (e) => {
     const navMenu = document.getElementById('nav-menu');
