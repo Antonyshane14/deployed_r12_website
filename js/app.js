@@ -41,14 +41,21 @@ function initializeNavigation() {
         }
     }, { passive: true });
     
-    // Mobile menu toggle
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-    }
+// // Mobile menu toggle - CLEAN VERSION
+// document.addEventListener('DOMContentLoaded', function() {
+//     const navToggle = document.getElementById('nav-hamburger');
+//     const navMenu = document.getElementById('nav-menu');
+    
+//     if (navToggle && navMenu) {
+//         // Remove any existing listeners
+//         navToggle.onclick = function(e) {
+//             e.preventDefault();
+//             console.log('Mobile menu toggle clicked');
+//             navToggle.classList.toggle('active');
+//             navMenu.classList.toggle('active');
+//         };
+//     }
+// });
     
     // Navigation links
     navLinks.forEach(link => {
@@ -925,4 +932,22 @@ console.log('Rapture Twelve JavaScript loaded successfully');
 document.addEventListener("DOMContentLoaded", () => {
     initializeNavigation();
     updateActiveNav(); // highlight correct menu at start
+});
+// MOBILE MENU - FINAL VERSION (Add at the very end)
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit to ensure everything else is loaded
+    setTimeout(function() {
+        const navToggle = document.getElementById('nav-hamburger');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (navToggle && navMenu) {
+            // Clear any existing handlers
+            navToggle.onclick = function(e) {
+                e.preventDefault();
+                console.log('Mobile menu working!');
+                navToggle.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            };
+        }
+    }, 100);
 });
