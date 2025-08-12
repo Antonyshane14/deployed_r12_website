@@ -1,4 +1,4 @@
-/* Rest and Base Styles */
+/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -644,7 +644,7 @@ section {
     font-size: 0.95rem;
     /* line-height: 1.4rem; keep readable but compact */
     color: #ddd;
-    text-align: center;
+    text-align: justify;
 }
 /* Contact Info */
 .leader-contact {
@@ -665,6 +665,7 @@ section {
     color: #66d9ff;
 }
 
+
 /* Mobile */
 @media (max-width: 768px) {
     .leaders-grid {
@@ -674,7 +675,11 @@ section {
         text-align: left;
         align-items: flex-start;
     }
+    .section-subtitle_a {
+        text-align: justify;
+    }
 }
+
 
 
 /* Services Section */
@@ -976,90 +981,143 @@ section {
 }
 
 /* Mobile optimizations */
+/* Mobile-specific case study auto-reveal on scroll */
+/* Auto-trigger existing hover effects on scroll for mobile */
+/* COMPLETE FIXED CSS FOR YOUR CASE STUDIES */
 @media (max-width: 768px) {
-    .service-card {
-        opacity: 1 !important; /* Always visible */
-        transform: none !important; /* Remove translateY */
-        cursor: default; /* No pointer hand on mobile */
-        transition: none !important; /* Kill animations */
+    /* Remove click/touch behavior, we'll handle with scroll */
+    .case-study-card {
+        pointer-events: none;
     }
-
-    .service-card:hover {
-        transform: none;
-        border-color: var(--steel);
+    
+    /* Base state - cards start normal */
+    .case-study-card {
+        transform: translateY(0);
         box-shadow: none;
-    }
-
-    .service-icon {
-        transform: none !important;
-        background: var(--medium-gray);
         border-color: var(--steel);
-        color: var(--silver);
-        transition: none !important;
-    }
-
-    .service-card:hover .service-icon {
-        background: var(--medium-gray);
-        border-color: var(--steel);
-        color: var(--silver);
-        transform: none;
-    }
-
-    /* Make service details always visible */
-    .service-details {
-        opacity: 1 !important;
-        max-height: none !important;
-        overflow: visible !important;
-        transition: none !important;
-    }
-}
-
-
-/* Tablet adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .case-studies-grid {
-        grid-template-columns: repeat(2, 1fr);
     }
     
-    .case-study-card {
-        width: 350px;
-        height: 450px;
-    }
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-    .case-studies-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        justify-items: center; /* Center single column cards */
+    .case-study-overlay {
+        opacity: 0;
     }
     
-    .case-study-card {
-        height: auto; /* Let it adapt to content/image ratio */
-        min-height: 400px; /* Optional */
-        max-width: 100%;
-    }
-
     .case-study-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        transform: scale(1);
+        filter: none;
     }
-    .case-study-card:focus {
-    outline: none; /* Remove default browser outline */
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* gold glow */
-    border-color: gold;
-}
-}
-/* Large screen adjustments */
-@media (min-width: 1200px) {
-    .case-studies-grid {
-        grid-template-columns: repeat(3, 1fr);
+    
+    .case-study-content {
+        transform: translateY(60%);
+    }
+    
+    /* When card is in viewport, apply ALL hover styles automatically */
+    .case-study-card.in-view {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-prominent);
+        border-color: var(--silver);
+    }
+    
+    .case-study-card.in-view .case-study-overlay {
+        opacity: 1;
+    }
+    
+    .case-study-card.in-view .case-study-image img {
+        transform: scale(1.25);
+        filter: blur(2px);
+    }
+    
+    .case-study-card.in-view .case-study-content {
+        transform: translateY(0);
+    }
+    
+    /* Smooth transitions for the auto-applied hover effects */
+    .case-study-card {
+        transition: all 0.4s ease;
+    }
+    
+    .case-study-overlay {
+        transition: opacity 0.4s ease;
+    }
+    
+    .case-study-image img {
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .case-study-content {
+        transition: transform 0.4s ease;
+    }
+    
+    /* Slower entrance when scrolling into view */
+    .case-study-card.in-view {
+        transition: all 0.8s ease;
+    }
+    
+    .case-study-card.in-view .case-study-overlay {
+        transition: opacity 0.8s ease;
+    }
+    
+    .case-study-card.in-view .case-study-image img {
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .case-study-card.in-view .case-study-content {
+        transition: transform 0.8s ease;
+    }
+    
+    /* Faster exit when scrolling out of view - FIXED SYNTAX */
+    .case-study-card.leaving {
+        transition: all 0.3s ease !important;
+    }
+    
+    .case-study-card.leaving .case-study-overlay {
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .case-study-card.leaving .case-study-image img {
+        transition: transform 0.3s ease, filter 0.3s ease !important; /* FIXED - comma separated */
+    }
+    
+    .case-study-card.leaving .case-study-content {
+        transition: transform 0.3s ease !important;
+    }
+    
+    /* Staggered reveal using animation delays - only for entrance */
+    .case-study-card:nth-child(1).in-view {
+        transition-delay: 0.2s;
+    }
+    
+    .case-study-card:nth-child(2).in-view {
+        transition-delay: 0.4s;
+    }
+    
+    .case-study-card:nth-child(3).in-view {
+        transition-delay: 0.6s;
+    }
+    
+    .case-study-card:nth-child(4).in-view {
+        transition-delay: 0.8s;
+    }
+    
+    /* Override any existing hover styles to prevent conflicts */
+    .case-study-card:hover {
+        transform: translateY(0);
+        box-shadow: none;
+        border-color: var(--steel);
+    }
+    
+    .case-study-card:hover .case-study-overlay {
+        opacity: 0;
+    }
+    
+    .case-study-card:hover .case-study-image img {
+        transform: scale(1);
+        filter: none;
+    }
+    
+    .case-study-card:hover .case-study-content {
+        transform: translateY(60%);
     }
 }
-
-
 /* Trusted By Section */
 .trusted-by {
     background: var(--primary-black);
@@ -2629,7 +2687,7 @@ section {
 .footer-contact {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1.65rem;
     flex: 1;
     min-width: 280px;
     text-align: right;
