@@ -55,8 +55,9 @@
                 <li class="nav-item">
                     <a href="#services" class="nav-link">Services</a>
                 </li>
-               
-
+                <li class="nav-item">
+                    <a href="#innovation" class="nav-link">Innovation</a>
+                </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link">Contact</a>
                 </li>
@@ -125,8 +126,9 @@
         <p class="leader-bio">
 A Strategic Cybersecurity Leader specializing in Offensive Security and Advanced Malware Research, blending deep Technical Expertise with AI/ML-driven Innovation to engineer proactive, self-adapting Defense Systems. Currently pursuing a B.Tech at NIT Rourkela, recognized for multiple National Hackathon wins and Competitive CTF Championships, demonstrating proven excellence in Offensive and Defensive Security.
         </p>
-        <div style="margin-top: 1.2rem;" class="leader-contact">
-          <a href="tel:+919790791723">+91 97907 91723</a><br>
+        <div class="leader-contact">
+          <a style="margin-top: 3.5rem; display: block;" href="tel:+919790791723">+91 97907 91723</a>
+
           <a href="mailto:antonyshane@rapturetwelve.com">antonyshane@rapturetwelve.com</a>
         </div>
       </div>
@@ -138,7 +140,7 @@ A Strategic Cybersecurity Leader specializing in Offensive Security and Advanced
         <p class="leader-bio">
 Driving operational excellence and strategic growth through astute leadership and a results-driven mindset. A dynamic leader with a natural aptitude for optimizing workflows, translating business vision into streamlined, high-performing realities. Recognized for cultivating efficiency and focused execution that delivers tangible success from ideation to implementation.        </p>
         <br><br><div class="leader-contact">
-          <a href="tel:+918925126949">+91 89251 26949</a><br>
+          <a style="margin-top: 2rem; display: block;" href="tel:+918925126949">+91 89251 26949</a>
           <a href="mailto:kruthinvinay@rapturetwelve.com">kruthinvinay@rapturetwelve.com</a>
         </div>
       </div>
@@ -149,7 +151,7 @@ Driving operational excellence and strategic growth through astute leadership an
         <p class="leader-title">Principal Scientist</p>
         <p class="leader-bio">
 Leading applied research in AI and advanced ML systems, blending full-stack engineering with automation to deliver scalable, intelligent solutions. A scientist experienced in robotics and medical device innovation, driving impactful projects from concept to production. An NIT Puducherry alumnus recognized for advancing cutting-edge technologies and practical applications of emerging research.        <div class="leader-contact">
-          <br><a href="tel:+918870779612">+91 88707 79612</a><br>
+          <br><a style="margin-top: 2rem; display: block;" href="tel:+918870779612">+91 88707 79612</a>
           <a href="mailto:olevester@rapturetwelve.com">olevester@rapturetwelve.com</a>
         </div>
       </div>
@@ -176,7 +178,7 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
                     <img src="assets/1.png" alt="VAPT" loading="lazy">
                 </div>
                 <div class="case-study-content">
-                    <h3 style="margin-top: 2rem;margin-bottom: 5rem;">Comprehensive Vulnerability Assessment and Penstesting</h3>
+                    <h3 style="margin-top: 2rem;margin-bottom: 4rem;">Comprehensive Vulnerability Assessment and Penstesting</h3>
 
 
                     <p class="case-study-type"style="margin-top: 2rem;">Security Testing</p>
@@ -559,6 +561,7 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
                     <a href="#home">Home</a>
                     <a href="#about">About</a>
                     <a href="#services">Services</a>
+                    <a href="#innovation">Contact</a>
                     <a href="#contact">Contact</a>
                 </div>
                 
@@ -579,7 +582,190 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
 
     <!-- Scripts -->
     <script src="js/app.js"></script>
-
+    <!-- Ultra minimal version - just add before </body> -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDemo);
+        } else {
+            initDemo();
+        }
+        
+        function initDemo() {
+            const innovationSection = document.getElementById('innovation');
+            const demoFrame = document.getElementById('demoFrame');
+            
+            if (!innovationSection || !demoFrame) return;
+            
+            let demoStarted = false;
+            let frameReady = false;
+            
+            // Simple iframe communication
+            function sendToDemo(action) {
+                try {
+                    // Try direct access first
+                    const doc = demoFrame.contentDocument || demoFrame.contentWindow.document;
+                    const startBtn = doc.getElementById('startBtn');
+                    const pauseBtn = doc.getElementById('pauseBtn');
+                    
+                    if (action === 'start' && startBtn) {
+                        startBtn.click();
+                        demoStarted = true;
+                        return true;
+                    } else if (action === 'pause' && pauseBtn && pauseBtn.textContent.includes('Pause')) {
+                        pauseBtn.click();
+                        return true;
+                    } else if (action === 'resume' && pauseBtn && pauseBtn.textContent.includes('Resume')) {
+                        pauseBtn.click();
+                        return true;
+                    }
+                } catch (e) {
+                    // Fallback to postMessage
+                    try {
+                        demoFrame.contentWindow.postMessage({ action: action }, '*');
+                        if (action === 'start') demoStarted = true;
+                        return true;
+                    } catch (err) {
+                        console.log('Demo control failed:', err);
+                    }
+                }
+                return false;
+            }
+            
+            // Wait for iframe to load
+            demoFrame.onload = () => {
+                frameReady = true;
+                // Check if section is already visible
+                setTimeout(() => {
+                    const rect = innovationSection.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        sendToDemo('start');
+                    }
+                }, 500);
+            };
+            
+            // Create intersection observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!frameReady) return;
+                    
+                    if (entry.isIntersecting) {
+                        // Section is visible
+                        if (!demoStarted) {
+                            sendToDemo('start');
+                        } else {
+                            sendToDemo('resume');
+                        }
+                    } else {
+                        // Section is not visible
+                        sendToDemo('pause');
+                    }
+                });
+            }, {
+                threshold: 0.3,
+                rootMargin: '0px'
+            });
+            
+            observer.observe(innovationSection);
+            
+            // Handle tab visibility
+            document.addEventListener('visibilitychange', () => {
+                if (!frameReady) return;
+                
+                if (document.hidden) {
+                    sendToDemo('pause');
+                } else {
+                    const rect = innovationSection.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        if (!demoStarted) {
+                            sendToDemo('start');
+                        } else {
+                            sendToDemo('resume');
+                        }
+                    }
+                }
+            });
+        }
+    })();
+    </script>
+<!-- Add this script to auto-trigger existing hover effects on mobile scroll -->
+<script>
+(function() {
+    'use strict';
+    
+    // Only run on mobile
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+    
+    function initAutoHover() {
+        if (!isMobile()) return;
+        
+        const caseStudyCards = document.querySelectorAll('.case-study-card');
+        if (caseStudyCards.length === 0) return;
+        
+        console.log('Setting up auto-hover for', caseStudyCards.length, 'case study cards on mobile');
+        
+        // Create intersection observer to add/remove 'in-view' class
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Card is visible - trigger the "hover" effect slowly
+                    entry.target.classList.remove('leaving'); // Remove fast exit class
+                    setTimeout(() => {
+                        entry.target.classList.add('in-view');
+                        console.log('Card entered view - applying hover effects slowly');
+                    }, 100); // Small delay before entrance
+                } else {
+                    // Card is not visible - remove the "hover" effect quickly
+                    entry.target.classList.add('leaving'); // Add fast exit class
+                    setTimeout(() => {
+                        entry.target.classList.remove('in-view');
+                        entry.target.classList.remove('leaving');
+                        console.log('Card left view - removing hover effects quickly');
+                    }, 50); // Quick exit
+                }
+            });
+        }, {
+            threshold: 0.4, // Trigger when 40% of card is visible
+            rootMargin: '30px 0px -30px 0px' // Smaller margin for more precise control
+        });
+        
+        // Start observing all case study cards
+        caseStudyCards.forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (!isMobile()) {
+                // Remove all in-view classes when switching to desktop
+                caseStudyCards.forEach(card => {
+                    card.classList.remove('in-view');
+                });
+            }
+        });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAutoHover);
+    } else {
+        initAutoHover();
+    }
+    
+    // Re-initialize on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(initAutoHover, 250);
+    });
+    
+})();
+</script>
 
 </body>
 </html>
