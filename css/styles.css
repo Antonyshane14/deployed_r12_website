@@ -1238,13 +1238,13 @@ section {
 .innovation-showcase::before {
     content: '';
     position: absolute;
-    top: -6px;
-    right: -6px;
-    bottom: -6px;
-    left: -6px;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
     background: linear-gradient(45deg, #00d4ff, #ff00ff, #00ff7f, #ffff00, #00d4ff);
     background-size: 400% 400%;
-    border-radius: 20px;
+    border-radius: 17px;
     z-index: -1;
     animation: borderFlow 4s linear infinite;
     opacity: 0.8;
@@ -1354,7 +1354,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 20px;
+        border-radius: 17px;
     }
 }
 
@@ -1386,7 +1386,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 16px;
+        border-radius: 13px;
         animation-duration: 6s;
     }
     
@@ -1429,7 +1429,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 14px;
+        border-radius: 11px;
         background: linear-gradient(45deg, #00d4ff, #ff00ff, #00d4ff);
         animation-duration: 8s;
         background-size: 300% 300%;
@@ -1463,7 +1463,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 12px;
+        border-radius: 9px;
     }
     
     .showcase-iframe,
