@@ -31,7 +31,7 @@
     .controls {
       top: 40px;
       left: 8px;
-      right: 8px;
+      right: 212px;
       height: 28px;
       gap: 6px;
     }
@@ -47,14 +47,14 @@
     }
     .stage {
       left: 8px;
-      bottom: 55px;
+      bottom: 8px;
       font-size: 11px;
     }
     .log {
-      left: 8px;
       right: 8px;
-      bottom: -15px;
-      height: 45px;
+      top: 75px;
+      bottom: 8px;
+      width: 200px;
       padding: 6px 8px;
     }
     .log h4 {
@@ -92,7 +92,7 @@
     .controls {
       top: 36px;
       left: 6px;
-      right: 6px;
+      right: 172px;
       height: 26px;
       gap: 4px;
     }
@@ -108,14 +108,14 @@
     }
     .stage {
       left: 6px;
-      bottom: 45px;
+      bottom: 6px;
       font-size: 10px;
     }
     .log {
-      left: 6px;
       right: 6px;
-      bottom: -10px;
-      height: 40px;
+      top: 70px;
+      bottom: 6px;
+      width: 160px;
       padding: 4px 6px;
     }
     .log h4 {
@@ -142,7 +142,7 @@
   }
   .tag{font:600 10px/1 ui-sans-serif;border:1px solid rgba(255,255,255,.12);padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.06)}
   .controls{
-    position:absolute; top:46px; left:12px; right:12px; height:30px; display:flex; gap:8px; align-items:center;
+    position:absolute; top:46px; left:12px; right:324px; height:30px; display:flex; gap:8px; align-items:center;
   }
   .controls input{
     flex:1; height:30px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
@@ -152,9 +152,9 @@
     height:30px; padding:0 10px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
     background:rgba(255,255,255,.06); color:var(--text); cursor:pointer;
   }
-  .stage{position:absolute; left:12px; bottom:84px; color:var(--muted); font-weight:500}
+  .stage{position:absolute; left:12px; bottom:12px; color:var(--muted); font-weight:500}
   .log{
-    position:absolute; left:12px; right:12px; bottom:-2px; height:60px; overflow:auto;
+    position:absolute; right:12px; top:82px; bottom:12px; width:300px; overflow:auto;
     background:#0b152c; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
   }
@@ -263,15 +263,18 @@
     ['ANALYZE','URL'] // if clean, restart from top
   ];
 
-  // visuals - adjusted for full screen horizontal layout with mobile optimization
+  // visuals - adjusted for full screen horizontal layout with mobile optimization and log spacing
   const centerY = window.innerHeight / 2;
   const isMobile = window.innerWidth <= 768;
   const isSmallMobile = window.innerWidth <= 480;
   
-  const spacing = isMobile ? Math.min(120, window.innerWidth / 7) : Math.min(200, window.innerWidth / 7);
+  // Reserve space for the log box on the right
+  const logWidth = isMobile ? (isSmallMobile ? 160 : 200) : 300;
+  const workflowWidth = window.innerWidth - logWidth - 40; // Available width for workflow
+  const spacing = Math.min(isMobile ? 100 : 150, workflowWidth / 7);
   
   nodes.forEach((n,i)=>{
-    n.x = (isMobile ? 60 : 100) + i*spacing + (Math.random()*8-4);
+    n.x = (isMobile ? 40 : 60) + i*spacing + (Math.random()*8-4);
     n.y = n.kind==='input' ? centerY - (isMobile ? 120 : 200) : n.kind==='output' ? centerY + (isMobile ? 120 : 200) : centerY + (Math.random()*(isMobile ? 50 : 80)-((isMobile ? 50 : 80)/2));
     n.vx = n.vy = 0;
 
@@ -309,7 +312,7 @@
   const halo  = mk('circle',{r:haloSize, fill:'none', stroke:COLORS.accent, 'stroke-width':isMobile ? 1.5 : 2, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
   moveTokenTo(by('URL'));
 
-  // physics (vis-like) - adjusted for full screen with mobile optimization
+  // physics (vis-like) - adjusted for full screen with mobile optimization and log area
   const SPR=0.02;
   const LEN=spacing*1.2;
   const REP = isMobile ? 8000 : 15000;
@@ -317,7 +320,8 @@
   const PULL = isMobile ? 0.002 : 0.0015;
   const TOP = centerY - (isMobile ? 120 : 200);
   const BOT = centerY + (isMobile ? 120 : 200);
-  const margin = isMobile ? 40 : 80;
+  const leftMargin = isMobile ? 30 : 40;
+  const rightMargin = logWidth + 30; // Keep nodes away from log area
   
   function physics(){
     for(let i=0;i<nodes.length;i++){
@@ -334,12 +338,12 @@
       a.vx += nx*f; a.vy += ny*f; b.vx -= nx*f; b.vy -= ny*f;
     });
     nodes.forEach(n=>{
-      n.vx += (window.innerWidth/2-n.x)*PULL;
+      n.vx += (workflowWidth/2-n.x)*PULL;
       if(n.kind==='input') n.vy += (TOP-n.y)*0.04;
       else if(n.kind==='output') n.vy += (BOT-n.y)*0.04;
       else n.vy += (centerY-n.y)*0.004;
       n.vx*=DAMP; n.vy*=DAMP; n.x+=n.vx*0.016; n.y+=n.vy*0.016;
-      n.x=Math.max(margin,Math.min(window.innerWidth-margin,n.x)); n.y=Math.max(isMobile ? 80 : 100,Math.min(window.innerHeight-(isMobile ? 90 : 120),n.y));
+      n.x=Math.max(leftMargin,Math.min(window.innerWidth-rightMargin,n.x)); n.y=Math.max(isMobile ? 80 : 100,Math.min(window.innerHeight-(isMobile ? 90 : 120),n.y));
     });
   }
   function render(){
