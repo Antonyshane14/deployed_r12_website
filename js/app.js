@@ -951,3 +951,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 });
+// Fix contact form navigation
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle all contact links
+    const contactLinks = document.querySelectorAll('a[href="#contact"], .btn[href="#contact"]');
+    
+    contactLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Navigating to contact form');
+            
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } else {
+                console.error('Contact section not found!');
+            }
+        });
+    });
+});
