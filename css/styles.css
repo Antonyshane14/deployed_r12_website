@@ -984,87 +984,88 @@ section {
 /* Mobile-specific case study auto-reveal on scroll */
 /* Auto-trigger existing hover effects on scroll for mobile */
 /* COMPLETE FIXED CSS FOR YOUR CASE STUDIES */
+/* FIXED: Mobile-only auto-hover (Desktop completely untouched) */
 @media (max-width: 768px) {
-    /* Remove click/touch behavior, we'll handle with scroll */
+    /* ONLY on mobile - disable pointer events for auto-scroll behavior */
     .case-study-card {
-        pointer-events: none;
+        pointer-events: none !important; /* Only applies to mobile */
     }
     
-    /* Base state - cards start normal */
+    /* Base mobile state - cards start normal */
     .case-study-card {
-        transform: translateY(0);
-        box-shadow: none;
-        border-color: var(--steel);
+        transform: translateY(0) !important;
+        box-shadow: none !important;
+        border-color: var(--steel) !important;
     }
     
     .case-study-overlay {
-        opacity: 0;
+        opacity: 0 !important;
     }
     
     .case-study-image img {
-        transform: scale(1);
-        filter: none;
+        transform: scale(1) !important;
+        filter: none !important;
     }
     
     .case-study-content {
-        transform: translateY(60%);
+        transform: translateY(60%) !important;
     }
     
-    /* When card is in viewport, apply ALL hover styles automatically */
+    /* When card is in viewport on mobile - apply hover styles */
     .case-study-card.in-view {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-prominent);
-        border-color: var(--silver);
+        transform: translateY(-10px) !important;
+        box-shadow: var(--shadow-prominent) !important;
+        border-color: var(--silver) !important;
     }
     
     .case-study-card.in-view .case-study-overlay {
-        opacity: 1;
+        opacity: 1 !important;
     }
     
     .case-study-card.in-view .case-study-image img {
-        transform: scale(1.25);
-        filter: blur(2px);
+        transform: scale(1.25) !important;
+        filter: blur(2px) !important;
     }
     
     .case-study-card.in-view .case-study-content {
-        transform: translateY(0);
+        transform: translateY(0) !important;
     }
     
-    /* Smooth transitions for the auto-applied hover effects */
+    /* Mobile transitions */
     .case-study-card {
-        transition: all 0.4s ease;
+        transition: all 0.4s ease !important;
     }
     
     .case-study-overlay {
-        transition: opacity 0.4s ease;
+        transition: opacity 0.4s ease !important;
     }
     
     .case-study-image img {
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
     .case-study-content {
-        transition: transform 0.4s ease;
+        transition: transform 0.4s ease !important;
     }
     
-    /* Slower entrance when scrolling into view */
+    /* Slower entrance when scrolling into view on mobile */
     .case-study-card.in-view {
-        transition: all 0.8s ease;
+        transition: all 0.8s ease !important;
     }
     
     .case-study-card.in-view .case-study-overlay {
-        transition: opacity 0.8s ease;
+        transition: opacity 0.8s ease !important;
     }
     
     .case-study-card.in-view .case-study-image img {
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
     .case-study-card.in-view .case-study-content {
-        transition: transform 0.8s ease;
+        transition: transform 0.8s ease !important;
     }
     
-    /* Faster exit when scrolling out of view - FIXED SYNTAX */
+    /* Faster exit when scrolling out of view on mobile */
     .case-study-card.leaving {
         transition: all 0.3s ease !important;
     }
@@ -1074,48 +1075,94 @@ section {
     }
     
     .case-study-card.leaving .case-study-image img {
-        transition: transform 0.3s ease, filter 0.3s ease !important; /* FIXED - comma separated */
+        transition: transform 0.3s ease, filter 0.3s ease !important;
     }
     
     .case-study-card.leaving .case-study-content {
         transition: transform 0.3s ease !important;
     }
     
-    /* Staggered reveal using animation delays - only for entrance */
+    /* Staggered reveal on mobile only */
     .case-study-card:nth-child(1).in-view {
-        transition-delay: 0.2s;
+        transition-delay: 0.2s !important;
     }
     
     .case-study-card:nth-child(2).in-view {
-        transition-delay: 0.4s;
+        transition-delay: 0.4s !important;
     }
     
     .case-study-card:nth-child(3).in-view {
-        transition-delay: 0.6s;
+        transition-delay: 0.6s !important;
     }
     
     .case-study-card:nth-child(4).in-view {
-        transition-delay: 0.8s;
+        transition-delay: 0.8s !important;
     }
     
-    /* Override any existing hover styles to prevent conflicts */
+    .case-study-card:nth-child(5).in-view {
+        transition-delay: 1.0s !important;
+    }
+    
+    .case-study-card:nth-child(6).in-view {
+        transition-delay: 1.2s !important;
+    }
+    
+    /* FORCE override any hover effects on mobile */
     .case-study-card:hover {
-        transform: translateY(0);
-        box-shadow: none;
-        border-color: var(--steel);
+        transform: translateY(0) !important;
+        box-shadow: none !important;
+        border-color: var(--steel) !important;
     }
     
     .case-study-card:hover .case-study-overlay {
-        opacity: 0;
+        opacity: 0 !important;
     }
     
     .case-study-card:hover .case-study-image img {
-        transform: scale(1);
-        filter: none;
+        transform: scale(1) !important;
+        filter: none !important;
     }
     
     .case-study-card:hover .case-study-content {
-        transform: translateY(60%);
+        transform: translateY(60%) !important;
+    }
+    
+    /* Mobile grid layout adjustments */
+    .case-studies-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        justify-items: center !important;
+    }
+}
+
+/* IMPORTANT: Make sure desktop styles are NOT affected */
+@media (min-width: 769px) {
+    /* Ensure desktop layout shows all 6 cards properly */
+    .case-studies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    /* Ensure desktop cards work normally */
+    .case-study-card {
+        pointer-events: auto; /* Make sure hover works on desktop */
+    }
+    
+    /* Remove any mobile classes that might interfere */
+    .case-study-card.in-view,
+    .case-study-card.leaving {
+        /* Reset any mobile-specific classes on desktop */
+    }
+}
+
+/* Large screen adjustments to ensure all 6 cards show */
+@media (min-width: 1200px) {
+    .case-studies-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1400px;
+        margin: 0 auto;
     }
 }
 /* Trusted By Section */
