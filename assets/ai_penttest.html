@@ -18,7 +18,7 @@
     font:500 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
   }
   
-  /* Mobile optimizations */
+  /* Mobile optimizations - keep log as right sidebar */
   @media (max-width: 768px) {
     #wf {
       font-size: 10px;
@@ -30,8 +30,8 @@
     }
     .controls {
       top: 40px;
-      left: 8px;
-      right: 212px;
+      left: 178px;
+      right: 8px;
       height: 28px;
       gap: 6px;
     }
@@ -54,7 +54,7 @@
       right: 8px;
       top: 75px;
       bottom: 8px;
-      width: 200px;
+      width: 150px;
       padding: 6px 8px;
     }
     .log h4 {
@@ -65,10 +65,14 @@
       padding: 4px 6px;
       margin-bottom: 4px;
       font-size: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
     }
     .sev {
       font-size: 9px;
       padding: 1px 4px;
+      align-self: flex-end;
     }
     .count-badge {
       font-size: 9px;
@@ -92,7 +96,7 @@
     .controls {
       top: 36px;
       left: 6px;
-      right: 172px;
+      right: 85px;
       height: 26px;
       gap: 4px;
     }
@@ -115,25 +119,33 @@
       right: 6px;
       top: 70px;
       bottom: 6px;
-      width: 160px;
-      padding: 4px 6px;
+      width: 60px;
+      padding: 3px 4px;
     }
     .log h4 {
-      font-size: 10px;
-      margin-bottom: 3px;
+      font-size: 8px;
+      margin-bottom: 2px;
     }
     .log .item {
-      padding: 3px 5px;
-      margin-bottom: 3px;
-      font-size: 9px;
+      padding: 2px 3px;
+      margin-bottom: 2px;
+      font-size: 7px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+    }
+    .log .item div {
+      line-height: 1.1;
+      word-break: break-word;
     }
     .sev {
-      font-size: 8px;
-      padding: 1px 3px;
+      font-size: 6px;
+      padding: 1px 2px;
+      align-self: flex-end;
     }
     .count-badge {
-      font-size: 8px;
-      padding: 1px 3px;
+      font-size: 7px;
+      padding: 1px 2px;
     }
   }
   .hdr{
@@ -154,7 +166,7 @@
   }
   .stage{position:absolute; left:12px; bottom:12px; color:var(--muted); font-weight:500}
   .log{
-    position:absolute; right:12px; top:82px; bottom:12px; width:300px; overflow:auto;
+    position:absolute; right:12px; top:82px; bottom:12px; width:100px; overflow:auto;
     background:#0b152c; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
   }
@@ -263,18 +275,19 @@
     ['ANALYZE','URL'] // if clean, restart from top
   ];
 
-  // visuals - adjusted for full screen horizontal layout with mobile optimization and log spacing
+  // visuals - much smaller log width for mobile
   const centerY = window.innerHeight / 2;
   const isMobile = window.innerWidth <= 768;
   const isSmallMobile = window.innerWidth <= 480;
   
-  // Reserve space for the log box on the right
-  const logWidth = isMobile ? (isSmallMobile ? 160 : 200) : 300;
-  const workflowWidth = window.innerWidth - logWidth - 40; // Available width for workflow
-  const spacing = Math.min(isMobile ? 100 : 150, workflowWidth / 7);
+  // Much smaller log widths for mobile
+  const logWidth = isMobile ? (isSmallMobile ? 75 : 95) : 300;
+  const workflowStartX = 40; // Workflow starts from left
+  const workflowWidth = window.innerWidth - logWidth - 80; // Available width for workflow
+  const spacing = Math.min(isMobile ? 80 : 120, workflowWidth / 6);
   
   nodes.forEach((n,i)=>{
-    n.x = (isMobile ? 40 : 60) + i*spacing + (Math.random()*8-4);
+    n.x = workflowStartX + i*spacing + (Math.random()*8-4);
     n.y = n.kind==='input' ? centerY - (isMobile ? 120 : 200) : n.kind==='output' ? centerY + (isMobile ? 120 : 200) : centerY + (Math.random()*(isMobile ? 50 : 80)-((isMobile ? 50 : 80)/2));
     n.vx = n.vy = 0;
 
@@ -312,7 +325,7 @@
   const halo  = mk('circle',{r:haloSize, fill:'none', stroke:COLORS.accent, 'stroke-width':isMobile ? 1.5 : 2, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
   moveTokenTo(by('URL'));
 
-  // physics (vis-like) - adjusted for full screen with mobile optimization and log area
+  // physics (vis-like) - workflow uses left area, avoids log
   const SPR=0.02;
   const LEN=spacing*1.2;
   const REP = isMobile ? 8000 : 15000;
@@ -320,8 +333,8 @@
   const PULL = isMobile ? 0.002 : 0.0015;
   const TOP = centerY - (isMobile ? 120 : 200);
   const BOT = centerY + (isMobile ? 120 : 200);
-  const leftMargin = isMobile ? 30 : 40;
-  const rightMargin = logWidth + 30; // Keep nodes away from log area
+  const leftMargin = 30;
+  const rightMargin = logWidth + 50; // Keep nodes away from log
   
   function physics(){
     for(let i=0;i<nodes.length;i++){
@@ -338,7 +351,8 @@
       a.vx += nx*f; a.vy += ny*f; b.vx -= nx*f; b.vy -= ny*f;
     });
     nodes.forEach(n=>{
-      n.vx += (workflowWidth/2-n.x)*PULL;
+      const workflowCenterX = workflowStartX + (workflowWidth / 2);
+      n.vx += (workflowCenterX-n.x)*PULL;
       if(n.kind==='input') n.vy += (TOP-n.y)*0.04;
       else if(n.kind==='output') n.vy += (BOT-n.y)*0.04;
       else n.vy += (centerY-n.y)*0.004;
