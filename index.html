@@ -709,29 +709,47 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
         
         console.log('Setting up auto-hover for', caseStudyCards.length, 'case study cards on mobile');
         
-        // Create intersection observer to add/remove 'in-view' class
+        let currentActiveCard = null;
+        
+        // Create intersection observer for one-at-a-time activation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Card is visible - trigger the "hover" effect slowly
-                    entry.target.classList.remove('leaving'); // Remove fast exit class
+                    // New card is visible - make it active and deactivate others
+                    
+                    // First, remove active state from previous card
+                    if (currentActiveCard && currentActiveCard !== entry.target) {
+                        currentActiveCard.classList.add('leaving');
+                        setTimeout(() => {
+                            currentActiveCard.classList.remove('in-view');
+                            currentActiveCard.classList.remove('leaving');
+                        }, 50); // Quick exit for previous card
+                    }
+                    
+                    // Then activate the new card
+                    entry.target.classList.remove('leaving');
                     setTimeout(() => {
                         entry.target.classList.add('in-view');
-                        console.log('Card entered view - applying hover effects slowly');
-                    }, 100); // Small delay before entrance
+                        currentActiveCard = entry.target; // Set as current active
+                        console.log('New card activated, previous deactivated');
+                    }, 100);
+                    
                 } else {
-                    // Card is not visible - remove the "hover" effect quickly
-                    entry.target.classList.add('leaving'); // Add fast exit class
-                    setTimeout(() => {
-                        entry.target.classList.remove('in-view');
-                        entry.target.classList.remove('leaving');
-                        console.log('Card left view - removing hover effects quickly');
-                    }, 50); // Quick exit
+                    // Card left view - only deactivate if it was the current active card
+                    if (entry.target === currentActiveCard) {
+                        entry.target.classList.add('leaving');
+                        setTimeout(() => {
+                            entry.target.classList.remove('in-view');
+                            entry.target.classList.remove('leaving');
+                            currentActiveCard = null; // Clear current active
+                            console.log('Active card deactivated');
+                        }, 50);
+                    }
                 }
             });
         }, {
-            threshold: 0.4, // Trigger when 40% of card is visible
-            rootMargin: '30px 0px -30px 0px' // Smaller margin for more precise control
+            threshold: 0.5, // Trigger when 50% of card is visible for more precise control
+            rootMargin: '0px 0px -20px 0px' // Tighter control
         });
         
         // Start observing all case study cards
