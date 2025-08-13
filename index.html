@@ -794,6 +794,26 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
     
 })();
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.innerWidth <= 768) {
+        const cards = document.querySelectorAll(".leader-card");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("mobile-glow");
+                } else {
+                    entry.target.classList.remove("mobile-glow");
+                }
+            });
+        }, { threshold: 0.3 }); // triggers when 30% visible
+
+        cards.forEach(card => observer.observe(card));
+    }
+});
+</script>
+
 
 </body>
 </html>
