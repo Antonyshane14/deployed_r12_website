@@ -3,27 +3,6 @@
 
 const nodemailer = require('nodemailer');
 
-// Simple rate limiting storage (in-memory)
-const rateLimit = new Map();
-
-// Rate limiting function
-function checkRateLimit(ip) {
-    const now = Date.now();
-    const windowMs = 15 * 60 * 1000; // 15 minutes
-    const maxRequests = 5; // Max 5 requests per 15 minutes
-    
-    const userRequests = rateLimit.get(ip) || [];
-    const validRequests = userRequests.filter(time => now - time < windowMs);
-    
-    if (validRequests.length >= maxRequests) {
-        return false; // Rate limit exceeded
-    }
-    
-    validRequests.push(now);
-    rateLimit.set(ip, validRequests);
-    return true; // Request allowed
-}
-
 // Validation function
 function validateContactForm(body) {
     const errors = [];
@@ -90,7 +69,7 @@ function createTransporter() {
 exports.handler = async (event, context) => {
     // CORS headers
     const headers = {
-        'Access-Control-Allow-Origin': 'https://rapturetwelve.com',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Content-Type': 'application/json'
@@ -118,19 +97,6 @@ exports.handler = async (event, context) => {
     }
     
     try {
-        // Check rate limiting
-        const clientIP = event.headers['client-ip'] || event.headers['x-forwarded-for'] || 'unknown';
-        if (!checkRateLimit(clientIP)) {
-            return {
-                statusCode: 429,
-                headers,
-                body: JSON.stringify({
-                    success: false,
-                    message: 'Too many requests. Please try again later.'
-                })
-            };
-        }
-
         // Parse request body
         const body = JSON.parse(event.body);
         
