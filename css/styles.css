@@ -1373,38 +1373,33 @@ section {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Dynamic border glow - Ultra-slow, zen-like cyan laser */
+/* Dynamic border glow - Original pattern with cyan color */
 .innovation-showcase::before {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: 17px;
-    padding: 4px;
-    background: linear-gradient(
-        270deg, /* Start left-to-right */
-        #00f7ff 0%,
-        transparent 20%,
-        #00f7ff 40%,
-        transparent 60%,
-        #00f7ff 80%,
-        transparent 100%
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    background: linear-gradient(45deg, 
+        rgba(0, 247, 255, 0.8),  /* Cyan */
+        rgba(0, 220, 240, 0.7),  /* Light Cyan */
+        rgba(0, 200, 225, 0.6),  /* Medium Cyan */
+        rgba(0, 247, 255, 0.7),  /* Cyan */
+        rgba(0, 247, 255, 0.8)   /* Cyan */
     );
     background-size: 300% 300%;
-    -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: laser-move 30s ease-in-out infinite;
+    border-radius: 17px;
     z-index: -1;
+    animation: borderFlow 6s linear infinite;
     opacity: 0.7;
-    pointer-events: none;
-    filter: blur(2px) brightness(2);
 }
 
-@keyframes laser-move {
+@keyframes borderFlow {
     0% { background-position: 0% 50%; }
-    50% { background-position: 300% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
     100% { background-position: 0% 50%; }
 }
 
@@ -1537,19 +1532,15 @@ section {
     
     .innovation-showcase::before {
         border-radius: 13px;
-        padding: 3px;
-        animation-duration: 30s;
-        background: linear-gradient(
-            270deg,
-            #00f7ff 0%,
-            transparent 20%,
-            #00f7ff 40%,
-            transparent 60%,
-            #00f7ff 80%,
-            transparent 100%
+        animation-duration: 6s;
+        background: linear-gradient(45deg, 
+            rgba(0, 247, 255, 0.6),  /* Cyan */
+            rgba(0, 220, 240, 0.5),  /* Light Cyan */
+            rgba(0, 200, 225, 0.4),  /* Medium Cyan */
+            rgba(0, 247, 255, 0.5),  /* Cyan */
+            rgba(0, 247, 255, 0.6)   /* Cyan */
         );
         opacity: 0.6;
-        filter: blur(1.5px) brightness(1.8);
     }
     
     .showcase-iframe,
@@ -1592,20 +1583,16 @@ section {
     
     .innovation-showcase::before {
         border-radius: 11px;
-        padding: 2px;
-        background: linear-gradient(
-            270deg,
-            #00f7ff 0%,
-            transparent 20%,
-            #00f7ff 40%,
-            transparent 60%,
-            #00f7ff 80%,
-            transparent 100%
+        background: linear-gradient(45deg, 
+            rgba(0, 247, 255, 0.5),  /* Cyan */
+            rgba(0, 220, 240, 0.4),  /* Light Cyan */
+            rgba(0, 200, 225, 0.3),  /* Medium Cyan */
+            rgba(0, 247, 255, 0.4),  /* Cyan */
+            rgba(0, 247, 255, 0.5)   /* Cyan */
         );
-        animation-duration: 12s;
+        animation-duration: 6s;
         background-size: 300% 300%;
         opacity: 0.5;
-        filter: blur(1px) brightness(1.5);
     }
     
     .innovation-showcase::after {
@@ -1691,9 +1678,9 @@ section {
     }
     
     .innovation-showcase:hover::before {
-        opacity: 1;
-        animation-duration: 9s;
-        filter: blur(3px) brightness(3);
+        opacity: 0.9;
+        animation-duration: 4s;
+        background-size: 400% 400%;
     }
 }
 
@@ -1743,19 +1730,6 @@ section {
     .section-title {
         font-size: clamp(1.5rem, 4vw, 2rem);
     }
-}
-.section-title {
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #00d4ff, #8b5cf6, #00ff88);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 300% 300%;
-    animation: gradientShift 4s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
-    line-height: 1.1;
-    position: relative;
 }
 /* Contact Section - Compact Version */
 /* Enhanced Contact Section */
