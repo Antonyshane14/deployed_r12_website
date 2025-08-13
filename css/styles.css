@@ -1377,10 +1377,10 @@ section {
 .innovation-showcase::before {
     content: '';
     position: absolute;
-    top: -2px;
-    right: -2px;
-    bottom: -2px;
-    left: -2px;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
     background: linear-gradient(45deg, 
         rgba(0, 247, 255, 0.8),  /* Cyan */
         rgba(0, 220, 240, 0.7),  /* Light Cyan */
@@ -1730,6 +1730,22 @@ section {
     .section-title {
         font-size: clamp(1.5rem, 4vw, 2rem);
     }
+}
+.section-title {
+    font-size: clamp(3.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #00d4ff, #8b5cf6, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 300% 300%;
+    animation: gradientShift 4s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
+    line-height: 1.1;
+    position: relative;
+}
+.section-subtitle{
+    font-size: clamp(1.25rem, 4vw, 1.2rem);
 }
 /* Contact Section - Compact Version */
 /* Enhanced Contact Section */
