@@ -30,7 +30,7 @@
         position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
         background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
       }
-      .stage{position:absolute;bottom:35px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
+      .stage{position:absolute;bottom:3px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
       .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
       .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
       .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
@@ -55,7 +55,7 @@
         flex-wrap:wrap;
       }
       .stage{
-        position:absolute;bottom:8px;left:12px;right:0px;color:var(--text);font-weight:700;font-size:14px;z-index:100;opacity:1;
+        position:absolute;bottom:8px;left:12px;right:210px;color:var(--text);font-weight:700;font-size:14px;z-index:100;opacity:1;
         text-align:center;background:rgba(11,16,32,0.8);padding:6px 8px;border-radius:8px;
         backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1);
       }
@@ -232,26 +232,26 @@
   // Responsive node positioning
   function getNodePositions() {
     if (window.innerWidth <= 767) {
-      // Mobile: compact vertical layout
+      // Mobile: compact vertical layout with 10px extra gaps
       return {
-        'URL': {x: 150, y: 80},
-        'DISC': {x: 450, y: 80},
-        'AI': {x: 750, y: 80},
-        'TOOL': {x: 750, y: 220},
-        'ANALYZE': {x: 450, y: 360},
-        'STRATEGY': {x: 150, y: 360},
-        'LOG': {x: 150, y: 220}
+        'URL': {x: 140, y: 70},
+        'DISC': {x: 460, y: 70},
+        'AI': {x: 760, y: 70},
+        'TOOL': {x: 760, y: 230},
+        'ANALYZE': {x: 460, y: 370},
+        'STRATEGY': {x: 140, y: 370},
+        'LOG': {x: 140, y: 230}
       };
     } else {
-      // Desktop: original positioning
+      // Desktop: original positioning with 10px extra gaps
       return {
-        'URL': {x: 150, y: 103},
-        'DISC': {x: 450, y: 103},
-        'AI': {x: 750, y: 103},
-        'TOOL': {x: 750, y: 303},
-        'ANALYZE': {x: 750, y: 503},
-        'STRATEGY': {x: 150, y: 503},
-        'LOG': {x: 150, y: 303}
+        'URL': {x: 140, y: 93},
+        'DISC': {x: 460, y: 93},
+        'AI': {x: 760, y: 93},
+        'TOOL': {x: 760, y: 313},
+        'ANALYZE': {x: 760, y: 513},
+        'STRATEGY': {x: 140, y: 513},
+        'LOG': {x: 140, y: 313}
       };
     }
   }
