@@ -678,6 +678,21 @@ section {
     .section-subtitle_a {
         text-align: justify;
     }
+    /* Center leader role text */
+    .leader-title {
+        text-align: center!important;
+        width: 100%;
+    }
+    /* Simulate hover on mobile */
+    .leader-card.mobile-glow {
+        transform: scale(1.15) translateY(-10px) rotateX(6deg) rotateY(3deg);
+        box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
+        margin-top: 45px;
+        margin-bottom: 45px;
+    }
+    .leader-card.mobile-glow::before {
+        opacity: 1;
+    }
 }
 
 
