@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>Security Workflow Demo - Full Screen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Security Workflow Demo - Mobile</title>
   <style>
     :root{
       --bg:#0b1020; --text:#eaf2ff; --muted:#9fb3d6;
@@ -10,32 +11,78 @@
       --pink:#f472b6; --blue:#60a5fa; --green:#34d399; --yellow:#facc15; --orange:#fb923c; --purple:#a78bfa;
       --red:#ff5c5c; --blue-ok:#5bbcff;
     }
-    html,body{margin:0;padding:0;height:100vh;background:#111;overflow:hidden}
-    #container{
-      display:flex;height:100vh;width:100vw;
+    html,body{margin:0;padding:0;height:100vh;background:#111;overflow:hidden;font-size:14px}
+    
+    /* Desktop styles (unchanged) */
+    @media (min-width: 768px) {
+      #container{
+        display:flex;height:100vh;width:100vw;
+      }
+      #wf{
+        flex:1;background:var(--bg);position:relative;
+        font:500 14px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+      }
+      #sidebar{
+        width:320px;background:#0a0f1f;border-left:1px solid rgba(255,255,255,.08);
+        display:flex;flex-direction:column;padding:12px;
+      }
+      .hdr{
+        position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
+        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
+      }
+      .stage{position:absolute;bottom:35px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
+      .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
+      .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
+      .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
     }
-    #wf{
-      flex:1;background:var(--bg);position:relative;
-      font:500 14px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+    
+    /* Mobile styles */
+    @media (max-width: 767px) {
+      #container{
+        display:flex;height:100vh;width:100vw;
+      }
+      #wf{
+        flex:1;background:var(--bg);position:relative;
+        font:500 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+      }
+      #sidebar{
+        width:200px;background:#0a0f1f;border-left:1px solid rgba(255,255,255,.08);
+        display:flex;flex-direction:column;padding:8px;
+      }
+      .hdr{
+        position:absolute;top:0;left:0;right:0;height:40px;display:flex;align-items:center;gap:6px;padding:0 12px;
+        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:16px;opacity:1;
+        flex-wrap:wrap;
+      }
+      .stage{
+        position:absolute;bottom:8px;left:12px;right:0px;color:var(--text);font-weight:700;font-size:14px;z-index:100;opacity:1;
+        text-align:center;background:rgba(11,16,32,0.8);padding:6px 8px;border-radius:8px;
+        backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1);
+      }
+      .log{
+        flex:1;background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;
+        overflow:auto;margin-bottom:8px;
+      }
+      .log h4{margin:0 0 8px 0;font-size:14px;color:#ffffff;opacity:.9;font-weight:600}
+      .stats{
+        background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;
+      }
+      .stats h4{margin:0 0 6px 0;font-size:12px;color:#ffffff;font-weight:600}
+      .stat-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px;color:#ffffff}
+      .log .item{
+        padding:6px 8px;margin-bottom:6px;font-size:11px;
+      }
+      .sev{font-size:10px;padding:3px 8px;}
     }
-    #sidebar{
-      width:320px;background:#0a0f1f;border-left:1px solid rgba(255,255,255,.08);
-      display:flex;flex-direction:column;padding:12px;
-    }
-    .hdr{
-      position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
-      background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
-    }
+
     .tag{font:600 11px/1 ui-sans-serif;border:1px solid rgba(255,255,255,.12);padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06)}
     .controls{
       display: none;
     }
-    .stage{position:absolute;bottom:35px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
     .log{
-      flex:1;background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
+      background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
       overflow:auto;margin-bottom:12px;
     }
-    .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
     .log .item{display:flex;justify-content:space-between;align-items:center;gap:8px;
                padding:10px 12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
                border:1px solid rgba(255,255,255,.18);font-size:14px;color:#ffffff;
@@ -58,8 +105,11 @@
     .stats{
       background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
     }
-    .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
-    .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
+    
+    /* Mobile tag adjustments */
+    @media (max-width: 767px) {
+      .tag{font-size:9px;padding:2px 6px;}
+    }
   </style>
 </head>
 <body>
@@ -106,7 +156,6 @@
   const epCount = document.getElementById('epCount');
   const vulnCount = document.getElementById('vulnCount');
   const toolCount = document.getElementById('toolCount');
-  // FIX: Added references to the buttons
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
 
@@ -131,7 +180,21 @@
 
   const NS="http://www.w3.org/2000/svg";
   const svg = mk('svg',{viewBox:'0 0 900 700', width:'100%', height:'100%', preserveAspectRatio:'xMidYMid meet'});
-  svg.style.cssText = 'position:absolute;top:60px;left:0;right:320px;bottom:0;';
+  
+  // Responsive SVG positioning
+  function updateSVGPosition() {
+    if (window.innerWidth <= 767) {
+      // Mobile: adjust for smaller header and right sidebar
+      svg.style.cssText = 'position:absolute;top:45px;left:0;right:200px;bottom:55px;';
+    } else {
+      // Desktop: original positioning
+      svg.style.cssText = 'position:absolute;top:60px;left:0;right:320px;bottom:0;';
+    }
+  }
+  
+  updateSVGPosition();
+  window.addEventListener('resize', updateSVGPosition);
+  
   wf.appendChild(svg);
   const defs = mk('defs'); svg.appendChild(defs);
   const glow = mk('filter',{id:'glow', x:'-30%', y:'-30%', width:'160%', height:'160%'}); defs.appendChild(glow);
@@ -166,51 +229,94 @@
     ['STRATEGY','AI']
   ];
 
-  // Fixed positioned nodes in organized layout - moved up by 7pts from previous position
-  const positions = {
-    'URL': {x: 150, y: 103},
-    'DISC': {x: 450, y: 103},
-    'AI': {x: 750, y: 103},
-    'TOOL': {x: 750, y: 303},
-    'ANALYZE': {x: 750, y: 503},
-    'STRATEGY': {x: 150, y: 503},
-    'LOG': {x: 150, y: 303}
-  };
+  // Responsive node positioning
+  function getNodePositions() {
+    if (window.innerWidth <= 767) {
+      // Mobile: compact vertical layout
+      return {
+        'URL': {x: 150, y: 80},
+        'DISC': {x: 450, y: 80},
+        'AI': {x: 750, y: 80},
+        'TOOL': {x: 750, y: 220},
+        'ANALYZE': {x: 450, y: 360},
+        'STRATEGY': {x: 150, y: 360},
+        'LOG': {x: 150, y: 220}
+      };
+    } else {
+      // Desktop: original positioning
+      return {
+        'URL': {x: 150, y: 103},
+        'DISC': {x: 450, y: 103},
+        'AI': {x: 750, y: 103},
+        'TOOL': {x: 750, y: 303},
+        'ANALYZE': {x: 750, y: 503},
+        'STRATEGY': {x: 150, y: 503},
+        'LOG': {x: 150, y: 303}
+      };
+    }
+  }
+
+  function updateNodePositions() {
+    const positions = getNodePositions();
+    nodes.forEach(n => {
+      n.x = positions[n.id].x;
+      n.y = positions[n.id].y;
+      if (n.g) {
+        n.g.setAttribute('transform', `translate(${n.x},${n.y})`);
+      }
+    });
+  }
 
   nodes.forEach((n,i)=>{
+    const positions = getNodePositions();
     n.x = positions[n.id].x;
     n.y = positions[n.id].y;
     n.active = false;
     n.processing = false;
     const g = mk('g'); nodeLayer.appendChild(g); n.g=g;
-    const w=280,h=120,r=20;
+    
+    // Responsive node sizing
+    const isMobile = window.innerWidth <= 767;
+    const w = isMobile ? 200 : 280;
+    const h = isMobile ? 80 : 120;
+    const r = isMobile ? 15 : 20;
+    
     // Main card background with consistent thick colored outline
     n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w,height:h, fill:'#101a33', stroke:n.color, 'stroke-width':3, filter:'url(#glow)'});
     // Glow outline for when data enters
     n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w+6,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
     // Main label
-    const label = tspan(-w/2+20,5,n.label,18,COLORS.text,700);
+    const labelSize = isMobile ? 14 : 18;
+    const label = tspan(-w/2+15,0,n.label,labelSize,COLORS.text,700);
     // Chip badge
-    const chip = pill(w/2-70,-h/2+25,n.chip);
+    const chipX = isMobile ? w/2-50 : w/2-70;
+    const chipY = isMobile ? -h/2+18 : -h/2+25;
+    const chip = pill(chipX, chipY, n.chip, isMobile);
     // Endpoints counter (only for DISC node)
     if (n.id === 'DISC') {
-      n.endpointsText = tspan(-w/2+20, 25, '0 endpoints', 14, COLORS.orange, 600);
+      const endpointY = isMobile ? 18 : 25;
+      n.endpointsText = tspan(-w/2+15, endpointY, '0 endpoints', isMobile ? 11 : 14, COLORS.orange, 600);
       n.endpointsText.setAttribute('opacity', '0.8');
     }
     // Processing icon (rotating gear)
     n.processingIcon = mk('g');
+    const gearScale = isMobile ? 0.6 : 0.8;
     const gear = mk('path', {
       d: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11.03L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11.03C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z',
       fill: n.color,
       opacity: 0.4,
-      transform: 'scale(0.8)',
+      transform: `scale(${gearScale})`,
       'transform-origin': '12 12'
     });
     n.processingIcon.appendChild(gear);
-    n.processingIcon.setAttribute('transform', 'translate(90, 30)');
+    const gearX = isMobile ? 70 : 90;
+    const gearY = isMobile ? 20 : 30;
+    n.processingIcon.setAttribute('transform', `translate(${gearX}, ${gearY})`);
     n.gear = gear;
     // Status indicator
-    n.statusDot = mk('circle', {r: 6, cx: w/2-20, cy: -h/2+20, fill: '#555', opacity: 0.6});
+    const dotX = isMobile ? w/2-15 : w/2-20;
+    const dotY = isMobile ? -h/2+15 : -h/2+20;
+    n.statusDot = mk('circle', {r: isMobile ? 4 : 6, cx: dotX, cy: dotY, fill: '#555', opacity: 0.6});
     // Append elements to group
     if (n.id === 'DISC') {
       g.append(n.glowOutline, n.box, label, chip, n.endpointsText, n.processingIcon, n.statusDot);
@@ -243,9 +349,18 @@
   });
 
   // Token with larger halo effect
-  const token = mk('circle',{r:8, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
-  const halo  = mk('circle',{r:20, fill:'none', stroke:COLORS.accent, 'stroke-width':3, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
+  const tokenSize = window.innerWidth <= 767 ? 6 : 8;
+  const haloSize = window.innerWidth <= 767 ? 15 : 20;
+  const token = mk('circle',{r:tokenSize, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
+  const halo  = mk('circle',{r:haloSize, fill:'none', stroke:COLORS.accent, 'stroke-width':3, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
   moveTokenTo(by('URL'));
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    updateNodePositions();
+    updateSVGPosition();
+    render();
+  });
 
   // Remove physics simulation - nodes are now fixed
   function render(){
@@ -292,8 +407,8 @@
   function animateGear(node) {
     if (node.processing) {
       node.gear.animate([
-        {transform: 'rotate(0deg) scale(0.8)'},
-        {transform: 'rotate(360deg) scale(0.8)'}
+        {transform: `rotate(0deg) scale(${window.innerWidth <= 767 ? 0.6 : 0.8})`},
+        {transform: `rotate(360deg) scale(${window.innerWidth <= 767 ? 0.6 : 0.8})`}
       ], {
         duration: 2000,
         iterations: 1,
@@ -307,15 +422,17 @@
   function packets(from,to,count=6,dur=STEP_MS,color=COLORS.accent){
     // Activate destination node when packets arrive
     activateNode(to);
-    for(let i=0;i<count;i++){
-      const p = mk('circle',{r:3, fill:color, opacity:0.9});
+    const packetCount = window.innerWidth <= 767 ? Math.max(3, Math.floor(count * 0.6)) : count;
+    for(let i=0;i<packetCount;i++){
+      const p = mk('circle',{r:window.innerWidth <= 767 ? 2 : 3, fill:color, opacity:0.9});
       packetLayer.appendChild(p);
       
       // Create comet trail effect
       const trail = [];
-      for(let j = 0; j < 5; j++) {
+      const trailLength = window.innerWidth <= 767 ? 3 : 5;
+      for(let j = 0; j < trailLength; j++) {
         const trailDot = mk('circle', {
-          r: 2 - (j * 0.3), 
+          r: (window.innerWidth <= 767 ? 1.5 : 2) - (j * 0.3), 
           fill: color, 
           opacity: 0.6 - (j * 0.1)
         });
@@ -336,7 +453,7 @@
         
         // Store current position for trail
         positions.push({x, y});
-        if(positions.length > 5) positions.shift();
+        if(positions.length > trailLength) positions.shift();
         
         // Update trail positions
         trail.forEach((trailDot, index) => {
@@ -370,7 +487,9 @@
       halo.setAttribute('cx',x);  halo.setAttribute('cy',y);
       if(t<1) requestAnimationFrame(go);
       else {
-         halo.animate([{r:18,opacity:.25},{r:25,opacity:.12},{r:18,opacity:.22}],{duration:600,iterations:1,easing:'ease-in-out'});
+         const haloSize = window.innerWidth <= 767 ? 15 : 18;
+         const haloSizeEnd = window.innerWidth <= 767 ? 20 : 25;
+         halo.animate([{r:haloSize,opacity:.25},{r:haloSizeEnd,opacity:.12},{r:haloSize,opacity:.22}],{duration:600,iterations:1,easing:'ease-in-out'});
          cb && cb();
        }
     };
@@ -384,7 +503,6 @@
   const endpointsKinds = ['form','api','upload','search','redirect','admin'];
 
   let running=false;
-  // FIX: Declared the 'paused' variable
   let paused=false;
   let epTotal=0, epLeft=0, vulnTotal=0, toolsUsed=new Set();
 
@@ -405,11 +523,10 @@
     if(running) return;
     running=true;
     paused=false;
-    pauseBtn.textContent = 'Pause';
+    if(pauseBtn) pauseBtn.textContent = 'Pause';
     discover();
   }
 
-  // FIX: Created the 'discover' function by moving logic out of 'start'
   function discover() {
     const URL = by('URL'), DISC = by('DISC');
     stage.textContent='🔍 Deep scanning for endpoints and attack vectors...';
@@ -424,7 +541,6 @@
   function aiPick(){
     if (epLeft<=0){
       stage.textContent='Cycle complete. Rescanning…';
-      // FIX: Correctly call the defined discover function
       setTimeout(discover, 600);
       return;
     }
@@ -498,7 +614,6 @@
       stage.textContent='Strategy feeding back to AI Planner…';
       packets(STRATEGY, AI, 6, STEP_MS, COLORS.pink);
       move(STRATEGY, AI, STEP_MS, ()=>{
-        // After strategy feeds back to AI, go directly to tool selection
         const pickedTool = randOf(tools);
         setTool(pickedTool);
         toolsUsed.add(pickedTool);
@@ -517,7 +632,7 @@
   function pulseBorder(box, kind){
     const col = kind==='red' ? 'rgba(255,80,80,1)' : 'rgba(90,170,255,.9)';
     box.setAttribute('stroke', col); box.setAttribute('stroke-width','2.2');
-    setTimeout(()=>{ box.setAttribute('stroke', n.color); box.setAttribute('stroke-width','3'); }, 480);
+    setTimeout(()=>{ box.setAttribute('stroke', by('TOOL').color); box.setAttribute('stroke-width','3'); }, 480);
   }
   function logVuln(url, vuln, tool){
     const row = document.createElement('div');
@@ -605,9 +720,13 @@
   function nd(id,label,chip,color,kind){ return {id,label,chip,color,kind}; }
   function mk(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
   function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||500}); t.textContent=txt; return t; }
-  function pill(x,y,text){ const g=mk('g'); const w=80,h=25,r=12;
+  function pill(x,y,text,isMobile){ 
+    const g=mk('g'); 
+    const w=isMobile ? 60 : 80;
+    const h=isMobile ? 20 : 25;
+    const r=isMobile ? 10 : 12;
     g.appendChild(mk('rect',{x:x-w/2,y:y-h/2,rx:r,ry:r,width:w,height:h,fill:'rgba(255,255,255,.06)',stroke:'rgba(255,255,255,.12)','stroke-width':1}));
-    const t=tspan(x,y,text,12,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;
+    const t=tspan(x,y,text,isMobile ? 10 : 12,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;
   }
   function lerp(a,b,t){ return a+(b-a)*t; }
   function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
