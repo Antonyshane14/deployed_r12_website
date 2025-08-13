@@ -30,7 +30,7 @@
         position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
         background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
       }
-      .stage{position:absolute;bottom:3px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
+      .stage{position:absolute;bottom:35px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
       .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
       .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
       .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
@@ -232,26 +232,26 @@
   // Responsive node positioning
   function getNodePositions() {
     if (window.innerWidth <= 767) {
-      // Mobile: compact vertical layout with 10px extra gaps
+      // Mobile: compact vertical layout
       return {
-        'URL': {x: 140, y: 70},
-        'DISC': {x: 460, y: 70},
-        'AI': {x: 760, y: 70},
-        'TOOL': {x: 760, y: 230},
-        'ANALYZE': {x: 460, y: 370},
-        'STRATEGY': {x: 140, y: 370},
-        'LOG': {x: 140, y: 230}
+        'URL': {x: 150, y: 80},
+        'DISC': {x: 450, y: 80},
+        'AI': {x: 750, y: 80},
+        'TOOL': {x: 750, y: 220},
+        'ANALYZE': {x: 450, y: 360},
+        'STRATEGY': {x: 150, y: 360},
+        'LOG': {x: 150, y: 220}
       };
     } else {
-      // Desktop: original positioning with 10px extra gaps
+      // Desktop: original positioning
       return {
-        'URL': {x: 140, y: 93},
-        'DISC': {x: 460, y: 93},
-        'AI': {x: 760, y: 93},
-        'TOOL': {x: 760, y: 313},
-        'ANALYZE': {x: 760, y: 513},
-        'STRATEGY': {x: 140, y: 513},
-        'LOG': {x: 140, y: 313}
+        'URL': {x: 150, y: 103},
+        'DISC': {x: 450, y: 103},
+        'AI': {x: 750, y: 103},
+        'TOOL': {x: 750, y: 303},
+        'ANALYZE': {x: 750, y: 503},
+        'STRATEGY': {x: 150, y: 503},
+        'LOG': {x: 150, y: 303}
       };
     }
   }
@@ -282,9 +282,9 @@
     const r = isMobile ? 15 : 20;
     
     // Main card background with consistent thick colored outline
-    n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w,height:h, fill:'#101a33', stroke:n.color, 'stroke-width':3, filter:'url(#glow)'});
+    n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w-10,height:h, fill:'#101a33', stroke:n.color, 'stroke-width':1, filter:'url(#glow)'});
     // Glow outline for when data enters
-    n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w+6,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
+    n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w-3,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
     // Main label
     const labelSize = isMobile ? 14 : 18;
     const label = tspan(-w/2+15,0,n.label,labelSize,COLORS.text,700);
