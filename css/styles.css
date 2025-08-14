@@ -1538,6 +1538,10 @@ section {
         min-height: auto;
     }
     
+    .innovation::before {
+        display: none;
+    }
+    
     .section-header {
         margin-bottom: 1.5rem;
         padding: 0 1rem;
@@ -1550,8 +1554,7 @@ section {
         margin: 0 auto;
         
         box-shadow: 
-            0 15px 30px rgba(0, 0, 0, 0.4),
-            0 0 30px rgba(0, 212, 255, 0.15);
+            0 15px 30px rgba(0, 0, 0, 0.4);
     }
     
     .showcase-iframe {
@@ -1559,16 +1562,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 13px;
-        animation-duration: 6s;
-        background: linear-gradient(45deg, 
-            rgba(0, 247, 255, 0.6),  /* Cyan */
-            rgba(0, 220, 240, 0.5),  /* Light Cyan */
-            rgba(0, 200, 225, 0.4),  /* Medium Cyan */
-            rgba(0, 247, 255, 0.5),  /* Cyan */
-            rgba(0, 247, 255, 0.6)   /* Cyan */
-        );
-        opacity: 0.6;
+        display: none;
     }
     
     .showcase-iframe,
@@ -1584,6 +1578,10 @@ section {
         min-height: auto;
     }
     
+    .innovation::before {
+        display: none;
+    }
+    
     .section-header {
         margin-bottom: 1rem;
         padding: 0 0.5rem;
@@ -1594,15 +1592,14 @@ section {
     }
     
     .innovation-showcase {
-        width: min(96vw, 450px);
+        width: min(96vw, 470px);
         height: min(75vh, 450px);
         border-radius: 10px;
         margin: 0 auto;
         
         /* Simpler effects on mobile for performance */
         box-shadow: 
-            0 10px 20px rgba(0, 0, 0, 0.4),
-            0 0 20px rgba(0, 212, 255, 0.15);
+            0 10px 20px rgba(0, 0, 0, 0.4);
     }
     
     .showcase-iframe {
@@ -1610,17 +1607,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 11px;
-        background: linear-gradient(45deg, 
-            rgba(0, 247, 255, 0.5),  /* Cyan */
-            rgba(0, 220, 240, 0.4),  /* Light Cyan */
-            rgba(0, 200, 225, 0.3),  /* Medium Cyan */
-            rgba(0, 247, 255, 0.4),  /* Cyan */
-            rgba(0, 247, 255, 0.5)   /* Cyan */
-        );
-        animation-duration: 6s;
-        background-size: 300% 300%;
-        opacity: 0.5;
+        display: none;
     }
     
     .innovation-showcase::after {
@@ -1641,9 +1628,10 @@ section {
     }
     
     .innovation-showcase {
-        width: min(98vw, 340px);
+        width: min(98vw, 360px);
         height: min(70vh, 350px);
         border-radius: 8px;
+        margin: 0 auto;
     }
     
     .showcase-iframe {
@@ -1651,7 +1639,7 @@ section {
     }
     
     .innovation-showcase::before {
-        border-radius: 9px;
+        display: none;
     }
     
     .showcase-iframe,
@@ -2465,7 +2453,7 @@ section {
     }
     
     .contact .section-title {
-        font-size: clamp(1.6rem, 5vw, 2rem);
+        font-size: clamp(1.4rem, 4.5vw, 1.8rem);
         margin-bottom: 0.8rem;
     }
     
@@ -2575,7 +2563,7 @@ section {
     }
     
     .contact .section-title {
-        font-size: clamp(1.4rem, 6vw, 1.8rem);
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
     }
     
     .contact .section-subtitle {

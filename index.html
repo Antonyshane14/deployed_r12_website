@@ -388,8 +388,12 @@
             }
             
             #innovation .innovation-showcase {
-                margin: 0 !important;
+                margin: 0 auto !important;
                 padding: 0 !important;
+            }
+            
+            #innovation .mobile-demo {
+                margin: 0 auto !important;
             }
             
             .mobile-demo {
@@ -578,12 +582,194 @@
             
             if (!mobileWf) return;
             
+            // Create SVG for mobile network visualization
+            createMobileSVG();
+            
             // Simple mobile demo simulation
             let running = false;
             let epTotal = 0, vulnTotal = 0, toolsUsed = new Set();
             
             const tools = ['SQLMap', 'Nuclei', 'ffuf', 'Custom'];
             const vulns = ['SQL Injection', 'XSS', 'SSRF', 'Open Redirect', 'Dir Traversal', 'RCE'];
+            
+            function createMobileSVG() {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 300 200');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                svg.style.cssText = 'position:absolute;top:35px;left:6px;right:0;bottom:50px;opacity:0.8;';
+                
+                // Create defs for glow effect and animations
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+                glow.setAttribute('id', 'mobileGlow');
+                glow.setAttribute('x', '-50%');
+                glow.setAttribute('y', '-50%');
+                glow.setAttribute('width', '200%');
+                glow.setAttribute('height', '200%');
+                
+                const blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+                blur.setAttribute('stdDeviation', '2');
+                blur.setAttribute('result', 'blur');
+                
+                const merge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
+                const mergeNode1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+                mergeNode1.setAttribute('in', 'blur');
+                const mergeNode2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+                mergeNode2.setAttribute('in', 'SourceGraphic');
+                
+                merge.appendChild(mergeNode1);
+                merge.appendChild(mergeNode2);
+                glow.appendChild(blur);
+                glow.appendChild(merge);
+                defs.appendChild(glow);
+                svg.appendChild(defs);
+                
+                // Mobile-optimized nodes
+                const mobileNodes = [
+                    {id: 'URL', x: 60, y: 30, color: '#34d399', label: 'URL', fullName: 'Target URL'},
+                    {id: 'DISC', x: 160, y: 30, color: '#fb923c', label: 'DISC', fullName: 'Discover Endpoints'},
+                    {id: 'AI', x: 260, y: 30, color: '#a78bfa', label: 'AI', fullName: 'AI Planner (RAG)'},
+                    {id: 'TOOL', x: 110, y: 110, color: '#60a5fa', label: 'TOOL', fullName: 'Tool Runner'},
+                    {id: 'ANALYZE', x: 210, y: 110, color: '#facc15', label: 'ANALYZE', fullName: 'Analyze & Decide'},
+                    {id: 'STRATEGY', x: 160, y: 150, color: '#f472b6', label: 'STRATEGY', fullName: 'Strategy Reschedule'},
+                    {id: 'LOG', x: 60, y: 150, color: '#ff5c5c', label: 'LOG', fullName: 'Vulnerabilities Log'}
+                ];
+                
+                // Draw connections with data flow paths (matching desktop diagram)
+                const connections = [
+                    {from: 'URL', to: 'DISC', id: 'flow1'},
+                    {from: 'DISC', to: 'AI', id: 'flow2'},
+                    {from: 'AI', to: 'TOOL', id: 'flow3'},
+                    {from: 'TOOL', to: 'ANALYZE', id: 'flow4'},
+                    {from: 'ANALYZE', to: 'LOG', id: 'flow5'},
+                    {from: 'ANALYZE', to: 'STRATEGY', id: 'flow6'},
+                    {from: 'STRATEGY', to: 'AI', id: 'flow7'}
+                ];
+                
+                // Create path layer for data flow
+                const pathLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                svg.appendChild(pathLayer);
+                
+                connections.forEach((conn, index) => {
+                    const fromNode = mobileNodes.find(n => n.id === conn.from);
+                    const toNode = mobileNodes.find(n => n.id === conn.to);
+                    
+                    // Create path for data flow
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const pathData = `M ${fromNode.x} ${fromNode.y} L ${toNode.x} ${toNode.y}`;
+                    path.setAttribute('d', pathData);
+                    path.setAttribute('stroke', 'rgba(140,170,255,0.3)');
+                    path.setAttribute('stroke-width', '1');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('id', `path-${conn.id}`);
+                    pathLayer.appendChild(path);
+                    
+                    // Create animated data packet
+                    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    packet.setAttribute('r', '3');
+                    packet.setAttribute('fill', '#00d4ff');
+                    packet.setAttribute('filter', 'url(#mobileGlow)');
+                    packet.setAttribute('opacity', '0');
+                    
+                    const animateMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+                    animateMotion.setAttribute('dur', '2s');
+                    animateMotion.setAttribute('repeatCount', 'indefinite');
+                    animateMotion.setAttribute('begin', `${index * 0.3}s`);
+                    animateMotion.setAttribute('path', pathData);
+                    
+                    const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    animate.setAttribute('attributeName', 'opacity');
+                    animate.setAttribute('values', '0;1;1;0');
+                    animate.setAttribute('dur', '2s');
+                    animate.setAttribute('repeatCount', 'indefinite');
+                    animate.setAttribute('begin', `${index * 0.3}s`);
+                    
+                    packet.appendChild(animateMotion);
+                    packet.appendChild(animate);
+                    svg.appendChild(packet);
+                });
+                
+                // Draw nodes with pulsing animation
+                mobileNodes.forEach((node, index) => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', node.x);
+                    circle.setAttribute('cy', node.y);
+                    circle.setAttribute('r', '12');
+                    circle.setAttribute('fill', node.color);
+                    circle.setAttribute('filter', 'url(#mobileGlow)');
+                    circle.setAttribute('opacity', '0.8');
+                    
+                    // Add pulsing animation to nodes
+                    const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    pulse.setAttribute('attributeName', 'r');
+                    pulse.setAttribute('values', '12;14;12');
+                    pulse.setAttribute('dur', '3s');
+                    pulse.setAttribute('repeatCount', 'indefinite');
+                    pulse.setAttribute('begin', `${index * 0.5}s`);
+                    
+                    circle.appendChild(pulse);
+                    svg.appendChild(circle);
+                    
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', node.x);
+                    text.setAttribute('y', node.y + 22);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#eaf2ff');
+                    text.setAttribute('font-size', '9');
+                    text.setAttribute('font-weight', '700');
+                    text.setAttribute('text-shadow', '1px 1px 2px rgba(0,0,0,0.8)');
+                    text.textContent = node.label;
+                    svg.appendChild(text);
+                    
+                    // Add full name as subtitle for better clarity
+                    const subtitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    subtitle.setAttribute('x', node.x);
+                    subtitle.setAttribute('y', node.y + 32);
+                    subtitle.setAttribute('text-anchor', 'middle');
+                    subtitle.setAttribute('fill', '#9fb3d6');
+                    subtitle.setAttribute('font-size', '6');
+                    subtitle.setAttribute('font-weight', '500');
+                    subtitle.setAttribute('opacity', '0.8');
+                    subtitle.textContent = node.fullName;
+                    svg.appendChild(subtitle);
+                });
+                
+                // Add animated background particles (adjusted for shifted flowchart)
+                for (let i = 0; i < 8; i++) {
+                    const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    particle.setAttribute('r', '1');
+                    particle.setAttribute('fill', '#7dd3fc');
+                    particle.setAttribute('opacity', '0.3');
+                    
+                    const animateX = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    animateX.setAttribute('attributeName', 'cx');
+                    animateX.setAttribute('values', `${10 + Math.random() * 290};${10 + Math.random() * 290};${10 + Math.random() * 290}`);
+                    animateX.setAttribute('dur', `${5 + Math.random() * 3}s`);
+                    animateX.setAttribute('repeatCount', 'indefinite');
+                    
+                    const animateY = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    animateY.setAttribute('attributeName', 'cy');
+                    animateY.setAttribute('values', `${Math.random() * 200};${Math.random() * 200};${Math.random() * 200}`);
+                    animateY.setAttribute('dur', `${4 + Math.random() * 4}s`);
+                    animateY.setAttribute('repeatCount', 'indefinite');
+                    
+                    const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    animateOpacity.setAttribute('attributeName', 'opacity');
+                    animateOpacity.setAttribute('values', '0.1;0.6;0.1');
+                    animateOpacity.setAttribute('dur', `${3 + Math.random() * 2}s`);
+                    animateOpacity.setAttribute('repeatCount', 'indefinite');
+                    
+                    particle.appendChild(animateX);
+                    particle.appendChild(animateY);
+                    particle.appendChild(animateOpacity);
+                    svg.appendChild(particle);
+                }
+                
+                mobileWf.appendChild(svg);
+            }
+            
             
             function updateMobileStats() {
                 if (mobileEpCount) mobileEpCount.textContent = epTotal;
