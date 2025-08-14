@@ -693,6 +693,19 @@ section {
     .leader-card.mobile-glow::before {
         opacity: 1;
     }
+    
+    /* Core Capabilities and Why Rapture Twelve mobile typography to match Innovation */
+    .section-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .section-subtitle {
+        font-size: 0.9rem !important;
+    }
+    
+    .section-subtitle_a {
+        font-size: 0.9rem !important;
+    }
 }
 
 

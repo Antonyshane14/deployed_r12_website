@@ -321,7 +321,8 @@
             </div>
 
             <div class="innovation-showcase" data-reveal>
-                <div class="showcase-iframe">
+                <!-- Desktop version (unchanged) -->
+                <div class="showcase-iframe desktop-only">
                     <iframe id="demoFrame" 
                             src="assets/ai_penttest.html"
                             width="100%"
@@ -331,27 +332,353 @@
                             style="border: none; border-radius: 10px; overflow: hidden;">
                     </iframe><br><br><br>
                 </div>
+                
+                <!-- Mobile-optimized version -->
+                <div class="mobile-demo mobile-only">
+                    <div id="mobile-container">
+                        <div id="mobile-wf">
+                            <div class="mobile-hdr">
+                                <span style="flex-shrink: 0;">R12 PENTEST TOOL</span>
+                                <span class="mobile-tag" style="color: var(--purple)">AI + RAG</span>
+                                <span class="mobile-tag" style="color: var(--blue)">Tools</span>
+                                <span class="mobile-tag" style="color: var(--yellow)">Strategy</span>
+                                <span style="margin-left:auto;color: var(--green);flex-shrink: 0;">Live</span>
+                            </div>
+                            <div class="mobile-stage">Ready (mock visualizer)</div>
+                        </div>
+                        <div id="mobile-sidebar">
+                            <div class="mobile-log">
+                                <h4>Vulnerabilities Log</h4>
+                                <div id="mobile-logItems"></div>
+                            </div>
+                            <div class="mobile-stats">
+                                <h4>Session Stats</h4>
+                                <div class="mobile-stat-row"><span>Endpoints Found:</span><span id="mobile-epCount">0</span></div>
+                                <div class="mobile-stat-row"><span>Vulns Discovered:</span><span id="mobile-vulnCount">0</span></div>
+                                <div class="mobile-stat-row"><span>Tools Used:</span><span id="mobile-toolCount">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    <style>
+        /* Mobile demo styles - only active on mobile */
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+            .mobile-only { display: block !important; }
+            
+            /* Mobile-specific Innovation section styling */
+            #innovation .section-title {
+                font-size: 1.8rem !important;
+                margin-bottom: 0.8rem !important;
+            }
+            
+            #innovation .section-subtitle {
+                font-size: 0.9rem !important;
+                margin-bottom: 1.5rem !important;
+                line-height: 1.4 !important;
+            }
+            
+            #innovation .container {
+                padding: 0 1rem !important;
+                max-width: 100% !important;
+            }
+            
+            #innovation .innovation-showcase {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .mobile-demo {
+                width: calc(100vw - 2rem);
+                height: 500px;
+                background: #0b1020;
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+                margin: 0 auto;
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            }
+            
+            #mobile-container {
+                display: flex;
+                height: 100%;
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            #mobile-wf {
+                flex: 1;
+                background: #0b1020;
+                position: relative;
+                font: 500 11px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+                color: #eaf2ff;
+            }
+            
+            #mobile-sidebar {
+                width: 100%;
+                height: 35vh;
+                background: #0a0f1f;
+                border-top: 1px solid rgba(255,255,255,.08);
+                display: flex;
+                flex-direction: column;
+                padding: 6px;
+                gap: 3px;
+            }
+            
+            .mobile-hdr {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 0 6px;
+                background: linear-gradient(90deg, #0f1734, #0b1330);
+                font-weight: 700;
+                z-index: 100;
+                font-size: 14px;
+                opacity: 1;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .mobile-tag {
+                font: 600 8px/1 ui-sans-serif;
+                border: 1px solid rgba(255,255,255,.12);
+                padding: 2px 4px;
+                border-radius: 999px;
+                background: rgba(255,255,255,.06);
+                white-space: nowrap;
+            }
+            
+            .mobile-stage {
+                position: absolute;
+                bottom: 15px;
+                left: 8px;
+                right: 8px;
+                color: #eaf2ff;
+                font-weight: 600;
+                font-size: 12px;
+                z-index: 100;
+                opacity: 1;
+                text-align: center;
+                line-height: 1.2;
+                background: rgba(11,16,32,0.9);
+                padding: 3px 5px;
+                border-radius: 4px;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255,255,255,.1);
+            }
+            
+            .mobile-log {
+                flex: 1;
+                background: #0b152c;
+                border: 1px solid rgba(255,255,255,.08);
+                border-radius: 6px;
+                padding: 6px;
+                overflow: auto;
+                margin-bottom: 6px;
+            }
+            
+            .mobile-log h4 {
+                margin: 0 0 6px 0;
+                font-size: 14px;
+                color: #ffffff;
+                opacity: .9;
+                font-weight: 600;
+            }
+            
+            .mobile-stats {
+                background: #0b152c;
+                border: 1px solid rgba(255,255,255,.08);
+                border-radius: 6px;
+                padding: 6px;
+            }
+            
+            .mobile-stats h4 {
+                margin: 0 0 4px 0;
+                font-size: 12px;
+                color: #ffffff;
+                font-weight: 600;
+            }
+            
+            .mobile-stat-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 4px;
+                font-size: 11px;
+                color: #ffffff;
+                padding-right: 6px;
+            }
+            
+            :root {
+                --bg: #0b1020;
+                --text: #eaf2ff;
+                --muted: #9fb3d6;
+                --line: rgba(140,170,255,.35);
+                --accent: #7dd3fc;
+                --pink: #f472b6;
+                --blue: #60a5fa;
+                --green: #34d399;
+                --yellow: #facc15;
+                --orange: #fb923c;
+                --purple: #a78bfa;
+                --red: #ff5c5c;
+                --blue-ok: #5bbcff;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .desktop-only { display: block !important; }
+            .mobile-only { display: none !important; }
+        }
+    </style>
+
     <script>
-        // Handle iframe loading
+        // Handle iframe loading for desktop
         document.addEventListener('DOMContentLoaded', function() {
             const iframe = document.getElementById('demoFrame');
             const showcaseContainer = document.querySelector('.showcase-iframe');
             
-            iframe.addEventListener('load', function() {
-                this.classList.add('loaded');
-                showcaseContainer.classList.add('iframe-loaded');
-            });
+            if (iframe && showcaseContainer) {
+                iframe.addEventListener('load', function() {
+                    this.classList.add('loaded');
+                    showcaseContainer.classList.add('iframe-loaded');
+                });
+                
+                // Fallback to remove loading spinner after 3 seconds
+                setTimeout(() => {
+                    iframe.classList.add('loaded');
+                    showcaseContainer.classList.add('iframe-loaded');
+                }, 3000);
+            }
             
-            // Fallback to remove loading spinner after 3 seconds
-            setTimeout(() => {
-                iframe.classList.add('loaded');
-                showcaseContainer.classList.add('iframe-loaded');
-            }, 3000);
+            // Mobile demo initialization
+            if (window.innerWidth <= 768) {
+                initMobileDemo();
+            }
         });
+        
+        // Mobile demo script (embedded and optimized)
+        function initMobileDemo() {
+            // Add the mobile-optimized pentest demo logic here
+            const mobileWf = document.getElementById('mobile-wf');
+            const mobileStage = mobileWf?.querySelector('.mobile-stage');
+            const mobileLogItems = document.getElementById('mobile-logItems');
+            const mobileEpCount = document.getElementById('mobile-epCount');
+            const mobileVulnCount = document.getElementById('mobile-vulnCount');
+            const mobileToolCount = document.getElementById('mobile-toolCount');
+            
+            if (!mobileWf) return;
+            
+            // Simple mobile demo simulation
+            let running = false;
+            let epTotal = 0, vulnTotal = 0, toolsUsed = new Set();
+            
+            const tools = ['SQLMap', 'Nuclei', 'ffuf', 'Custom'];
+            const vulns = ['SQL Injection', 'XSS', 'SSRF', 'Open Redirect', 'Dir Traversal', 'RCE'];
+            
+            function updateMobileStats() {
+                if (mobileEpCount) mobileEpCount.textContent = epTotal;
+                if (mobileVulnCount) mobileVulnCount.textContent = vulnTotal;
+                if (mobileToolCount) mobileToolCount.textContent = toolsUsed.size;
+            }
+            
+            function logMobileVuln(vuln, tool) {
+                if (!mobileLogItems) return;
+                
+                const row = document.createElement('div');
+                row.style.cssText = `
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 10px 8px;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+                    border: 1px solid rgba(255,255,255,.18);
+                    font-size: 12px;
+                    color: #ffffff;
+                    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+                    transition: all 0.3s ease;
+                    backdrop-filter: blur(8px);
+                    position: relative;
+                    overflow: hidden;
+                `;
+                
+                const severity = Math.random() > 0.6 ? 'CRITICAL' : 'HIGH';
+                const severityClass = severity === 'CRITICAL' ? 'red' : 'blue';
+                
+                row.innerHTML = `
+                    <div>
+                        <b style="color:#ff6b6b">${vuln}</b><br>
+                        <span style="opacity:.7;font-size:11px">via ${tool}</span>
+                    </div>
+                    <span style="font-size:9px;padding:3px 6px;border-radius:999px;background:${severity === 'CRITICAL' ? '#ff4757' : '#3742fa'};color:#fff;">${severity}</span>
+                `;
+                
+                mobileLogItems.prepend(row);
+                vulnTotal++;
+                updateMobileStats();
+                
+                // Keep only latest 5 items
+                while(mobileLogItems.children.length > 5) {
+                    mobileLogItems.removeChild(mobileLogItems.lastChild);
+                }
+            }
+            
+            function startMobileDemo() {
+                if (running) return;
+                running = true;
+                
+                // Reset stats
+                epTotal = Math.floor(Math.random() * 10) + 8;
+                vulnTotal = 0;
+                toolsUsed.clear();
+                updateMobileStats();
+                
+                // Simulate scanning
+                if (mobileStage) mobileStage.textContent = '🔍 Scanning endpoints...';
+                
+                const scanInterval = setInterval(() => {
+                    const tool = tools[Math.floor(Math.random() * tools.length)];
+                    toolsUsed.add(tool);
+                    updateMobileStats();
+                    
+                    if (mobileStage) mobileStage.textContent = `🎯 Testing with ${tool}...`;
+                    
+                    // 60% chance to find vulnerability
+                    if (Math.random() < 0.6) {
+                        const vuln = vulns[Math.floor(Math.random() * vulns.length)];
+                        logMobileVuln(vuln, tool);
+                        if (mobileStage) mobileStage.textContent = `🚨 ${vuln} found!`;
+                    } else {
+                        if (mobileStage) mobileStage.textContent = `✅ ${tool} scan clean`;
+                    }
+                    
+                    // Stop after 8 scans
+                    if (toolsUsed.size >= 4) {
+                        clearInterval(scanInterval);
+                        setTimeout(() => {
+                            if (mobileStage) mobileStage.textContent = 'Scan complete. Restarting...';
+                            running = false;
+                            setTimeout(startMobileDemo, 2000);
+                        }, 1500);
+                    }
+                }, 2000);
+            }
+            
+            // Start demo after delay
+            setTimeout(startMobileDemo, 1000);
+        }
     </script>
 
 <!-- About Section -->
