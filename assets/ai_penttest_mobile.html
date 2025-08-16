@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-  <title>Security Workflow Demo - Mobile</title>
+  <title>Security Workflow Demo - Mobile Optimized</title>
   <style>
     :root{
       --bg:#0b1020; --text:#eaf2ff; --muted:#9fb3d6;
@@ -11,110 +11,123 @@
       --pink:#f472b6; --blue:#60a5fa; --green:#34d399; --yellow:#facc15; --orange:#fb923c; --purple:#a78bfa;
       --red:#ff5c5c; --blue-ok:#5bbcff;
     }
-    html,body{margin:0;padding:0;height:100vh;background:#111;overflow:hidden;font-size:14px}
-    
-    /* Desktop styles (unchanged) */
-    @media (min-width: 768px) {
-      #container{
-        display:flex;height:100vh;width:100vw;
-      }
-      #wf{
-        flex:1;background:var(--bg);position:relative;
-        font:500 14px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
-      }
-      #sidebar{
-        width:320px;background:#0a0f1f;border-left:1px solid rgba(255,255,255,.08);
-        display:flex;flex-direction:column;padding:12px;
-      }
-      .hdr{
-        position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
-        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
-      }
-      /* Specific style for pentest demo header text only */
-      @media (min-width: 768px) {
-        .hdr {
-          font-size: 20px; /* Smaller font specifically for desktop pentest demo */
-        }
-      }
-      .stage{position:absolute;bottom:3px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
-      .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
-      .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
-      .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
+    html,body{margin:0;padding:0;height:100vh;background:#111;overflow:hidden;touch-action:manipulation}
+    #container{
+      display:flex;height:100vh;width:100vw;flex-direction:column;
     }
     
-    /* Mobile styles - OPTIMIZED */
-    @media (max-width: 767px) {
-      #container{
-        display:flex;height:100vh;width:100vw;
+    /* Mobile-first responsive layout - USING PHONE.HTML DESIGN */
+    @media (max-width: 768px) {
+      #container { flex-direction: column; }
+      #wf { flex: 1; order: 1; }
+      #sidebar { 
+        width: 100%; 
+        height: 40vh; 
+        order: 2; 
+        border-left: none; 
+        border-top: 1px solid rgba(255,255,255,.08);
+        padding: 8px;
       }
-      #wf{
-        flex:1;background:var(--bg);position:relative;
-        font:500 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+      .hdr { 
+        height: 40px; 
+        font-size: 16px; 
+        padding: 0 8px;
+        flex-wrap: wrap;
+        justify-content: center;
       }
-      #sidebar{
-        width:110px;background:#0a0f1f;border-left:1px solid rgba(255,255,255,.08);
-        display:flex;flex-direction:column;padding:4px;gap:4px;
+      .stage { 
+        bottom: 0px; 
+        left: 10px; 
+        font-size: 10px; 
+        right: 10px;
+        text-align: center;
       }
-      .hdr{
-        position:absolute;top:0;left:0;right:0;height:35px;display:flex;align-items:center;gap:4px;padding:0 8px;
-        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:12px;opacity:1;
-        flex-wrap:wrap;
+    }
+    
+    @media (min-width: 769px) {
+      #container { flex-direction: row; }
+      #wf { flex: 1; }
+      #sidebar { 
+        width: 320px; 
+        border-left: 1px solid rgba(255,255,255,.08);
+        padding: 12px;
       }
-      .stage{
-        position:absolute;bottom:6px;left:8px;right:11px;color:var(--text);font-weight:600;font-size:10px;z-index:100;opacity:1;
-        text-align:center;background:rgba(11,16,32,0.9);padding:4px 6px;border-radius:6px;
-        backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1);
+      .hdr { 
+        height: 50px; 
+        font-size: 20px; 
+        padding: 0 16px;
       }
-      .log{
-        flex:1;background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:2px;
-        overflow:auto;margin-bottom:4px;
+      .stage { 
+        bottom: 35px; 
+        left: 20px; 
+        font-size: 24px;
       }
-      .log h4{margin:0 0 2px 0;font-size:8px;color:#ffffff;opacity:.9;font-weight:600}
-      .stats{
-        background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:2px;
-      }
-      .stats h4{margin:0 0 2px 0;font-size:7px;color:#ffffff;font-weight:600}
-      .stat-row{display:flex;justify-content:space-between;margin-bottom:1px;font-size:6px;color:#ffffff}
-      .log .item{
-        padding:2px 3px;margin-bottom:2px;font-size:6px;
-      }
-      .sev{font-size:5px;padding:1px 2px;}
     }
 
-    .tag{font:600 11px/1 ui-sans-serif;border:1px solid rgba(255,255,255,.12);padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06)}
+    #wf{
+      background:var(--bg);position:relative;
+      font:500 14px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text);
+    }
+    #sidebar{
+      background:#0a0f1f;
+      display:flex;flex-direction:column;
+    }
+    .hdr{
+      position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;
+      background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;opacity:1;
+    }
+    .tag{
+      font:600 10px/1 ui-sans-serif;border:1px solid rgba(255,255,255,.12);
+      padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.06);
+      white-space: nowrap;
+    }
     .controls{
       display: none;
     }
-    .log{
-      background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
-      overflow:auto;margin-bottom:12px;
+    .stage{
+      position:absolute;color:var(--text);font-weight:700;z-index:100;opacity:1;
+      line-height: 1.2;
     }
-    .log .item{display:flex;justify-content:space-between;align-items:center;gap:8px;
-               padding:10px 12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-               border:1px solid rgba(255,255,255,.18);font-size:14px;color:#ffffff;
-               box-shadow:0 4px 12px rgba(0,0,0,.2);transition:all 0.3s ease;
-               backdrop-filter:blur(8px);position:relative;overflow:hidden}
-    .log .item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3);border-color:rgba(255,255,255,.25)}
+    .log{
+      flex:1;background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;
+      overflow:auto;margin-bottom:8px;
+    }
+    .log h4{margin:0 0 8px 0;font-size:16px;color:#ffffff;opacity:.9;font-weight:600}
+    .log .item{
+      display:flex;justify-content:space-between;align-items:center;gap:6px;
+      padding:8px;border-radius:8px;margin-bottom:8px;
+      background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.18);font-size:12px;color:#ffffff;
+      box-shadow:0 2px 8px rgba(0,0,0,.2);transition:all 0.3s ease;
+      backdrop-filter:blur(8px);position:relative;overflow:hidden;
+    }
+    .log .item:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3);border-color:rgba(255,255,255,.25)}
     .log .item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
                        background:linear-gradient(90deg, var(--red), var(--orange), var(--yellow));opacity:.7}
-    .sev{font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.2);white-space:nowrap;
-         font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .sev{
+      font-size:10px;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.2);
+      white-space:nowrap;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;
+    }
     .sev.red{color:#fff;background:linear-gradient(135deg, #ff4757, #ff3742);border-color:rgba(255,60,60,.4);
              box-shadow:0 2px 8px rgba(255,60,60,.3)}
     .sev.blue{color:#fff;background:linear-gradient(135deg, #3742fa, #2f3542);border-color:rgba(60,150,255,.4);
               box-shadow:0 2px 8px rgba(60,150,255,.3)}
     .count-badge{
       position:absolute;background:rgba(255,165,0,.1);color:var(--orange);
-      border:1px solid rgba(255,165,0,.35);padding:4px 8px;border-radius:8px;font-weight:700;font-size:12px;
+      border:1px solid rgba(255,165,0,.35);padding:3px 6px;border-radius:6px;font-weight:700;font-size:10px;
       pointer-events:none;transform:translate(-50%,-130%);
     }
     .stats{
-      background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
+      background:#0b152c;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;
     }
+    .stats h4{margin:0 0 6px 0;font-size:14px;color:#ffffff;font-weight:600}
+    .stat-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:#ffffff;padding-right:8px}
     
-    /* Mobile tag adjustments */
-    @media (max-width: 767px) {
-      .tag{font-size:8px;padding:2px 4px;}
+    /* Mobile touch improvements */
+    @media (max-width: 768px) {
+      .log .item { padding: 10px 8px; margin-bottom: 10px; }
+      .sev { font-size: 9px; padding: 3px 6px; }
+      .tag { font-size: 9px; padding: 2px 4px; }
     }
   </style>
 </head>
@@ -122,18 +135,15 @@
 <div id="container">
   <div id="wf">
     <div class="hdr">
-      R12 AUTOMATED PENTESTING TOOL IN ACTION
-      <span class="tag" style="color:var(--purple)">AI + RAG</span>
-      <span class="tag" style="color:var(--blue)">Tools</span>
-      <span class="tag" style="color:var(--yellow)">Strategy</span>
-      <span style="margin-left:auto;color:var(--green)">Live</span>
+      <span style="flex-shrink: 0;">R12 PENTEST TOOL</span>
+      <span style="margin-left:auto;color:var(--green);flex-shrink: 0;">Live</span>
     </div>
     <div class="controls" style="display: none;">
       <input id="urlIn" placeholder="https://target.example.com" value="https://demo.site"/>
       <button id="startBtn">Start</button>
       <button id="pauseBtn">Pause</button>
     </div>
-    <div class="stage">Ready (mock visualizer)</div>
+    <div class="stage">Ready (mobile optimized)</div>
   </div>
   <div id="sidebar">
     <div class="log">
@@ -187,13 +197,11 @@
   const NS="http://www.w3.org/2000/svg";
   const svg = mk('svg',{viewBox:'0 0 900 700', width:'100%', height:'100%', preserveAspectRatio:'xMidYMid meet'});
   
-  // Responsive SVG positioning
+  // Responsive SVG positioning - USING PHONE.HTML LOGIC
   function updateSVGPosition() {
-    if (window.innerWidth <= 767) {
-      // Mobile: adjust for smaller sidebar
-      svg.style.cssText = 'position:absolute;top:40px;left:0;right:112px;bottom:35px;';
+    if (window.innerWidth <= 768) {
+      svg.style.cssText = 'position:absolute;top:50px;left:0;right:0;bottom:0;';
     } else {
-      // Desktop: original positioning
       svg.style.cssText = 'position:absolute;top:60px;left:0;right:320px;bottom:0;';
     }
   }
@@ -235,21 +243,21 @@
     ['STRATEGY','AI']
   ];
 
-  // Responsive node positioning
+  // Responsive node positioning - USING PHONE.HTML POSITIONS
   function getNodePositions() {
-    if (window.innerWidth <= 767) {
-      // Mobile: bigger boxes in more compact layout
+    if (window.innerWidth <= 768) {
+      // Mobile layout - using phone.html positions
       return {
-        'URL': {x: 150, y: 90},
-        'DISC': {x: 450, y: 90},
-        'AI': {x: 750, y: 90},
-        'TOOL': {x: 750, y: 250},
-        'ANALYZE': {x: 450, y: 380},
-        'STRATEGY': {x: 150, y: 380},
-        'LOG': {x: 150, y: 250}
+        'URL': {x: 150, y: 120},
+        'DISC': {x: 450, y: 120},
+        'AI': {x: 750, y: 120},
+        'TOOL': {x: 750, y: 280},
+        'ANALYZE': {x: 750, y: 440},
+        'STRATEGY': {x: 150, y: 440},
+        'LOG': {x: 150, y: 280}
       };
     } else {
-      // Desktop: original positioning
+      // Desktop layout
       return {
         'URL': {x: 150, y: 103},
         'DISC': {x: 450, y: 103},
@@ -262,90 +270,150 @@
     }
   }
 
+  // Responsive node sizing - USING PHONE.HTML SIZING
+  function getNodeSize() {
+    return window.innerWidth <= 768 ? {w: 240, h: 100} : {w: 320, h: 140};
+  }
+
   function updateNodePositions() {
     const positions = getNodePositions();
+    const {w, h} = getNodeSize();
+    const r = window.innerWidth <= 768 ? 15 : 20;
+    
     nodes.forEach(n => {
       n.x = positions[n.id].x;
       n.y = positions[n.id].y;
+      
       if (n.g) {
         n.g.setAttribute('transform', `translate(${n.x},${n.y})`);
+        
+        // Update box size
+        n.box.setAttribute('x', -w/2);
+        n.box.setAttribute('y', -h/2);
+        n.box.setAttribute('width', w);
+        n.box.setAttribute('height', h);
+        n.box.setAttribute('rx', r);
+        n.box.setAttribute('ry', r);
+        
+        n.glowOutline.setAttribute('x', -w/2-3);
+        n.glowOutline.setAttribute('y', -h/2-3);
+        n.glowOutline.setAttribute('width', w+6);
+        n.glowOutline.setAttribute('height', h+6);
+        n.glowOutline.setAttribute('rx', r+3);
+        n.glowOutline.setAttribute('ry', r+3);
+        
+        // Update text positions - centered
+        const label = n.g.querySelector('text');
+        if (label) {
+          label.setAttribute('x', 0);
+          label.setAttribute('y', 0);
+          label.setAttribute('text-anchor', 'middle');
+          label.setAttribute('font-size', window.innerWidth <= 768 ? '20' : '28');
+        }
+        
+        // Update endpoints text for DISC node - centered
+        if (n.endpointsText) {
+          n.endpointsText.setAttribute('x', 0);
+          n.endpointsText.setAttribute('y', window.innerWidth <= 768 ? 30 : 35);
+          n.endpointsText.setAttribute('text-anchor', 'middle');
+          n.endpointsText.setAttribute('font-size', window.innerWidth <= 768 ? '16' : '18');
+        }
+        
+        // Update status dot
+        n.statusDot.setAttribute('cx', w/2-15);
+        n.statusDot.setAttribute('cy', -h/2+15);
+        n.statusDot.setAttribute('r', window.innerWidth <= 768 ? 3 : 4);
+        
+        // Update processing icon
+        const iconScale = window.innerWidth <= 768 ? 0.5 : 0.6;
+        n.processingIcon.setAttribute('transform', `translate(${w/2-25}, ${-h/2+20}) scale(${iconScale})`);
       }
     });
   }
 
   nodes.forEach((n,i)=>{
-    const positions = getNodePositions();
-    n.x = positions[n.id].x;
-    n.y = positions[n.id].y;
     n.active = false;
     n.processing = false;
     const g = mk('g'); nodeLayer.appendChild(g); n.g=g;
-    
-    // Responsive node sizing - BIGGER and ELONGATED boxes for mobile
-    const isMobile = window.innerWidth <= 767;
-    const w = isMobile ? 280 : 280;  // Increased from 240 to 280
-    const h = isMobile ? 120 : 120;  // Increased from 100 to 120
-    const r = isMobile ? 20 : 20;    // Increased from 18 to 20
+    const {w, h} = getNodeSize();
+    const r = window.innerWidth <= 768 ? 15 : 20;
     
     // Main card background with consistent thick colored outline
-    n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w-10,height:h, fill:'#101a33', stroke:n.color, 'stroke-width':1, filter:'url(#glow)'});
+    n.box = mk('rect',{x:-w/2,y:-h/2,rx:r,ry:r,width:w,height:h, fill:'#101a33', stroke:n.color, 'stroke-width':3, filter:'url(#glow)'});
     // Glow outline for when data enters
-    n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w-3,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
-    // Main label
-    const labelSize = isMobile ? 18 : 18;  // Increased from 16 to 18
-    const label = tspan(-w/2+15,0,n.label,labelSize,COLORS.text,700);
-    // Chip badge
-    const chipX = isMobile ? w/2-70 : w/2-70;  // Adjusted for bigger box
-    const chipY = isMobile ? -h/2+22 : -h/2+25;
-    const chip = pill(chipX, chipY, n.chip, isMobile);
-    // Endpoints counter (only for DISC node)
+    n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w+6,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
+    // Main label - centered and larger
+    const fontSize = window.innerWidth <= 768 ? 20 : 28;
+    const label = tspan(0, 0, n.label, fontSize, COLORS.text, 700);
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('dominant-baseline', 'middle');
+    
+    // Endpoints counter (only for DISC node) - centered below main text
     if (n.id === 'DISC') {
-      const endpointY = isMobile ? 30 : 25;  // Increased from 25 to 30
-      n.endpointsText = tspan(-w/2+15, endpointY, '0 endpoints', isMobile ? 15 : 14, COLORS.orange, 600);  // Increased from 13 to 15
+      const endpointsFontSize = window.innerWidth <= 768 ? 16 : 18;
+      const endpointsY = window.innerWidth <= 768 ? 30 : 35;
+      n.endpointsText = tspan(0, endpointsY, '0 endpoints', endpointsFontSize, COLORS.orange, 600);
+      n.endpointsText.setAttribute('text-anchor', 'middle');
       n.endpointsText.setAttribute('opacity', '0.8');
     }
-    // Processing icon (rotating gear)
+    // Processing icon (rotating gear) - moved to corner
     n.processingIcon = mk('g');
-    const gearScale = isMobile ? 0.8 : 0.8;  // Increased from 0.7 to 0.8
     const gear = mk('path', {
       d: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11.03L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11.03C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z',
       fill: n.color,
       opacity: 0.4,
-      transform: `scale(${gearScale})`,
       'transform-origin': '12 12'
     });
     n.processingIcon.appendChild(gear);
-    const gearX = isMobile ? 100 : 90;  // Adjusted for bigger box
-    const gearY = isMobile ? 30 : 30;
-    n.processingIcon.setAttribute('transform', `translate(${gearX}, ${gearY})`);
+    const iconScale = window.innerWidth <= 768 ? 0.5 : 0.6;
+    n.processingIcon.setAttribute('transform', `translate(${w/2-25}, ${-h/2+20}) scale(${iconScale})`);
     n.gear = gear;
-    // Status indicator
-    const dotX = isMobile ? w/2-25 : w/2-20;  // Adjusted for bigger box
-    const dotY = isMobile ? -h/2+20 : -h/2+20;
-    n.statusDot = mk('circle', {r: isMobile ? 6 : 6, cx: dotX, cy: dotY, fill: '#555', opacity: 0.6});  // Increased from 5 to 6
-    // Append elements to group
+    // Status indicator - small dot in corner
+    const dotRadius = window.innerWidth <= 768 ? 3 : 4;
+    n.statusDot = mk('circle', {r: dotRadius, cx: w/2-15, cy: -h/2+15, fill: '#555', opacity: 0.6});
+    
+    // Append elements to group - removed chip badge
     if (n.id === 'DISC') {
-      g.append(n.glowOutline, n.box, label, chip, n.endpointsText, n.processingIcon, n.statusDot);
+      g.append(n.glowOutline, n.box, label, n.endpointsText, n.processingIcon, n.statusDot);
     } else {
-      g.append(n.glowOutline, n.box, label, chip, n.processingIcon, n.statusDot);
+      g.append(n.glowOutline, n.box, label, n.processingIcon, n.statusDot);
     }
-    // Set initial position
-    g.setAttribute('transform',`translate(${n.x},${n.y})`);
-    // Add subtle hover effects - all boxes start with same thickness
+    
+    // Add touch-friendly interactions
     g.style.cursor = 'pointer';
     g.style.transition = 'all 0.3s ease';
-    g.addEventListener('mouseenter', () => {
+    
+    const handleInteractionStart = () => {
       n.box.setAttribute('stroke-width', '4');
       n.box.setAttribute('transform', 'scale(1.02)');
       n.statusDot.setAttribute('fill', n.color);
       n.statusDot.setAttribute('opacity', '0.8');
-    });
-    g.addEventListener('mouseleave', () => {
+    };
+    
+    const handleInteractionEnd = () => {
       n.box.setAttribute('stroke-width', '3');
       n.box.setAttribute('transform', 'scale(1)');
       n.statusDot.setAttribute('fill', '#555');
       n.statusDot.setAttribute('opacity', '0.6');
-    });
+    };
+    
+    // Mouse events for desktop
+    g.addEventListener('mouseenter', handleInteractionStart);
+    g.addEventListener('mouseleave', handleInteractionEnd);
+    
+    // Touch events for mobile
+    g.addEventListener('touchstart', handleInteractionStart, {passive: true});
+    g.addEventListener('touchend', handleInteractionEnd, {passive: true});
+    g.addEventListener('touchcancel', handleInteractionEnd, {passive: true});
+  });
+
+  // Initialize positions
+  updateNodePositions();
+  
+  // Update positions on resize
+  window.addEventListener('resize', () => {
+    updateNodePositions();
+    updateSVGPosition();
   });
 
   const edgeEls = edges.map(([a,b])=>{
@@ -354,21 +422,13 @@
     return {a:by(a), b:by(b), el:e};
   });
 
-  // Token with larger halo effect
-  const tokenSize = window.innerWidth <= 767 ? 7 : 8;  // Increased from 6 to 7
-  const haloSize = window.innerWidth <= 767 ? 18 : 20;  // Increased from 15 to 18
-  const token = mk('circle',{r:tokenSize, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
-  const halo  = mk('circle',{r:haloSize, fill:'none', stroke:COLORS.accent, 'stroke-width':3, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
+  // Token with larger halo effect - USING PHONE.HTML SIZING
+  const tokenRadius = window.innerWidth <= 768 ? 6 : 8;
+  const haloRadius = window.innerWidth <= 768 ? 15 : 20;
+  const token = mk('circle',{r:tokenRadius, fill:COLORS.accent}); token.style.filter='url(#glow)'; svg.appendChild(token);
+  const halo  = mk('circle',{r:haloRadius, fill:'none', stroke:COLORS.accent, 'stroke-width':3, opacity:.18}); halo.style.filter='url(#glow)'; svg.appendChild(halo);
   moveTokenTo(by('URL'));
 
-  // Handle window resize
-  window.addEventListener('resize', () => {
-    updateNodePositions();
-    updateSVGPosition();
-    render();
-  });
-
-  // Remove physics simulation - nodes are now fixed
   function render(){
     edgeEls.forEach(({a,b,el})=>{
        el.setAttribute('x1',a.x); el.setAttribute('y1',a.y);
@@ -379,15 +439,13 @@
   // Animation functions with glow effects
   function activateNode(node) {
     node.active = true;
+    // Use CSS transitions instead of Web Animations API for better compatibility
+    node.glowOutline.style.transition = 'opacity 0.8s ease-out';
     node.glowOutline.setAttribute('opacity', '0.8');
-    node.glowOutline.animate([
-      {opacity: '0'},
-      {opacity: '0.8'},
-      {opacity: '0.4'}
-    ], {duration: 800, easing: 'ease-out'});
+    setTimeout(() => node.glowOutline.setAttribute('opacity', '0.4'), 800);
+    
     node.statusDot.setAttribute('fill', node.color);
     node.statusDot.setAttribute('opacity', '1');
-    // Start processing animation
     startProcessing(node);
   }
 
@@ -412,33 +470,46 @@
 
   function animateGear(node) {
     if (node.processing) {
-      node.gear.animate([
-        {transform: `rotate(0deg) scale(${window.innerWidth <= 767 ? 0.7 : 0.8})`},
-        {transform: `rotate(360deg) scale(${window.innerWidth <= 767 ? 0.7 : 0.8})`}
-      ], {
-        duration: 2000,
-        iterations: 1,
-        easing: 'linear'
-      }).onfinish = () => {
-        if (node.processing) animateGear(node);
+      // Use requestAnimationFrame for better mobile compatibility
+      let startTime = null;
+      let currentRotation = 0;
+      
+      const rotate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        currentRotation = (elapsed / 2000) * 360; // 2 second rotation
+        
+        const scale = window.innerWidth <= 768 ? 0.5 : 0.6;
+        node.gear.setAttribute('transform', `rotate(${currentRotation}deg) scale(${scale})`);
+        
+        if (elapsed >= 2000) {
+          // Rotation complete, restart if still processing
+          if (node.processing) {
+            startTime = null;
+            requestAnimationFrame(rotate);
+          }
+        } else {
+          requestAnimationFrame(rotate);
+        }
       };
+      
+      requestAnimationFrame(rotate);
     }
   }
 
   function packets(from,to,count=6,dur=STEP_MS,color=COLORS.accent){
-    // Activate destination node when packets arrive
     activateNode(to);
-    const packetCount = window.innerWidth <= 767 ? Math.max(4, Math.floor(count * 0.7)) : count;  // Increased from 3 to 4
+    const packetCount = window.innerWidth <= 768 ? Math.max(3, Math.floor(count/2)) : count;
     for(let i=0;i<packetCount;i++){
-      const p = mk('circle',{r:window.innerWidth <= 767 ? 2.5 : 3, fill:color, opacity:0.9});  // Increased from 2 to 2.5
+      const packetRadius = window.innerWidth <= 768 ? 2 : 3;
+      const p = mk('circle',{r:packetRadius, fill:color, opacity:0.9});
       packetLayer.appendChild(p);
       
-      // Create comet trail effect
+      const trailLength = window.innerWidth <= 768 ? 3 : 5;
       const trail = [];
-      const trailLength = window.innerWidth <= 767 ? 4 : 5;  // Increased from 3 to 4
       for(let j = 0; j < trailLength; j++) {
         const trailDot = mk('circle', {
-          r: (window.innerWidth <= 767 ? 1.8 : 2) - (j * 0.3),  // Increased from 1.5 to 1.8
+          r: packetRadius - (j * 0.3), 
           fill: color, 
           opacity: 0.6 - (j * 0.1)
         });
@@ -453,15 +524,12 @@
         const t = Math.min(1,(now-start)/dur);
         const x = lerp(from.x,to.x,ease(t)), y = lerp(from.y,to.y,ease(t));
         
-        // Update main packet position
         p.setAttribute('cx',x); p.setAttribute('cy',y);
         p.setAttribute('opacity', String(0.9*(1-t)));
         
-        // Store current position for trail
         positions.push({x, y});
         if(positions.length > trailLength) positions.shift();
         
-        // Update trail positions
         trail.forEach((trailDot, index) => {
           const trailPos = positions[positions.length - 1 - index];
           if(trailPos) {
@@ -483,7 +551,6 @@
   }
 
   function move(from,to,dur=STEP_MS,cb){
-    // Deactivate source, activate destination
     deactivateNode(from);
     const start = performance.now();
     const go = now=>{
@@ -493,9 +560,24 @@
       halo.setAttribute('cx',x);  halo.setAttribute('cy',y);
       if(t<1) requestAnimationFrame(go);
       else {
-         const haloSize = window.innerWidth <= 767 ? 18 : 18;  // Increased from 15 to 18
-         const haloSizeEnd = window.innerWidth <= 767 ? 23 : 25;  // Increased from 20 to 23
-         halo.animate([{r:haloSize,opacity:.25},{r:haloSizeEnd,opacity:.12},{r:haloSize,opacity:.22}],{duration:600,iterations:1,easing:'ease-in-out'});
+         // Use CSS transitions for better compatibility
+         const haloAnimRadius = window.innerWidth <= 768 ? 15 : 18;
+         const haloAnimRadiusMax = window.innerWidth <= 768 ? 20 : 25;
+         
+         halo.style.transition = 'r 0.6s ease-in-out, opacity 0.6s ease-in-out';
+         halo.setAttribute('r', haloAnimRadiusMax);
+         halo.setAttribute('opacity', '0.12');
+         
+         setTimeout(() => {
+           halo.setAttribute('r', haloAnimRadius);
+           halo.setAttribute('opacity', '0.22');
+         }, 300);
+         
+         setTimeout(() => {
+           halo.style.transition = '';
+           halo.setAttribute('opacity', '0.18');
+         }, 600);
+         
          cb && cb();
        }
     };
@@ -518,10 +600,9 @@
     toolsUsed.clear();
     updateStats();
     setTool('Tool Runner');
-    stage.textContent='Ready (mock)';
+    stage.textContent='Ready (mobile optimized)';
     moveTokenTo(by('URL'));
     hideBadge();
-    // Deactivate all nodes
     nodes.forEach(deactivateNode);
   }
 
@@ -529,7 +610,6 @@
     if(running) return;
     running=true;
     paused=false;
-    if(pauseBtn) pauseBtn.textContent = 'Pause';
     discover();
   }
 
@@ -633,18 +713,25 @@
   // UI helpers
   function setTool(name){
     const n = by('TOOL');
-    n.g.querySelector('text').textContent = name;
+    const label = n.g.querySelector('text');
+    if (label) label.textContent = name;
   }
   function pulseBorder(box, kind){
     const col = kind==='red' ? 'rgba(255,80,80,1)' : 'rgba(90,170,255,.9)';
-    box.setAttribute('stroke', col); box.setAttribute('stroke-width','2.2');
-    setTimeout(()=>{ box.setAttribute('stroke', by('TOOL').color); box.setAttribute('stroke-width','3'); }, 480);
+    box.setAttribute('stroke', col); 
+    box.setAttribute('stroke-width','2.2');
+    setTimeout(()=>{ 
+      const node = nodes.find(n => n.box === box);
+      if (node) {
+        box.setAttribute('stroke', node.color); 
+        box.setAttribute('stroke-width','3'); 
+      }
+    }, 480);
   }
   function logVuln(url, vuln, tool){
     const row = document.createElement('div');
     row.className='item';
     
-    // Add vulnerability icons for visual appeal
     const vulnIcons = {
       'SQL Injection': '💉',
       'XSS': '🔥',
@@ -662,17 +749,16 @@
     const severityClass = severity === 'CRITICAL' ? 'red' : 'blue';
     
     row.innerHTML = `<div>
-                       <span style="margin-right:8px;font-size:14px">${icon}</span>
+                       <span style="margin-right:6px;font-size:${window.innerWidth <= 768 ? '12px' : '14px'}">${icon}</span>
                        <b style="color:#ff6b6b">${esc(vuln)}</b> 
-                       <span style="opacity:.7;font-size:11px">detected via</span> 
+                       <span style="opacity:.7;font-size:${window.innerWidth <= 768 ? '10px' : '11px'}">detected via</span> 
                        <span style="color:#4ecdc4;font-weight:600">${esc(tool)}</span>
-                       <br><span style="opacity:.6;font-size:10px;margin-left:22px">${esc(url)}</span>
+                       <br><span style="opacity:.6;font-size:${window.innerWidth <= 768 ? '9px' : '10px'};margin-left:${window.innerWidth <= 768 ? '18px' : '22px'}">${esc(url)}</span>
                      </div>
                      <span class="sev ${severityClass}">${severity}</span>`;
     
     logItems.prepend(row);
     
-    // Add entry animation
     row.style.transform = 'translateX(-100%)';
     row.style.opacity = '0';
     setTimeout(() => {
@@ -683,18 +769,27 @@
     
     vulnTotal++;
     updateStats();
-    while(logItems.children.length>15) logItems.removeChild(logItems.lastChild);
+    const maxItems = window.innerWidth <= 768 ? 8 : 15;
+    while(logItems.children.length > maxItems) logItems.removeChild(logItems.lastChild);
   }
   function showBadge(count){
     const d = by('DISC'); 
     if(!d.endpointsText) return;
     d.endpointsText.textContent = `${count} endpoints`;
-    // Animate the text with a subtle pulse effect
-    d.endpointsText.animate([
-      {opacity: '0.8', transform: 'scale(1)'},
-      {opacity: '1', transform: 'scale(1.05)'},
-      {opacity: '0.8', transform: 'scale(1)'}
-    ], {duration: 360, easing: 'ease-in-out'});
+    
+    // Use CSS transitions for better mobile compatibility
+    d.endpointsText.style.transition = 'opacity 0.36s ease-in-out, transform 0.36s ease-in-out';
+    d.endpointsText.style.transform = 'scale(1.05)';
+    d.endpointsText.setAttribute('opacity', '1');
+    
+    setTimeout(() => {
+      d.endpointsText.style.transform = 'scale(1)';
+      d.endpointsText.setAttribute('opacity', '0.8');
+    }, 180);
+    
+    setTimeout(() => {
+      d.endpointsText.style.transition = '';
+    }, 360);
   }
   function hideBadge(){ 
     const d = by('DISC'); 
@@ -715,24 +810,42 @@
   }
   requestAnimationFrame(frame);
 
-  // Controls - Auto-start the workflow
-  setTimeout(() => {
-    reset();
-    start();
-  }, 1000); // Start after 1 second delay
+  // Auto-start the workflow with delay to ensure DOM is ready
+  function initializeWorkflow() {
+    // Ensure all nodes are properly positioned before starting
+    updateNodePositions();
+    render();
+    
+    // Small delay to ensure everything is rendered
+    setTimeout(() => {
+      reset();
+      start();
+    }, 500);
+  }
+  
+  // Check if document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeWorkflow);
+  } else {
+    initializeWorkflow();
+  }
 
   // Utils
   function by(id){ return nodes.find(n=>n.id===id); }
   function nd(id,label,chip,color,kind){ return {id,label,chip,color,kind}; }
   function mk(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
   function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||500}); t.textContent=txt; return t; }
-  function pill(x,y,text,isMobile){ 
+  function pill(x,y,text){ 
     const g=mk('g'); 
-    const w=isMobile ? 70 : 80;  // Increased from 60 to 70
-    const h=isMobile ? 22 : 25;  // Increased from 20 to 22
-    const r=isMobile ? 11 : 12;  // Increased from 10 to 11
+    const w = window.innerWidth <= 768 ? 60 : 80;
+    const h = window.innerWidth <= 768 ? 20 : 25;
+    const r = window.innerWidth <= 768 ? 10 : 12;
+    const fontSize = window.innerWidth <= 768 ? 10 : 12;
     g.appendChild(mk('rect',{x:x-w/2,y:y-h/2,rx:r,ry:r,width:w,height:h,fill:'rgba(255,255,255,.06)',stroke:'rgba(255,255,255,.12)','stroke-width':1}));
-    const t=tspan(x,y,text,isMobile ? 11 : 12,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;  // Increased from 10 to 11
+    const t=tspan(x,y,text,fontSize,COLORS.text,500); 
+    t.setAttribute('text-anchor','middle'); 
+    g.appendChild(t); 
+    return g;
   }
   function lerp(a,b,t){ return a+(b-a)*t; }
   function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
