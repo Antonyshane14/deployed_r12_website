@@ -45,6 +45,21 @@
 
   gtag('config', 'G-QH57LZ6BM5');
 </script>
+<style>
+    .mobile-only {
+    display: none;
+}
+
+    @media (max-width: 481px) {
+        .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -323,8 +338,8 @@
             <div class="innovation-showcase" data-reveal>
                 <!-- Desktop version (unchanged) -->
                 <div class="showcase-iframe desktop-only">
-                    <iframe id="demoFrame" 
-                            src="assets/ai_penttest.html?v=20250816006"
+                    <iframe id="demoFrameDesktop" 
+                            src="assets/ai_penttest.html"
                             width="100%"
                             height="100%"
                             scrolling="no"
@@ -332,523 +347,46 @@
                             style="border: none; border-radius: 10px; overflow: hidden;">
                     </iframe><br><br><br>
                 </div>
-                
-                <!-- Mobile-optimized version -->
-                <div class="mobile-demo mobile-only">
-                    <iframe src="assets/ai_penttest_mobile.html"
+                <div class="showcase-iframe mobile-only">
+                    <iframe id="demoFrameMobile" 
+                            src="assets/ai_penttest_mobile.html"
                             width="100%"
-                            height="500px"
+                            height="100%"
                             scrolling="no"
                             frameborder="0"
-                            style="border: none; border-radius: 8px; overflow: hidden;">
-                    </iframe>
+                            style="border: none; border-radius: 10px; overflow: hidden;">
+                    </iframe><br><br><br>
                 </div>
             </div>
         </div>
     </section>
 
-    <style>
-        /* Mobile demo styles - only active on mobile */
-        @media (max-width: 768px) {
-            .desktop-only { display: none !important; }
-            .mobile-only { display: block !important; }
-            
-            /* Mobile-specific Innovation section styling */
-            #innovation .section-title {
-                font-size: 1.8rem !important;
-                margin-bottom: 0.8rem !important;
-            }
-            
-            #innovation .section-subtitle {
-                font-size: 0.9rem !important;
-                margin-bottom: 1.5rem !important;
-                line-height: 1.4 !important;
-            }
-            
-            #innovation .container {
-                padding: 0 1rem !important;
-                max-width: 100% !important;
-            }
-            
-            #innovation .innovation-showcase {
-                margin: 0 auto !important;
-                padding: 0 !important;
-            }
-            
-            #innovation .mobile-demo {
-                margin: 0 auto !important;
-            }
-            
-            .mobile-demo {
-                width: calc(100vw - 2rem);
-                height: 500px;
-                background: #0b1020;
-                border-radius: 8px;
-                overflow: hidden;
-                position: relative;
-                margin: 0 auto;
-                border: 1px solid rgba(255,255,255,0.1);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            }
-            
-            #mobile-container {
-                display: flex;
-                height: 100%;
-                width: 100%;
-                flex-direction: column;
-            }
-            
-            #mobile-wf {
-                flex: 1;
-                background: #0b1020;
-                position: relative;
-                font: 500 11px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-                color: #eaf2ff;
-            }
-            
-            #mobile-sidebar {
-                width: 100%;
-                height: 35vh;
-                background: #0a0f1f;
-                border-top: 1px solid rgba(255,255,255,.08);
-                display: flex;
-                flex-direction: column;
-                padding: 6px;
-                gap: 3px;
-            }
-            
-            .mobile-hdr {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 35px;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                padding: 0 6px;
-                background: linear-gradient(90deg, #0f1734, #0b1330);
-                font-weight: 700;
-                z-index: 100;
-                font-size: 14px;
-                opacity: 1;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .mobile-tag {
-                font: 600 8px/1 ui-sans-serif;
-                border: 1px solid rgba(255,255,255,.12);
-                padding: 2px 4px;
-                border-radius: 999px;
-                background: rgba(255,255,255,.06);
-                white-space: nowrap;
-            }
-            
-            .mobile-stage {
-                position: absolute;
-                bottom: 15px;
-                left: 8px;
-                right: 8px;
-                color: #eaf2ff;
-                font-weight: 600;
-                font-size: 12px;
-                z-index: 100;
-                opacity: 1;
-                text-align: center;
-                line-height: 1.2;
-                background: rgba(11,16,32,0.9);
-                padding: 3px 5px;
-                border-radius: 4px;
-                backdrop-filter: blur(4px);
-                border: 1px solid rgba(255,255,255,.1);
-            }
-            
-            .mobile-log {
-                flex: 1;
-                background: #0b152c;
-                border: 1px solid rgba(255,255,255,.08);
-                border-radius: 6px;
-                padding: 6px;
-                overflow: auto;
-                margin-bottom: 6px;
-            }
-            
-            .mobile-log h4 {
-                margin: 0 0 6px 0;
-                font-size: 14px;
-                color: #ffffff;
-                opacity: .9;
-                font-weight: 600;
-            }
-            
-            .mobile-stats {
-                background: #0b152c;
-                border: 1px solid rgba(255,255,255,.08);
-                border-radius: 6px;
-                padding: 6px;
-            }
-            
-            .mobile-stats h4 {
-                margin: 0 0 4px 0;
-                font-size: 12px;
-                color: #ffffff;
-                font-weight: 600;
-            }
-            
-            .mobile-stat-row {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 4px;
-                font-size: 11px;
-                color: #ffffff;
-                padding-right: 6px;
-            }
-            
-            :root {
-                --bg: #0b1020;
-                --text: #eaf2ff;
-                --muted: #9fb3d6;
-                --line: rgba(140,170,255,.35);
-                --accent: #7dd3fc;
-                --pink: #f472b6;
-                --blue: #60a5fa;
-                --green: #34d399;
-                --yellow: #facc15;
-                --orange: #fb923c;
-                --purple: #a78bfa;
-                --red: #ff5c5c;
-                --blue-ok: #5bbcff;
-            }
-        }
-        
-        @media (min-width: 769px) {
-            .desktop-only { display: block !important; }
-            .mobile-only { display: none !important; }
-        }
-    </style>
 
     <script>
-        // Handle iframe loading for desktop
-        document.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.getElementById('demoFrame');
-            const showcaseContainer = document.querySelector('.showcase-iframe');
-            
+        document.addEventListener('DOMContentLoaded', function () {
+            // Only treat ≤481px as mobile
+            const isMobile = window.matchMedia("(max-width: 481px)").matches;
+        
+            // Pick iframe based on screen size
+            const iframe = document.getElementById(isMobile ? 'demoFrameMobile' : 'demoFrameDesktop');
+            const showcaseContainer = iframe?.parentElement;
+        
             if (iframe && showcaseContainer) {
-                iframe.addEventListener('load', function() {
+                iframe.addEventListener('load', function () {
                     this.classList.add('loaded');
                     showcaseContainer.classList.add('iframe-loaded');
                 });
-                
-                // Fallback to remove loading spinner after 3 seconds
+        
+                // Fallback timeout in case iframe doesn't fire 'load'
                 setTimeout(() => {
                     iframe.classList.add('loaded');
                     showcaseContainer.classList.add('iframe-loaded');
                 }, 3000);
             }
-            
-            // Mobile demo initialization
-            if (window.innerWidth <= 768) {
-                initMobileDemo();
-            }
         });
+        </script>
         
-        // Mobile demo script (embedded and optimized)
-        function initMobileDemo() {
-            // Add the mobile-optimized pentest demo logic here
-            const mobileWf = document.getElementById('mobile-wf');
-            const mobileStage = mobileWf?.querySelector('.mobile-stage');
-            const mobileLogItems = document.getElementById('mobile-logItems');
-            const mobileEpCount = document.getElementById('mobile-epCount');
-            const mobileVulnCount = document.getElementById('mobile-vulnCount');
-            const mobileToolCount = document.getElementById('mobile-toolCount');
-            
-            if (!mobileWf) return;
-            
-            // Create SVG for mobile network visualization
-            createMobileSVG();
-            
-            // Simple mobile demo simulation
-            let running = false;
-            let epTotal = 0, vulnTotal = 0, toolsUsed = new Set();
-            
-            const tools = ['SQLMap', 'Nuclei', 'ffuf', 'Custom'];
-            const vulns = ['SQL Injection', 'XSS', 'SSRF', 'Open Redirect', 'Dir Traversal', 'RCE'];
-            
-            function createMobileSVG() {
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('viewBox', '0 0 300 200');
-                svg.setAttribute('width', '100%');
-                svg.setAttribute('height', '100%');
-                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                svg.style.cssText = 'position:absolute;top:35px;left:6px;right:0;bottom:50px;opacity:0.8;';
-                
-                // Create defs for glow effect and animations
-                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-                glow.setAttribute('id', 'mobileGlow');
-                glow.setAttribute('x', '-50%');
-                glow.setAttribute('y', '-50%');
-                glow.setAttribute('width', '200%');
-                glow.setAttribute('height', '200%');
-                
-                const blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-                blur.setAttribute('stdDeviation', '2');
-                blur.setAttribute('result', 'blur');
-                
-                const merge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
-                const mergeNode1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-                mergeNode1.setAttribute('in', 'blur');
-                const mergeNode2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-                mergeNode2.setAttribute('in', 'SourceGraphic');
-                
-                merge.appendChild(mergeNode1);
-                merge.appendChild(mergeNode2);
-                glow.appendChild(blur);
-                glow.appendChild(merge);
-                defs.appendChild(glow);
-                svg.appendChild(defs);
-                
-                // Mobile-optimized nodes
-                const mobileNodes = [
-                    {id: 'URL', x: 60, y: 30, color: '#34d399', label: 'URL', fullName: 'Target URL'},
-                    {id: 'DISC', x: 160, y: 30, color: '#fb923c', label: 'DISC', fullName: 'Discover Endpoints'},
-                    {id: 'AI', x: 260, y: 30, color: '#a78bfa', label: 'AI', fullName: 'AI Planner (RAG)'},
-                    {id: 'TOOL', x: 110, y: 110, color: '#60a5fa', label: 'TOOL', fullName: 'Tool Runner'},
-                    {id: 'ANALYZE', x: 210, y: 110, color: '#facc15', label: 'ANALYZE', fullName: 'Analyze & Decide'},
-                    {id: 'STRATEGY', x: 160, y: 150, color: '#f472b6', label: 'STRATEGY', fullName: 'Strategy Reschedule'},
-                    {id: 'LOG', x: 60, y: 150, color: '#ff5c5c', label: 'LOG', fullName: 'Vulnerabilities Log'}
-                ];
-                
-                // Draw connections with data flow paths (matching desktop diagram)
-                const connections = [
-                    {from: 'URL', to: 'DISC', id: 'flow1'},
-                    {from: 'DISC', to: 'AI', id: 'flow2'},
-                    {from: 'AI', to: 'TOOL', id: 'flow3'},
-                    {from: 'TOOL', to: 'ANALYZE', id: 'flow4'},
-                    {from: 'ANALYZE', to: 'LOG', id: 'flow5'},
-                    {from: 'ANALYZE', to: 'STRATEGY', id: 'flow6'},
-                    {from: 'STRATEGY', to: 'AI', id: 'flow7'}
-                ];
-                
-                // Create path layer for data flow
-                const pathLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                svg.appendChild(pathLayer);
-                
-                connections.forEach((conn, index) => {
-                    const fromNode = mobileNodes.find(n => n.id === conn.from);
-                    const toNode = mobileNodes.find(n => n.id === conn.to);
-                    
-                    // Create path for data flow
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    const pathData = `M ${fromNode.x} ${fromNode.y} L ${toNode.x} ${toNode.y}`;
-                    path.setAttribute('d', pathData);
-                    path.setAttribute('stroke', 'rgba(140,170,255,0.3)');
-                    path.setAttribute('stroke-width', '1');
-                    path.setAttribute('fill', 'none');
-                    path.setAttribute('id', `path-${conn.id}`);
-                    pathLayer.appendChild(path);
-                    
-                    // Create animated data packet
-                    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    packet.setAttribute('r', '3');
-                    packet.setAttribute('fill', '#00d4ff');
-                    packet.setAttribute('filter', 'url(#mobileGlow)');
-                    packet.setAttribute('opacity', '0');
-                    
-                    const animateMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-                    animateMotion.setAttribute('dur', '2s');
-                    animateMotion.setAttribute('repeatCount', 'indefinite');
-                    animateMotion.setAttribute('begin', `${index * 0.3}s`);
-                    animateMotion.setAttribute('path', pathData);
-                    
-                    const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    animate.setAttribute('attributeName', 'opacity');
-                    animate.setAttribute('values', '0;1;1;0');
-                    animate.setAttribute('dur', '2s');
-                    animate.setAttribute('repeatCount', 'indefinite');
-                    animate.setAttribute('begin', `${index * 0.3}s`);
-                    
-                    packet.appendChild(animateMotion);
-                    packet.appendChild(animate);
-                    svg.appendChild(packet);
-                });
-                
-                // Draw nodes with pulsing animation
-                mobileNodes.forEach((node, index) => {
-                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', node.x);
-                    circle.setAttribute('cy', node.y);
-                    circle.setAttribute('r', '12');
-                    circle.setAttribute('fill', node.color);
-                    circle.setAttribute('filter', 'url(#mobileGlow)');
-                    circle.setAttribute('opacity', '0.8');
-                    
-                    // Add pulsing animation to nodes
-                    const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    pulse.setAttribute('attributeName', 'r');
-                    pulse.setAttribute('values', '12;14;12');
-                    pulse.setAttribute('dur', '3s');
-                    pulse.setAttribute('repeatCount', 'indefinite');
-                    pulse.setAttribute('begin', `${index * 0.5}s`);
-                    
-                    circle.appendChild(pulse);
-                    svg.appendChild(circle);
-                    
-                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', node.x);
-                    text.setAttribute('y', node.y + 22);
-                    text.setAttribute('text-anchor', 'middle');
-                    text.setAttribute('fill', '#eaf2ff');
-                    text.setAttribute('font-size', '9');
-                    text.setAttribute('font-weight', '700');
-                    text.setAttribute('text-shadow', '1px 1px 2px rgba(0,0,0,0.8)');
-                    text.textContent = node.label;
-                    svg.appendChild(text);
-                    
-                    // Add full name as subtitle for better clarity
-                    const subtitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    subtitle.setAttribute('x', node.x);
-                    subtitle.setAttribute('y', node.y + 32);
-                    subtitle.setAttribute('text-anchor', 'middle');
-                    subtitle.setAttribute('fill', '#9fb3d6');
-                    subtitle.setAttribute('font-size', '6');
-                    subtitle.setAttribute('font-weight', '500');
-                    subtitle.setAttribute('opacity', '0.8');
-                    subtitle.textContent = node.fullName;
-                    svg.appendChild(subtitle);
-                });
-                
-                // Add animated background particles (adjusted for shifted flowchart)
-                for (let i = 0; i < 8; i++) {
-                    const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    particle.setAttribute('r', '1');
-                    particle.setAttribute('fill', '#7dd3fc');
-                    particle.setAttribute('opacity', '0.3');
-                    
-                    const animateX = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    animateX.setAttribute('attributeName', 'cx');
-                    animateX.setAttribute('values', `${10 + Math.random() * 290};${10 + Math.random() * 290};${10 + Math.random() * 290}`);
-                    animateX.setAttribute('dur', `${5 + Math.random() * 3}s`);
-                    animateX.setAttribute('repeatCount', 'indefinite');
-                    
-                    const animateY = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    animateY.setAttribute('attributeName', 'cy');
-                    animateY.setAttribute('values', `${Math.random() * 200};${Math.random() * 200};${Math.random() * 200}`);
-                    animateY.setAttribute('dur', `${4 + Math.random() * 4}s`);
-                    animateY.setAttribute('repeatCount', 'indefinite');
-                    
-                    const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    animateOpacity.setAttribute('attributeName', 'opacity');
-                    animateOpacity.setAttribute('values', '0.1;0.6;0.1');
-                    animateOpacity.setAttribute('dur', `${3 + Math.random() * 2}s`);
-                    animateOpacity.setAttribute('repeatCount', 'indefinite');
-                    
-                    particle.appendChild(animateX);
-                    particle.appendChild(animateY);
-                    particle.appendChild(animateOpacity);
-                    svg.appendChild(particle);
-                }
-                
-                mobileWf.appendChild(svg);
-            }
-            
-            
-            function updateMobileStats() {
-                if (mobileEpCount) mobileEpCount.textContent = epTotal;
-                if (mobileVulnCount) mobileVulnCount.textContent = vulnTotal;
-                if (mobileToolCount) mobileToolCount.textContent = toolsUsed.size;
-            }
-            
-            function logMobileVuln(vuln, tool) {
-                if (!mobileLogItems) return;
-                
-                const row = document.createElement('div');
-                row.style.cssText = `
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 6px;
-                    padding: 10px 8px;
-                    border-radius: 8px;
-                    margin-bottom: 10px;
-                    background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-                    border: 1px solid rgba(255,255,255,.18);
-                    font-size: 12px;
-                    color: #ffffff;
-                    box-shadow: 0 2px 8px rgba(0,0,0,.2);
-                    transition: all 0.3s ease;
-                    backdrop-filter: blur(8px);
-                    position: relative;
-                    overflow: hidden;
-                `;
-                
-                const severity = Math.random() > 0.6 ? 'CRITICAL' : 'HIGH';
-                const severityClass = severity === 'CRITICAL' ? 'red' : 'blue';
-                
-                row.innerHTML = `
-                    <div>
-                        <b style="color:#ff6b6b">${vuln}</b><br>
-                        <span style="opacity:.7;font-size:11px">via ${tool}</span>
-                    </div>
-                    <span style="font-size:9px;padding:3px 6px;border-radius:999px;background:${severity === 'CRITICAL' ? '#ff4757' : '#3742fa'};color:#fff;">${severity}</span>
-                `;
-                
-                mobileLogItems.prepend(row);
-                vulnTotal++;
-                updateMobileStats();
-                
-                // Keep only latest 5 items
-                while(mobileLogItems.children.length > 5) {
-                    mobileLogItems.removeChild(mobileLogItems.lastChild);
-                }
-            }
-            
-            function startMobileDemo() {
-                if (running) return;
-                running = true;
-                
-                // Reset stats
-                epTotal = Math.floor(Math.random() * 10) + 8;
-                vulnTotal = 0;
-                toolsUsed.clear();
-                updateMobileStats();
-                
-                // Simulate scanning
-                if (mobileStage) mobileStage.textContent = '🔍 Scanning endpoints...';
-                
-                const scanInterval = setInterval(() => {
-                    const tool = tools[Math.floor(Math.random() * tools.length)];
-                    toolsUsed.add(tool);
-                    updateMobileStats();
-                    
-                    if (mobileStage) mobileStage.textContent = `🎯 Testing with ${tool}...`;
-                    
-                    // 60% chance to find vulnerability
-                    if (Math.random() < 0.6) {
-                        const vuln = vulns[Math.floor(Math.random() * vulns.length)];
-                        logMobileVuln(vuln, tool);
-                        if (mobileStage) mobileStage.textContent = `🚨 ${vuln} found!`;
-                    } else {
-                        if (mobileStage) mobileStage.textContent = `✅ ${tool} scan clean`;
-                    }
-                    
-                    // Stop after 8 scans
-                    if (toolsUsed.size >= 4) {
-                        clearInterval(scanInterval);
-                        setTimeout(() => {
-                            if (mobileStage) mobileStage.textContent = 'Scan complete. Restarting...';
-                            running = false;
-                            setTimeout(startMobileDemo, 2000);
-                        }, 1500);
-                    }
-                }, 2000);
-            }
-            
-            // Start demo after delay
-            setTimeout(startMobileDemo, 1000);
-        }
-    </script>
+    
 
 <!-- About Section -->
 <section id="about" class="about">

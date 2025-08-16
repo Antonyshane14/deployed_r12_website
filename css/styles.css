@@ -551,7 +551,7 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                 box-shadow 0.35s ease;
     text-align: center;
     overflow: hidden;
@@ -602,10 +602,8 @@ section {
 
 /* Hover — scale up whole card */
 .leader-card:hover {
-    transform: scale(1.15) translateY(-10px) rotateX(6deg) rotateY(3deg);
+    transform: scale(1.1) translateY(-10px) rotateX(6deg) rotateY(3deg) !important;
     box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
-    margin-top: 45px;
-    margin-bottom: 45px;
 }
 
 .leader-card:hover::before {
@@ -1474,6 +1472,10 @@ section {
     border: none;
     border-radius: 10px;
     display: block;
+}
+
+.mobile-only {
+    display: none;
 }
 
 /* Desktop optimizations */
