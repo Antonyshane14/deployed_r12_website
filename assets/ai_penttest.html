@@ -28,9 +28,9 @@
       }
       .hdr{
         position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;
-        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:28px;opacity:1;
+        background:linear-gradient(90deg,#0f1734,#0b1330);font-weight:700;z-index:100;font-size:22px;opacity:1;
       }
-      .stage{position:absolute;bottom:3px;left:20px;color:var(--text);font-weight:700;font-size:32px;z-index:100;opacity:1}
+      .stage{position:absolute;bottom:15px;left:20px;color:var(--text);font-weight:700;font-size:23px;z-index:100;opacity:1}
       .log h4{margin:0 0 12px 0;font-size:22px;color:#ffffff;opacity:.9;font-weight:600}
       .stats h4{margin:0 0 8px 0;font-size:18px;color:#ffffff;font-weight:600}
       .stat-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:16px;color:#ffffff}
@@ -529,7 +529,7 @@
 
   function discover() {
     const URL = by('URL'), DISC = by('DISC');
-    stage.textContent='🔍 Deep scanning for endpoints and attack vectors...';
+    stage.textContent='Deep scanning for endpoints and attack vectors...';
     epTotal = randInt(ENDPOINTS_RANGE[0], ENDPOINTS_RANGE[1]);
     epLeft = epTotal;
     updateStats();
@@ -550,7 +550,7 @@
     setTool(pickedTool);
     toolsUsed.add(pickedTool);
     updateStats();
-    stage.textContent=`🎯 AI targeting ${pickedEndpoint} endpoint with ${pickedTool}...`;
+    stage.textContent=`AI targeting ${pickedEndpoint} endpoint with ${pickedTool}...`;
     packets(DISC, AI, 6, STEP_MS, COLORS.orange);
     move(DISC, AI, STEP_MS, ()=> toolRun(pickedTool));
   }
@@ -568,12 +568,12 @@
         if(found){
           const vuln = randOf(vulns);
           logVuln(defaultUrl, vuln, tool);
-          stage.textContent=`🚨 ALERT: ${vuln} discovered! Logging critical finding...`;
+          stage.textContent=`ALERT: ${vuln} discovered! Logging critical finding...`;
           const L = by('LOG');
           packets(ANALYZE, L, 6, STEP_MS*0.8, COLORS.red);
           move(ANALYZE, L, STEP_MS*0.8, ()=> setTimeout(aiPick, 300));
         }else{
-          stage.textContent=`✅ ${tool} scan clean. Escalating to strategy module...`;
+          stage.textContent=`${tool} scan clean. Escalating to strategy module...`;
           setTimeout(strategy, 200);
         }
       });
@@ -593,12 +593,12 @@
         if(found){
           const vuln = randOf(vulns);
           logVuln(defaultUrl, vuln, tool);
-          stage.textContent=`🚨 VULNERABILITY: ${vuln} found via ${tool}! Securing data...`;
+          stage.textContent=`VULNERABILITY: ${vuln} found via ${tool}! Securing data...`;
           const L = by('LOG');
           packets(ANALYZE, L, 6, STEP_MS*0.8, COLORS.red);
           move(ANALYZE, L, STEP_MS*0.8, ()=> setTimeout(aiPick, 300));
         }else{
-          stage.textContent=`✅ ${tool} analysis complete. Engaging strategy optimization...`;
+          stage.textContent=`${tool} analysis complete. Engaging strategy optimization...`;
           setTimeout(strategy, 200);
         }
       });
@@ -618,7 +618,7 @@
         setTool(pickedTool);
         toolsUsed.add(pickedTool);
         updateStats();
-        stage.textContent=`🧠 AI strategically selected ${pickedTool} for enhanced scanning...`;
+        stage.textContent=`AI strategically selected ${pickedTool} for enhanced scanning...`;
         setTimeout(()=> toolRunDirect(pickedTool), 200);
       });
     });
@@ -638,20 +638,20 @@
     const row = document.createElement('div');
     row.className='item';
     
-    // Add vulnerability icons for visual appeal
+    // Add vulnerability indicators for professional appearance
     const vulnIcons = {
-      'SQL Injection': '💉',
-      'XSS': '🔥',
-      'SSRF': '🌐',
-      'Open Redirect': '↗️',
-      'Dir Traversal': '📁',
-      'RCE': '⚡',
-      'CSRF': '🔄',
-      'IDOR': '🔓',
-      'Clickjacking': '🎯'
+      'SQL Injection': '[SQL]',
+      'XSS': '[XSS]',
+      'SSRF': '[SSRF]',
+      'Open Redirect': '[RDIR]',
+      'Dir Traversal': '[PATH]',
+      'RCE': '[RCE]',
+      'CSRF': '[CSRF]',
+      'IDOR': '[IDOR]',
+      'Clickjacking': '[CLICK]'
     };
     
-    const icon = vulnIcons[vuln] || '🚨';
+    const icon = vulnIcons[vuln] || '[VULN]';
     const severity = Math.random() > 0.6 ? 'CRITICAL' : 'HIGH';
     const severityClass = severity === 'CRITICAL' ? 'red' : 'blue';
     
@@ -711,8 +711,23 @@
 
   // Controls - Auto-start the workflow
   setTimeout(() => {
-    reset();
-    start();
+    try {
+      reset();
+      start();
+      console.log('Pentest demo started successfully');
+    } catch (error) {
+      console.error('Error starting pentest demo:', error);
+      stage.textContent = 'Demo initialization error - refreshing...';
+      setTimeout(() => {
+        try {
+          reset();
+          start();
+        } catch (retryError) {
+          console.error('Retry failed:', retryError);
+          stage.textContent = 'Demo offline - please refresh page';
+        }
+      }, 2000);
+    }
   }, 1000); // Start after 1 second delay
 
   // Utils
