@@ -702,6 +702,22 @@ section {
         opacity: 1;
     }
     
+    /* Center align contact info on mobile */
+    .leader-contact {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+    
+    .leader-contact a {
+        width: fit-content;
+        margin: 0 auto;
+    }
+    
     /* Core Capabilities and Why Rapture Twelve mobile typography to match Innovation */
     .section-title {
         font-size: 1.8rem !important;
