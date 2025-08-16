@@ -106,6 +106,16 @@ p {
    p{
       margin-top: 1rem;
     }
+    
+    /* Hide Innovation in Action section on mobile */
+    #innovation {
+        display: none !important;
+    }
+    
+    /* Hide Innovation navigation link on mobile */
+    .nav-item:has(a[href="#innovation"]) {
+        display: none !important;
+    }
 }
 
 /* Container */
