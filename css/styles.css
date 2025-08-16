@@ -610,10 +610,11 @@ section {
     100% { background-position: 0% 0%; }
 }
 
-/* Hover — scale up whole card */
+/* Hover — scale up only the hovered card */
 .leader-card:hover {
-    transform: scale(1.1) translateY(-10px) rotateX(6deg) rotateY(3deg) !important;
-    box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
+    transform: scale(1.05) translateY(-8px) rotateX(4deg) rotateY(2deg);
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
+    z-index: 10; /* Bring hovered card above others */
 }
 
 .leader-card:hover::before {
@@ -691,12 +692,11 @@ section {
         text-align: center!important;
         width: 100%;
     }
-    /* Simulate hover on mobile */
+    /* Simulate hover on mobile - only affect the specific card */
     .leader-card.mobile-glow {
-        transform: scale(1.15) translateY(-10px) rotateX(6deg) rotateY(3deg);
-        box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
-        margin-top: 45px;
-        margin-bottom: 45px;
+        transform: scale(1.05) translateY(-8px) rotateX(4deg) rotateY(2deg);
+        box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
+        z-index: 10; /* Bring glowing card above others */
     }
     .leader-card.mobile-glow::before {
         opacity: 1;
