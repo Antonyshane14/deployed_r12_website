@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Updated: 2025-08-17 All text styling changes applied - Version 2 -->
 <html>
 <head>
   <meta charset="utf-8"/>
@@ -298,7 +299,7 @@
     n.glowOutline = mk('rect',{x:-w/2-3,y:-h/2-3,rx:r+3,ry:r+3,width:w-3,height:h+6, fill:'none', stroke:n.color, 'stroke-width':5, opacity:0});
     // Main label
     const labelSize = isMobile ? 18 : 18;  // Increased from 16 to 18
-    const label = tspan(-w/2+15,0,n.label,labelSize,COLORS.text,700);
+    const label = tspan(-w/2+15,0,n.label,labelSize,COLORS.text,400);
     // Chip badge
     const chipX = isMobile ? w/2-70 : w/2-70;  // Adjusted for bigger box
     const chipY = isMobile ? -h/2+22 : -h/2+25;
@@ -306,7 +307,7 @@
     // Endpoints counter (only for DISC node)
     if (n.id === 'DISC') {
       const endpointY = isMobile ? 30 : 25;  // Increased from 25 to 30
-      n.endpointsText = tspan(-w/2+15, endpointY, '0 endpoints', isMobile ? 15 : 14, COLORS.orange, 600);  // Increased from 13 to 15
+      n.endpointsText = tspan(-w/2+15, endpointY, '0 endpoints', isMobile ? 15 : 14, COLORS.orange, 400);  // Increased from 13 to 15
       n.endpointsText.setAttribute('opacity', '0.8');
     }
     // Processing icon (rotating gear)
@@ -745,14 +746,14 @@
   function by(id){ return nodes.find(n=>n.id===id); }
   function nd(id,label,chip,color,kind){ return {id,label,chip,color,kind}; }
   function mk(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
-  function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||500}); t.textContent=txt; return t; }
+  function tspan(x,y,txt,size,fill,weight){ const t=mk('text',{x,y,'dominant-baseline':'middle','font-size':size, fill, 'font-weight':weight||400, 'font-family':'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'}); t.textContent=txt; return t; }
   function pill(x,y,text,isMobile){ 
     const g=mk('g'); 
     const w=isMobile ? 70 : 80;  // Increased from 60 to 70
     const h=isMobile ? 22 : 25;  // Increased from 20 to 22
     const r=isMobile ? 11 : 12;  // Increased from 10 to 11
     g.appendChild(mk('rect',{x:x-w/2,y:y-h/2,rx:r,ry:r,width:w,height:h,fill:'rgba(255,255,255,.06)',stroke:'rgba(255,255,255,.12)','stroke-width':1}));
-    const t=tspan(x,y,text,isMobile ? 11 : 12,COLORS.text,500); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;  // Increased from 10 to 11
+    const t=tspan(x,y,text,isMobile ? 11 : 12,COLORS.text,400); t.setAttribute('text-anchor','middle'); g.appendChild(t); return g;  // Increased from 10 to 11
   }
   function lerp(a,b,t){ return a+(b-a)*t; }
   function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
