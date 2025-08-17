@@ -610,15 +610,17 @@ section {
     100% { background-position: 0% 0%; }
 }
 
-/* Hover — scale up only the hovered card */
-.leader-card:hover {
-    transform: scale(1.05) translateY(-8px) rotateX(4deg) rotateY(2deg);
-    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
-    z-index: 10; /* Bring hovered card above others */
-}
+/* Desktop-only zoom hover effect */
+@media (min-width: 769px) {
+    .leader-card:hover {
+        transform: scale(1.08) translateY(-12px) rotateX(5deg) rotateY(3deg) !important;
+        box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5) !important;
+        z-index: 10 !important; /* Bring hovered card above others */
+    }
 
-.leader-card:hover::before {
-    opacity: 1;
+    .leader-card:hover::before {
+        opacity: 1 !important;
+    }
 }
 
 /* Laser movement animation */
@@ -1409,7 +1411,7 @@ section {
     overflow: visible;
     background: rgba(11, 16, 32, 0.8);
     backdrop-filter: blur(20px);
-    border: 2px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     background-clip: padding-box;
     z-index: 2;
     margin: 0 auto;
@@ -1418,14 +1420,11 @@ section {
     width: min(95vw, 1400px);
     height: min(90vh, 1000px);
     
-    /* Enhanced shadows and glow */
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 0 50px rgba(0, 212, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    /* Removed glow effects - simple shadow only */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* Dynamic border glow - Original pattern with cyan color */
+/* Dynamic border glow - REMOVED
 .innovation-showcase::before {
     content: '';
     position: absolute;
@@ -1434,11 +1433,11 @@ section {
     bottom: 2px;
     left: 2px;
     background: linear-gradient(45deg, 
-        rgba(0, 247, 255, 0.8),  /* Cyan */
-        rgba(0, 220, 240, 0.7),  /* Light Cyan */
-        rgba(0, 200, 225, 0.6),  /* Medium Cyan */
-        rgba(0, 247, 255, 0.7),  /* Cyan */
-        rgba(0, 247, 255, 0.8)   /* Cyan */
+        rgba(0, 247, 255, 0.8),
+        rgba(0, 220, 240, 0.7),
+        rgba(0, 200, 225, 0.6),
+        rgba(0, 247, 255, 0.7),
+        rgba(0, 247, 255, 0.8)
     );
     background-size: 300% 300%;
     border-radius: 17px;
@@ -1446,6 +1445,7 @@ section {
     animation: borderFlow 6s linear infinite;
     opacity: 0.7;
 }
+*/
 
 @keyframes borderFlow {
     0% { background-position: 0% 50%; }
@@ -1455,7 +1455,7 @@ section {
     100% { background-position: 0% 50%; }
 }
 
-/* Floating particles effect */
+/* Floating particles effect - REMOVED
 .innovation-showcase::after {
     content: '';
     position: absolute;
@@ -1474,6 +1474,7 @@ section {
     pointer-events: none;
     opacity: 0.3;
 }
+*/
 
 @keyframes particleFloat {
     0% { transform: translateY(0px) translateX(0px); }
