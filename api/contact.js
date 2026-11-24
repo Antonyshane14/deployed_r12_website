@@ -1,18 +1,18 @@
 const nodemailer = require('nodemailer');
-const { kv } = require('@vercel/kv');
 
-const RATE_LIMIT = 5;        // max submissions per window
-const RATE_WINDOW_SEC = 3600; // 1 hour
+const RATE_LIMIT = 5;
+const RATE_WINDOW_SEC = 3600;
 
 async function checkRateLimit(ip) {
     try {
+        // Require inside try so a missing KV setup never crashes the function
+        const { kv } = require('@vercel/kv');
         const key = `rl:contact:${ip}`;
         const count = await kv.incr(key);
         if (count === 1) await kv.expire(key, RATE_WINDOW_SEC);
         return count <= RATE_LIMIT;
     } catch {
-        // Fail open — if KV is unavailable, don't block legitimate users
-        return true;
+        return true; // fail open if KV not configured yet
     }
 }
 
