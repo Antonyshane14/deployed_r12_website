@@ -51,12 +51,15 @@ function validateContactForm(body) {
     return errors;
 }
 
-const ALLOWED_ORIGIN = 'https://rapturetwelve.com';
+const ALLOWED_ORIGINS = new Set([
+    'https://rapturetwelve.com',
+    'https://www.rapturetwelve.com'
+]);
 
 module.exports = async (req, res) => {
     const origin = req.headers.origin;
-    if (origin === ALLOWED_ORIGIN) {
-        res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+    if (ALLOWED_ORIGINS.has(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
     }
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -77,9 +80,12 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const body = req.body;
+        // Vercel may pass the body as a parsed object or as a raw string
+        let body = req.body;
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch { body = null; }
+        }
 
-        // Guard against missing or non-object body
         if (!body || typeof body !== 'object') {
             return res.status(400).json({ success: false, message: 'Invalid request body' });
         }
