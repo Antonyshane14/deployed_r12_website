@@ -224,19 +224,25 @@ function initializeContactForm() {
 
         if (submitButton.disabled) return;
 
+        const formData = new FormData(form);
+        const message = formData.get('message') || '';
+
+        if (message.length < 10) {
+            showFormStatus('error', 'Message must be at least 10 characters.');
+            return;
+        }
+
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
 
         try {
-            const formData = new FormData(form);
-
             const payload = {
                 name: formData.get('name'),
                 email: formData.get('email'),
                 organization: formData.get('organization'),
                 role: formData.get('role') || '',
                 phone: formData.get('phone') || '',
-                message: formData.get('message')
+                message
             };
 
             const response = await fetch('/api/contact', {
@@ -249,6 +255,11 @@ function initializeContactForm() {
 
             if (response.status === 429) {
                 showFormStatus('error', 'Too many requests. Please wait a while before trying again.');
+                return;
+            }
+
+            if (response.status === 400 && result.errors?.length) {
+                showFormStatus('error', result.errors[0]);
                 return;
             }
 
