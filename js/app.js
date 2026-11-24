@@ -210,79 +210,55 @@ function initializeVideo() {
     }
 }
 
-// EmailJS Configuration
-const EMAILJS_CONFIG = {
-    publicKey: '7gP0EuJ9W_c2z1tE5',
-    serviceId: 'service_9zn6fvt',
-    templateId: 'template_kpwbdec'
-};
-
-// Initialize EmailJS
-function initializeEmailJS() {
-    try {
-        if (typeof emailjs !== 'undefined') {
-            emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-            return true;
-        }
-    } catch (error) {
-        console.error('EmailJS initialization failed:', error);
-    }
-    return false;
-}
-
 // Contact form handling
 function initializeContactForm() {
     const form = document.getElementById('contact-form');
-    const formStatus = document.getElementById('form-status');
-    
+
     if (!form) return;
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const submitButton = form.querySelector('button[type="submit"]');
         const originalText = submitButton.textContent;
-        
+
         if (submitButton.disabled) return;
-        
-        // Check EmailJS
-        if (!initializeEmailJS()) {
-            showFormStatus('error', 'Email service unavailable. Please contact us directly.');
-            return;
-        }
-        
-        // Show loading
+
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
-        
+
         try {
             const formData = new FormData(form);
-            
-            const templateParams = {
-                from_name: formData.get('name'),
-                from_email: formData.get('email'),
+
+            const payload = {
+                name: formData.get('name'),
+                email: formData.get('email'),
                 organization: formData.get('organization'),
-                role: formData.get('role') || 'Not specified',
-                phone: formData.get('phone') || 'Not provided',
-                message: formData.get('message'),
-                to_name: 'Rapture Twelve Team',
-                reply_to: formData.get('email'),
-                subject: `Cybersecurity Inquiry from ${formData.get('organization')}`
+                role: formData.get('role') || '',
+                phone: formData.get('phone') || '',
+                message: formData.get('message')
             };
-            
-            const response = await emailjs.send(
-                EMAILJS_CONFIG.serviceId,
-                EMAILJS_CONFIG.templateId,
-                templateParams
-            );
-            
-            if (response.status === 200) {
+
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (response.status === 429) {
+                showFormStatus('error', 'Too many requests. Please wait a while before trying again.');
+                return;
+            }
+
+            if (result.success) {
                 showFormStatus('success', 'Message sent successfully! We will contact you within 24 hours.');
                 form.reset();
             } else {
-                throw new Error('Failed to send email');
+                throw new Error(result.message || 'Failed to send email');
             }
-            
+
         } catch (error) {
             console.error('Contact form error:', error);
             showFormStatus('error', 'Failed to send message. Please try again or contact us directly.');

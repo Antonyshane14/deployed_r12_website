@@ -27,6 +27,11 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache when available
 self.addEventListener('fetch', (event) => {
+    // Never cache non-GET requests or API calls
+    if (event.request.method !== 'GET' || event.request.url.includes('/api/')) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
@@ -34,21 +39,21 @@ self.addEventListener('fetch', (event) => {
                 if (response) {
                     return response;
                 }
-                
+
                 return fetch(event.request).then((response) => {
                     // Check if we received a valid response
                     if (!response || response.status !== 200 || response.type !== 'basic') {
                         return response;
                     }
-                    
+
                     // Clone the response
                     const responseToCache = response.clone();
-                    
+
                     caches.open(CACHE_NAME)
                         .then((cache) => {
                             cache.put(event.request, responseToCache);
                         });
-                    
+
                     return response;
                 });
             })

@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapture Twelve - Infiltrate Exploit Secure</title>
     
-     
-     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-     
      <!-- SEO Meta Tags -->
     <meta name="description" content="Rapture Twelve - Defense-grade cybersecurity and AI company. Precision. Speed. Impact. Expert penetration testing, AI-powered security tools, and offensive security systems.">
     <meta name="keywords" content="cybersecurity, AI, defense, penetration testing, red teaming, SOC, threat detection">
@@ -669,7 +666,7 @@ Leading applied research in AI and advanced ML systems, blending full-stack engi
                 } catch (e) {
                     // Fallback to postMessage
                     try {
-                        demoFrame.contentWindow.postMessage({ action: action }, '*');
+                        demoFrame.contentWindow.postMessage({ action: action }, window.location.origin);
                         if (action === 'start') demoStarted = true;
                         return true;
                     } catch (err) {
